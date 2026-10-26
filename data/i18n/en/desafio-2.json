@@ -1,0 +1,236 @@
+{
+  "tab": "Challenge 02 · 5G Mobility",
+  "tag": [
+    "CHALLENGE 2",
+    "RADIO LINK FAILURE"
+  ],
+  "title": "Inter-frequency handover · 5G SA",
+  "description": "Investigate Meridian's mobility failure and compare it with the intra-frequency control and the Solstice CDUT. The times and events shown are the ones recorded in the field case.",
+  "sideInfo": [
+    {
+      "label": "Evaluated RAT"
+    },
+    {
+      "label": "Serving"
+    },
+    {
+      "label": "Inter-frequency target"
+    }
+  ],
+  "materials": [
+    {
+      "label": "Student case · Desafio_S03_Caso_Aluno.docx"
+    },
+    {
+      "label": "Theory reference · Sessão teórica.pptx"
+    }
+  ],
+  "report": {
+    "title": "Issue Report — Field Test",
+    "template": "data/i18n/en/relatorios/desafio-2.html"
+  },
+  "scenarios": {
+    "controle-intra": {
+      "number": "01 · CONTROL",
+      "label": "Meridian · intra-frequency",
+      "kicker": "SCENARIO 01 · CONTROL",
+      "title": "Intra-frequency handover completed",
+      "description": "Meridian · n78 PCI 88 → PCI 101 · same frequency · three repetitions",
+      "status": "Control passed · 3/3",
+      "leftNode": "gNodeB · serving",
+      "rightNode": "gNodeB · target",
+      "metrics": [
+        {
+          "label": "Active measurement",
+          "note": "same frequency"
+        },
+        {
+          "value": "1.155–1.210 s",
+          "note": "since degradation onset"
+        },
+        {
+          "label": "HO completion",
+          "value": "1.312–1.370 s"
+        },
+        {
+          "note": "OOS_FILT_BLER below threshold"
+        }
+      ],
+      "rows": [
+        {
+          "final": "1.155–1.210 s"
+        },
+        {
+          "final": "1.312–1.370 s"
+        }
+      ],
+      "evidence": [
+        {
+          "title": "Stable intra-RAT control",
+          "html": "3/3 handovers complete; the Report → completion chain took 155–160 ms."
+        },
+        {
+          "title": "Intra-frequency measurement active",
+          "html": "<code>measId=1</code> (A3) and <code>measId=3</code> (A2) were already configured."
+        },
+        {
+          "title": "No link failure",
+          "html": "Record 0xB959 kept OOS_FILT_BLER below threshold in every repetition."
+        },
+        {
+          "title": "Detailed log not provided",
+          "html": "The material includes full logs for scenarios 2 (DUT) and 3 (CDUT), not for this control."
+        }
+      ],
+      "notice": "The case describes this scenario as a same-frequency control. No detailed log file is attached for it; the values shown come from the challenge sheet.",
+      "logLabel": "No detailed log file for this scenario.",
+      "playbackSteps": [
+        {
+          "msg": "Start of serving degradation · PCI 88",
+          "summary": "measId=1 (A3, hysteresis 1 dB, TTT 320 ms) and measId=3 (A2, −100 dBm, TTT 160 ms) active since the first RRCReconfiguration; n41 is not configured."
+        },
+        {
+          "msg": "Measurement Report · measId=1 (A3)",
+          "summary": "SS-RSRP/SS-RSRQ serving −101 dBm/−13 dB; neighbour PCI 101 −90 dBm/−8 dB."
+        },
+        {
+          "msg": "RRCReconfiguration · targetPhysCellId=101",
+          "summary": "reconfigurationWithSync without absoluteFrequencySSB (same frequency), rach-ConfigDedicated present, t304=2000 ms."
+        },
+        {
+          "msg": "Random Access · Msg1 (dedicated preamble)",
+          "summary": "Contention-free access on PCI 101."
+        },
+        {
+          "msg": "Random Access Response · Msg2",
+          "summary": "PCI 101 answers the dedicated preamble."
+        },
+        {
+          "msg": "RRCReconfigurationComplete · no RLF",
+          "summary": "Handover complete 155 ms after the Report. Repetitions 02 and 03: 1.312 s and 1.370 s; OOS_FILT_BLER (0xB959) always below threshold."
+        }
+      ]
+    },
+    "dut-inter": {
+      "label": "Meridian · inter-frequency",
+      "kicker": "SCENARIO 02 · DUT",
+      "title": "Handover delay and Radio Link Failure",
+      "description": "Meridian · n78 PCI 88 → n41 PCI 145/160 · three repetitions",
+      "status": "Failure reproduced · 3/3",
+      "leftNode": "gNodeB · serving",
+      "rightNode": "gNodeB · target",
+      "metrics": [
+        {
+          "value": "3.660–3.730 s",
+          "note": "Configured TTT: 240 ms"
+        },
+        {
+          "value": "3.830–3.870 s",
+          "note": "cause: t310-Expiry"
+        },
+        {
+          "label": "1st cell · PCI 88",
+          "note": "no response · S criterion failed"
+        },
+        {
+          "label": "Re-establishment",
+          "value": "4.063–4.103 s"
+        }
+      ],
+      "rows": [
+        {
+          "final": "3.660–3.730 s"
+        },
+        {
+          "final": "3.830–3.870 s"
+        },
+        {
+          "label": "Recovery",
+          "sub": "PCI 145 · complete",
+          "final": "4.063–4.103 s"
+        }
+      ],
+      "evidence": [
+        {
+          "title": "Late inter-frequency measurement",
+          "html": "<code>measId=2</code> (A5, TTT 240 ms) reported only 3.660–3.730 s after configuration."
+        },
+        {
+          "title": "RLF before handover completion",
+          "html": "<code>t310-Expiry</code> occurs at 3.830–3.870 s; no handover completes in this scenario."
+        },
+        {
+          "title": "Attempt on an unsuitable serving cell",
+          "html": "PCI 88 is below <code>q-RxLevMin</code>; six Msg1 fail before the attempt on PCI 145."
+        },
+        {
+          "title": "Recovery on the neighbour cell",
+          "html": "On PCI 145, RRCReestablishmentRequest and Complete are recorded in all three repetitions."
+        }
+      ],
+      "notice": "Repetition 01 of the detailed log shows the full sequence. The case provides neither GPS coordinates nor inter-node signalling (Xn/NGAP); do not attribute the cause to the network based on this UE log alone.",
+      "logLabel": "Source: Desafio_S03_Log_DUT_Meridian.html · repetition 01 of scenario 2. The original file is shown unmodified.",
+      "timeReference": {
+        "label": "Time since MeasConfig #2"
+      }
+    },
+    "cdut-solstice": {
+      "number": "03 · REFERENCE",
+      "label": "Solstice · inter-frequency",
+      "kicker": "SCENARIO 03 · REFERENCE",
+      "title": "Inter-frequency handover without RLF",
+      "description": "Solstice · n78 PCI 88 → n41 PCI 145/160 · same network and measurement sequence",
+      "status": "Reference passed · 3/3",
+      "leftNode": "gNodeB · serving",
+      "rightNode": "gNodeB · target",
+      "metrics": [
+        {
+          "value": "0.655–0.705 s",
+          "note": "Configured TTT: 240 ms"
+        },
+        {
+          "label": "Handover complete",
+          "value": "0.815–0.865 s"
+        },
+        {
+          "note": "OOS_FILT_BLER below threshold"
+        },
+        {
+          "label": "Report → HO chain",
+          "note": "same target band n41"
+        }
+      ],
+      "rows": [
+        {
+          "final": "0.655–0.705 s"
+        },
+        {
+          "final": "0.815–0.865 s"
+        }
+      ],
+      "evidence": [
+        {
+          "title": "Same inter-frequency scenario",
+          "html": "The CDUT uses the same site, band pair and measurement sequence (A2 and A5) as the DUT scenario."
+        },
+        {
+          "title": "A5 report followed by handover",
+          "html": "<code>measId=2</code> is reported between 0.655–0.705 s; RRCReconfigurationComplete between 0.815–0.865 s."
+        },
+        {
+          "title": "No RLF across repetitions",
+          "html": "3/3 handovers complete; the 0xB959 statistic stays below the OOS threshold."
+        },
+        {
+          "title": "The difference calls for UE investigation",
+          "html": "The contrast lowers the likelihood of a general site failure but does not by itself prove the root cause."
+        }
+      ],
+      "notice": "The comparison with the CDUT is control evidence, not proof that every RF and network parameter was identical at every instant.",
+      "logLabel": "Source: Desafio_S03_Log_CDUT_Solstice.html · repetition 01 of scenario 3. The original file is shown unmodified.",
+      "timeReference": {
+        "label": "Time since MeasConfig #2"
+      }
+    }
+  }
+}

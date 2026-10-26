@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FieldTestLab · Mobilidade 5G SA</title>
+  <script>
+    // Applies the saved theme before first paint to avoid a light/dark flash.
+    try {
+      const prefs = JSON.parse(localStorage.getItem("fieldlab.prefs")) || {};
+      if (prefs.theme === "dark") document.documentElement.dataset.theme = "dark";
+    } catch {}
+  </script>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">◈</span><span>FIELDTESTLAB <small data-i18n="brand.sub">/ MOBILIDADE 5G</small></span></div>
+      <div class="top-meta">
+        <span class="top-site"><i class="live-dot"></i><span data-i18n="top.site">NovaLink · Site Delta</span></span>
+        <div class="lang-switch" id="lang-switch" role="group" data-i18n-aria-label="lang.label">
+          <button type="button" data-lang="pt-BR" aria-pressed="true">PT</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false">☾</button>
+      </div>
+    </header>
+    <section class="intro">
+      <div>
+        <div class="eyebrow" data-i18n="intro.eyebrow">Laboratório de Teste de Campo</div>
+        <h1 id="page-title"></h1>
+        <p id="page-description"></p>
+      </div>
+      <span class="challenge-tag" id="challenge-tag"></span>
+    </section>
+
+    <div class="challenge-switch" id="challenge-tabs" role="group" data-i18n-aria-label="aria.challenges"></div>
+
+    <div class="workspace">
+      <nav class="sidebar" data-i18n-aria-label="aria.scenarios">
+        <div class="side-title" data-i18n="side.title">Cenários de teste</div>
+        <div id="scenario-list"></div>
+        <div class="side-divider"></div>
+        <div class="side-info" id="side-info"></div>
+      </nav>
+
+      <main class="main">
+        <section class="panel">
+          <div class="scenario-heading">
+            <div>
+              <div class="eyebrow" id="scenario-kicker"></div>
+              <h2 id="scenario-title"></h2>
+              <p id="scenario-description"></p>
+            </div>
+            <span class="status-badge" id="scenario-status"></span>
+          </div>
+
+          <div class="scene" data-i18n-aria-label="scene.aria">
+            <svg class="scene-art" id="scene-art" aria-hidden="true"></svg>
+            <svg class="signaling-overlay" id="signaling-overlay" aria-hidden="true"></svg>
+            <div class="signal-event-chip" id="signal-event-chip" role="status" aria-live="polite">
+              <span class="signal-direction" id="signal-direction"></span>
+              <strong id="signal-protocol">—</strong>
+              <span class="signal-message" id="signal-message"></span>
+            </div>
+            <div class="scene-caption"><span><span data-i18n="scene.topology">Topologia de mobilidade</span> · <span id="scene-network"></span></span><span id="scene-rat"></span></div>
+            <div class="scene-label label-left"><span id="scene-left-node"></span><small id="scene-left-cell"></small></div>
+            <div class="scene-label label-phone">UE · <span id="scene-device"></span><small id="scene-state"></small></div>
+            <div class="scene-label label-right"><span id="scene-right-node"></span><small id="scene-right-cell"></small></div>
+          </div>
+          <div class="signal-legend">
+            <span><strong class="legend-ul">↑ UL</strong> <span data-i18n="legend.ul"></span></span>
+            <span><strong class="legend-dl">↓ DL</strong> <span data-i18n="legend.dl"></span></span>
+            <span><strong class="legend-internal">···</strong> <span data-i18n="legend.internal"></span></span>
+            <span data-i18n="legend.note"></span>
+          </div>
+
+          <div class="live-dashboard" data-i18n-aria-label="live.aria">
+            <div class="live-dashboard-head">
+              <div><div class="live-dashboard-title" data-i18n="live.title"></div><div class="live-dashboard-subtitle" id="live-dashboard-subtitle"></div></div>
+              <span class="live-state" id="live-state"></span>
+            </div>
+            <div class="live-metrics" id="live-metrics"></div>
+            <div class="live-event-line">
+              <span id="live-event-count"></span>
+              <div class="live-event-progress" role="progressbar" data-i18n-aria-label="live.progressAria" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="live-event-progress"></span></div>
+              <span id="live-event-time"></span>
+            </div>
+          </div>
+          <div class="static-metrics-heading"><span data-i18n="static.heading"></span><span data-i18n="static.ref"></span></div>
+          <div class="metric-grid" id="metrics"></div>
+        </section>
+
+        <section class="panel playback-panel" aria-labelledby="playback-title">
+          <div class="playback-head">
+            <div><div class="eyebrow" data-i18n="play.eyebrow"></div><h3 id="playback-title" data-i18n="play.title"></h3></div>
+            <span class="playback-tag" id="playback-kind"></span>
+          </div>
+          <div class="playback-controls">
+            <button class="button primary" id="play-toggle" type="button"></button>
+            <button class="button" id="play-step-back" type="button" data-i18n="play.back" data-i18n-aria-label="play.backAria"></button>
+            <button class="button" id="play-step-forward" type="button" data-i18n="play.forward"></button>
+            <button class="button quiet" id="play-restart" type="button" data-i18n="play.restart"></button>
+            <label class="eyebrow" for="play-speed" data-i18n="play.speed"></label>
+            <select id="play-speed" data-i18n-aria-label="play.speedAria"></select>
+            <div class="playback-progress" role="progressbar" data-i18n-aria-label="play.progressAria" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="play-progress"></span></div>
+            <span class="playback-count" id="play-count">0 / 0</span>
+          </div>
+          <div class="playback-source" id="playback-source"></div>
+          <div class="playback-log" id="playback-log" aria-live="polite"></div>
+        </section>
+
+        <section class="panel">
+          <div class="section-head">
+            <div><div class="eyebrow" data-i18n="timeline.eyebrow"></div><h3 data-i18n="timeline.title"></h3></div>
+            <p data-i18n="timeline.note"></p>
+          </div>
+          <div class="timeline" id="timeline"></div>
+          <div class="axis"><span></span><div class="axis-marks" id="axis-marks"></div><span></span></div>
+        </section>
+
+        <section class="panel">
+          <div class="section-head">
+            <div><div class="eyebrow" data-i18n="evidence.eyebrow"></div><h3 id="evidence-heading" data-i18n="evidence.title"></h3></div>
+          </div>
+          <div class="evidence-grid" id="evidence"></div>
+          <div id="scenario-notice"></div>
+        </section>
+
+        <section class="panel">
+          <div class="section-head">
+            <div><div class="eyebrow" data-i18n="sources.eyebrow"></div><h3 data-i18n="sources.title"></h3></div>
+          </div>
+          <div class="actions">
+            <button class="button primary" id="open-log" type="button"></button>
+            <button class="button" id="open-report" type="button" data-i18n="sources.report"></button>
+            <button class="button quiet" id="print-report" type="button" data-i18n="sources.pdf"></button>
+          </div>
+          <div class="source-note" id="log-source"></div>
+          <div class="resource-links" id="challenge-resources" data-i18n-aria-label="sources.materialsAria"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal" id="log-modal" role="dialog" aria-modal="true" aria-labelledby="log-modal-title">
+    <div class="modal-card">
+      <div class="modal-head"><div><h2 id="log-modal-title"></h2><span id="log-modal-subtitle"></span></div><button class="button quiet" type="button" data-close="log-modal" data-i18n="modal.close"></button></div>
+      <iframe class="log-frame" id="log-frame" data-i18n-title="modal.logFrameTitle" src="about:blank"></iframe>
+    </div>
+  </div>
+
+  <div class="modal" id="report-modal" role="dialog" aria-modal="true" aria-labelledby="report-modal-title">
+    <div class="modal-card">
+      <div class="modal-head"><div><h2 id="report-modal-title"></h2><span data-i18n="modal.reportSubtitle"></span></div><button class="button quiet" type="button" data-close="report-modal" data-i18n="modal.close"></button></div>
+      <div class="report-scroll"><article class="report-page" id="report-content"></article></div>
+    </div>
+  </div>
+  <script>
+    // ES modules and fetch don't work under file://; say so instead of failing silently.
+    if (location.protocol === "file:") {
+      document.getElementById("page-description").textContent =
+        "Abra esta página por um servidor local (Live Server no VS Code, ou `npx serve` nesta pasta). / Open this page through a local server (Live Server in VS Code, or `npx serve` in this folder).";
+    }
+  </script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

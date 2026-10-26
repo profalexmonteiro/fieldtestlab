@@ -1,0 +1,444 @@
+{
+  "id": "desafio-1",
+  "tab": "Desafio 01 · Registro / Attach",
+  "tag": [
+    "DESAFIO 1",
+    "REGISTRO E ATTACH"
+  ],
+  "title": "Registro e Attach · 5G SA / LTE",
+  "description": "Investigue as rejeições de registro do Aurora após troca de perfil entre operadoras; compare 5G SA, o controle LTE e o CDUT Boreal.",
+  "cellPanel": "identity",
+  "sideInfo": [
+    {
+      "label": "RAT avaliado",
+      "value": "5G SA · NR / 4G · LTE"
+    },
+    {
+      "label": "PLMN de origem",
+      "value": "Vantis · 724/085"
+    },
+    {
+      "label": "PLMN de destino",
+      "value": "Zenith · 724/078"
+    }
+  ],
+  "materials": [
+    {
+      "label": "Caso do aluno · Desafio_Semana_2.docx",
+      "href": "Desafio 1/Desafio_Semana_2.docx"
+    },
+    {
+      "label": "Referência teórica · Sessão Semana 2.pptx",
+      "href": "Desafio 1/Sessão_teórica_Semana_2.pptx"
+    }
+  ],
+  "report": {
+    "title": "Relatório de Issue — Desafio 1 · Registro / Attach",
+    "template": "data/relatorios/desafio-1.html"
+  },
+  "scenarios": [
+    {
+      "id": "dut-vantis-zenith",
+      "number": "01 · DUT",
+      "label": "Aurora · Vantis → Zenith · 5G SA",
+      "kicker": "CENÁRIO 01 · DUT · 5G SA",
+      "title": "Cascata de rejeições no registro",
+      "description": "Aurora · Vantis (724/085) → Zenith (724/078) · 5 trocas de perfil",
+      "status": "3 tentativas por troca · 5/5",
+      "statusClass": "bad",
+      "device": "Aurora / DUT",
+      "state": "NR SA · 2 rejeições NAS → registrado",
+      "scene": "failure",
+      "rat": "NR · 5G SA",
+      "network": "Zenith / Site de homologação",
+      "leftNode": "gNodeB · Vantis",
+      "leftCell": "n78 · NR-ARFCN 633120 · PCI 177",
+      "rightNode": "gNodeB · Zenith",
+      "rightCell": "n78 · NR-ARFCN 633120 · PCI 201",
+      "axisMax": 5,
+      "metrics": [
+        {
+          "label": "Tentativas de registro",
+          "value": "3 por troca",
+          "note": "5 de 5 trocas · 100%",
+          "tone": "bad-text"
+        },
+        {
+          "label": "1ª rejeição NAS",
+          "value": "5GMM #3",
+          "note": "Illegal UE · PLMN Vantis",
+          "tone": "bad-text"
+        },
+        {
+          "label": "2ª rejeição NAS",
+          "value": "5GMM #11",
+          "note": "PLMN not allowed · SUCI antigo",
+          "tone": "warn-text"
+        },
+        {
+          "label": "Registro completo",
+          "value": "4,55–4,77 s",
+          "note": "na 3ª tentativa · 5/5",
+          "tone": "warn-text"
+        }
+      ],
+      "rows": [
+        {
+          "label": "Tempo total · DUT",
+          "sub": "3 tentativas · 5 trocas",
+          "start": 4.55,
+          "end": 4.77,
+          "final": "4,55–4,77 s",
+          "color": "failure",
+          "points": [
+            {
+              "at": 4.55,
+              "kind": "failure"
+            },
+            {
+              "at": 4.77,
+              "kind": "failure"
+            }
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "issue",
+          "title": "Tentativa 1 · contexto de operadora anterior",
+          "html": "No PCI 177, o SIB1 anuncia PLMN 724/085. A Registration Request usa SUCI 724/085 e recebe <code>5GMM Cause #3 · Illegal UE</code>."
+        },
+        {
+          "kind": "issue",
+          "title": "Tentativa 2 · PLMN de destino, SUCI antigo",
+          "html": "No PCI 201, o PLMN selecionado já é 724/078, mas o SUCI enviado continua com Home-Network-Id 724/085. A rede rejeita com <code>5GMM Cause #11 · PLMN not allowed</code>."
+        },
+        {
+          "kind": "ok",
+          "title": "Tentativa 3 · identidade alinhada",
+          "html": "A nova Registration Request apresenta SUCI 724/078; seguem Authentication, Security Mode, Registration Accept e Registration Complete."
+        },
+        {
+          "kind": "ok",
+          "title": "A falha ocorre após aquisição e RRC",
+          "html": "PSS/SSS, MIB, SIB1 e RRC Setup completam nas tentativas rejeitadas. A divergência está na sequência de registro NAS, não na detecção da célula."
+        }
+      ],
+      "notice": "O log anexado cobre as 3 tentativas de uma das cinco trocas do cenário 1; o documento não diz qual. A duração do log (4,55 s, da detecção PSS/SSS ao Registration Complete) coincide com o tempo da troca 03. Não há logs individuais das demais trocas. A causalidade interna exata da transição de SUCI não é provada por estes logs: correlacione o estado do perfil e a identidade provisionada.",
+      "logPath": "Desafio 1/Desafio_S02_Log_DUT_Aurora.html",
+      "logLabel": "Fonte: Desafio_S02_Log_DUT_Aurora.html · cenário 1 · 36 mensagens / 3 tentativas · 4,55 s. Log original sem alterações."
+    },
+    {
+      "id": "dut-zenith-nimbus",
+      "number": "02 · DUT",
+      "label": "Aurora · Zenith → Nimbus · 5G SA",
+      "kicker": "CENÁRIO 02 · DUT · 5G SA",
+      "title": "A mesma cascata em outra operadora",
+      "description": "Aurora · Zenith (724/078) → Nimbus (724/091) · 5 trocas de perfil",
+      "status": "3 tentativas por troca · 5/5",
+      "statusClass": "bad",
+      "device": "Aurora / DUT",
+      "state": "NR SA · registro concluído na 3ª tentativa",
+      "scene": "failure",
+      "rat": "NR · 5G SA",
+      "network": "Zenith → Nimbus / homologação",
+      "leftNode": "gNodeB · Zenith",
+      "leftCell": "n78 · NR-ARFCN 633120 · PCI 201",
+      "rightNode": "gNodeB · Nimbus",
+      "rightCell": "n78 · NR-ARFCN 633120 · PCI 133",
+      "axisMax": 5,
+      "metrics": [
+        {
+          "label": "Tentativas de registro",
+          "value": "3 por troca",
+          "note": "5 de 5 trocas · 100%",
+          "tone": "bad-text"
+        },
+        {
+          "label": "Tempo até registro",
+          "value": "4,58–4,75 s",
+          "note": "após troca de PLMN",
+          "tone": "warn-text"
+        },
+        {
+          "label": "RSRP / RSRQ · Zenith",
+          "value": "−83 / −8 dB",
+          "note": "n78 · PCI 201",
+          "tone": "accent-text"
+        },
+        {
+          "label": "RSRP / RSRQ · Nimbus",
+          "value": "−84 / −8 dB",
+          "note": "n78 · PCI 133",
+          "tone": "accent-text"
+        }
+      ],
+      "rows": [
+        {
+          "label": "Tempo total · DUT",
+          "sub": "3 tentativas · 5 trocas",
+          "start": 4.58,
+          "end": 4.75,
+          "final": "4,58–4,75 s",
+          "color": "failure",
+          "points": [
+            {
+              "at": 4.58,
+              "kind": "failure"
+            },
+            {
+              "at": 4.75,
+              "kind": "failure"
+            }
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "issue",
+          "title": "Anomalia repetida em outra PLMN",
+          "html": "As cinco trocas Zenith → Nimbus também exigem três tentativas em 5G SA."
+        },
+        {
+          "kind": "ok",
+          "title": "Condição de rádio semelhante",
+          "html": "RSRP −83/−84 dBm e RSRQ −8 dB nas células Zenith e Nimbus, respectivamente."
+        },
+        {
+          "kind": "issue",
+          "title": "Sem log de modem individual fornecido",
+          "html": "O documento informa o resultado agregado, mas o log do Aurora anexado cobre apenas uma troca do cenário 1."
+        },
+        {
+          "kind": "ok",
+          "title": "Evidência comparativa por cenário",
+          "html": "A recorrência em duas transições de operadora reduz a hipótese de uma única célula como causa isolada."
+        }
+      ],
+      "notice": "Tempos/faixas vêm do documento do desafio. Não foi fornecido log individual desta transição; não inferimos causas NAS específicas sem a captura correspondente.",
+      "logPath": "",
+      "logLabel": "Sem log HTML individual para o cenário 2; consulte o documento do caso e os resultados agregados.",
+      "playbackSteps": [
+        {
+          "msg": "Resultado agregado · tentativa 1",
+          "summary": "Na troca Zenith → Nimbus, o Aurora inicia o registro 5G SA. O caso não fornece a mensagem individual desta tentativa.",
+          "offsetMs": 0
+        },
+        {
+          "msg": "Resultado agregado · tentativa 2",
+          "summary": "A segunda tentativa também é necessária; o log individual desta troca não foi fornecido.",
+          "offsetMs": 1000
+        },
+        {
+          "msg": "Resultado agregado · tentativa 3",
+          "summary": "Registro concluído após três tentativas em cada uma das cinco trocas.",
+          "offsetMs": 2100
+        },
+        {
+          "msg": "Resultado agregado · 5 trocas",
+          "summary": "Tempos totais entre 4,58 e 4,75 s. Sem call flow individual disponível.",
+          "offsetMs": 3000
+        }
+      ]
+    },
+    {
+      "id": "lte-controle",
+      "number": "03 · CONTROLE",
+      "label": "Aurora · Vantis → Zenith · LTE",
+      "kicker": "CENÁRIO 03 · DUT · LTE",
+      "title": "Controle LTE registra na primeira tentativa",
+      "description": "Aurora · Vantis → Zenith · LTE Band 3 · cinco trocas",
+      "status": "Attach concluído · 5/5",
+      "statusClass": "good",
+      "device": "Aurora / DUT",
+      "state": "LTE · Attach Complete",
+      "scene": "control",
+      "rat": "LTE · 4G",
+      "network": "Vantis → Zenith / homologação",
+      "leftNode": "eNodeB · Vantis",
+      "leftCell": "LTE Band 3 · EARFCN 1350 · PCI 165",
+      "rightNode": "eNodeB · Zenith",
+      "rightCell": "LTE Band 3 · EARFCN 1300 · PCI 220",
+      "axisMax": 1.25,
+      "metrics": [
+        {
+          "label": "Tentativas de attach",
+          "value": "1 tentativa",
+          "note": "5 de 5 trocas · 100%",
+          "tone": "good-text"
+        },
+        {
+          "label": "Tempo total",
+          "value": "0,98–1,15 s",
+          "note": "até Attach Complete",
+          "tone": "good-text"
+        },
+        {
+          "label": "RSRP / RSRQ · Vantis",
+          "value": "−82 / −8 dB",
+          "note": "LTE · PCI 165",
+          "tone": "accent-text"
+        },
+        {
+          "label": "RSRP / RSRQ · Zenith",
+          "value": "−85 / −9 dB",
+          "note": "LTE · PCI 220",
+          "tone": "accent-text"
+        }
+      ],
+      "rows": [
+        {
+          "label": "Aurora · LTE",
+          "sub": "Attach · 5 trocas",
+          "start": 0.98,
+          "end": 1.15,
+          "final": "0,98–1,15 s",
+          "color": "success",
+          "points": [
+            {
+              "at": 0.98,
+              "kind": "success"
+            },
+            {
+              "at": 1.15,
+              "kind": "success"
+            }
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "ok",
+          "title": "Controle 4G sem repetição",
+          "html": "As cinco trocas concluem Attach na primeira tentativa."
+        },
+        {
+          "kind": "ok",
+          "title": "Tempo de registro menor",
+          "html": "Attach Complete entre 0,98 e 1,15 s nas cinco repetições."
+        },
+        {
+          "kind": "ok",
+          "title": "Sinal adequado no par de células",
+          "html": "RSRP −82/−85 dBm e RSRQ −8/−9 dB."
+        },
+        {
+          "kind": "issue",
+          "title": "Sem log LTE anexado",
+          "html": "O documento traz métricas agregadas; os HTML disponíveis são logs de registro 5G SA."
+        }
+      ],
+      "notice": "O material descreve LTE como controle adicional, não fornece captura OTA LTE nem detalhes de call flow. A visualização mostra eNodeB/LTE, sem inventar mensagens ausentes.",
+      "logPath": "",
+      "logLabel": "Não há log HTML LTE nos materiais fornecidos.",
+      "playbackSteps": [
+        {
+          "msg": "Resultado agregado · busca LTE",
+          "summary": "Aurora seleciona a célula LTE da operadora de destino; não há captura OTA LTE anexada.",
+          "offsetMs": 0
+        },
+        {
+          "msg": "Resultado agregado · Attach",
+          "summary": "Attach concluído na primeira tentativa em cada uma das cinco trocas.",
+          "offsetMs": 650
+        },
+        {
+          "msg": "Resultado agregado · 5 trocas",
+          "summary": "Tempos totais entre 0,98 e 1,15 s; RSRP/RSRQ no caso: −82/−8 dB e −85/−9 dB.",
+          "offsetMs": 1300
+        }
+      ]
+    },
+    {
+      "id": "cdut-boreal",
+      "number": "04 · REFERÊNCIA",
+      "label": "Boreal · Vantis → Zenith · 5G SA",
+      "kicker": "CENÁRIO 04 · CDUT · 5G SA",
+      "title": "Boreal conclui registro na primeira tentativa",
+      "description": "Boreal · Vantis (724/085) → Zenith (724/078) · mesmas células do cenário 1",
+      "status": "Referência aprovada · 5/5",
+      "statusClass": "good",
+      "device": "Boreal / CDUT",
+      "state": "NR SA · Registration Complete",
+      "scene": "reference",
+      "rat": "NR · 5G SA",
+      "network": "Vantis → Zenith / Site de homologação",
+      "leftNode": "gNodeB · Vantis",
+      "leftCell": "n78 · NR-ARFCN 633120 · PCI 177",
+      "rightNode": "gNodeB · Zenith",
+      "rightCell": "n78 · NR-ARFCN 633120 · PCI 201",
+      "axisMax": 1.25,
+      "metrics": [
+        {
+          "label": "Tentativas de registro",
+          "value": "1 tentativa",
+          "note": "5 de 5 trocas · 100%",
+          "tone": "good-text"
+        },
+        {
+          "label": "Tempo até registro",
+          "value": "0,98–1,15 s",
+          "note": "5G SA · sem rejeição",
+          "tone": "good-text"
+        },
+        {
+          "label": "Authentication",
+          "value": "sucesso",
+          "note": "RES* e NIA2/NEA2",
+          "tone": "accent-text"
+        },
+        {
+          "label": "Registration Complete",
+          "value": "registrado",
+          "note": "5GS-Registration-Result",
+          "tone": "good-text"
+        }
+      ],
+      "rows": [
+        {
+          "label": "Boreal · 5G SA",
+          "sub": "Registration · 5 trocas",
+          "start": 0.98,
+          "end": 1.15,
+          "final": "0,98–1,15 s",
+          "color": "reference",
+          "points": [
+            {
+              "at": 0.98,
+              "kind": "reference"
+            },
+            {
+              "at": 1.15,
+              "kind": "reference"
+            }
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "ok",
+          "title": "Mesmo site e mesmas células",
+          "html": "O CDUT acessa PCI 201/PLMN 724/078; a rede aceita a Registration Request já com SUCI 724/078."
+        },
+        {
+          "kind": "ok",
+          "title": "Sequência NAS completa",
+          "html": "Authentication Request/Response, Security Mode Command/Complete, Registration Accept e Registration Complete."
+        },
+        {
+          "kind": "ok",
+          "title": "Registro 5G SA de primeira",
+          "html": "5/5 trocas concluem na primeira tentativa; log detalhado mostra uma tentativa bem-sucedida."
+        },
+        {
+          "kind": "issue",
+          "title": "Contraste aponta ao DUT, não prova implementação",
+          "html": "DUT e CDUT diferem em estado de SIM/identidade e hardware; controle localiza o desvio no Aurora, mas não identifica sozinho o mecanismo interno."
+        }
+      ],
+      "notice": "Log de referência do Boreal: uma tentativa, 19 mensagens. Atenção: o log dura 0,82 s (da detecção PSS/SSS ao Registration Complete), menos que qualquer tempo total do cenário 4 no caso (0,98–1,15 s); o documento não define o instante inicial da medição. O relato de 5/5 trocas é agregado; não há cinco arquivos de log individuais.",
+      "logPath": "Desafio 1/Desafio_S02_Log_CDUT_Boreal.html",
+      "logLabel": "Fonte: Desafio_S02_Log_CDUT_Boreal.html · cenário 4 · 19 mensagens / 1 tentativa bem-sucedida · 0,82 s. Log original sem alterações."
+    }
+  ]
+}

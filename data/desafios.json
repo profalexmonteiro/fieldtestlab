@@ -1,0 +1,10 @@
+{
+  "challenges": [
+    "data/desafio-1.json",
+    "data/desafio-2.json"
+  ],
+  "default": {
+    "challenge": "desafio-2",
+    "scenario": "dut-inter"
+  }
+}

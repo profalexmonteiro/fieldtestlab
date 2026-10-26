@@ -1,0 +1,427 @@
+{
+  "id": "desafio-2",
+  "tab": "Desafio 02 · Mobilidade 5G",
+  "tag": [
+    "DESAFIO 2",
+    "RADIO LINK FAILURE"
+  ],
+  "title": "Handover inter-frequência · 5G SA",
+  "description": "Investigue a falha de mobilidade do Meridian, compare com o controle intra-frequência e com o CDUT Solstice. Os tempos e eventos apresentados são os registrados no caso de campo.",
+  "cellPanel": "measurement",
+  "sideInfo": [
+    {
+      "label": "RAT avaliado",
+      "value": "5G SA · NR"
+    },
+    {
+      "label": "Serving",
+      "value": "n78 · PCI 88"
+    },
+    {
+      "label": "Alvo inter-frequência",
+      "value": "n41 · PCI 145 / 160"
+    }
+  ],
+  "materials": [
+    {
+      "label": "Caso do aluno · Desafio_S03_Caso_Aluno.docx",
+      "href": "Desafio 2/material/Desafio_S03_Caso_Aluno.docx"
+    },
+    {
+      "label": "Referência teórica · Sessão teórica.pptx",
+      "href": "Desafio 2/material/Sessão teórica.pptx"
+    }
+  ],
+  "report": {
+    "title": "Relatório de Issue — Teste de Campo",
+    "template": "data/relatorios/desafio-2.html"
+  },
+  "scenarios": [
+    {
+      "id": "controle-intra",
+      "number": "01 · CONTROLE",
+      "label": "Meridian · intra-frequência",
+      "kicker": "CENÁRIO 01 · CONTROLE",
+      "title": "Handover intra-frequência concluído",
+      "description": "Meridian · n78 PCI 88 → PCI 101 · mesma frequência · três repetições",
+      "status": "Controle aprovado · 3/3",
+      "statusClass": "good",
+      "device": "Meridian / DUT",
+      "state": "RRC_CONNECTED · handover OK",
+      "scene": "control",
+      "rat": "NR · SA",
+      "network": "NovaLink / Site Delta",
+      "leftNode": "gNodeB · serving",
+      "leftCell": "n78 · NR-ARFCN 633180 · PCI 88",
+      "rightNode": "gNodeB · alvo",
+      "rightCell": "n78 · NR-ARFCN 633180 · PCI 101",
+      "axisMax": 4.2,
+      "metrics": [
+        {
+          "label": "Medição ativa",
+          "value": "A3 · measId=1",
+          "note": "mesma frequência",
+          "tone": "accent-text"
+        },
+        {
+          "label": "Measurement Report",
+          "value": "1,155–1,210 s",
+          "note": "desde o início da degradação",
+          "tone": ""
+        },
+        {
+          "label": "Conclusão HO",
+          "value": "1,312–1,370 s",
+          "note": "RRCReconfigurationComplete",
+          "tone": "good-text"
+        },
+        {
+          "label": "RLF",
+          "value": "0 / 3",
+          "note": "OOS_FILT_BLER abaixo do limiar",
+          "tone": "good-text"
+        }
+      ],
+      "rows": [
+        {
+          "label": "Meridian · intra",
+          "sub": "Report A3",
+          "start": 1.155,
+          "end": 1.21,
+          "final": "1,155–1,210 s",
+          "color": "success",
+          "points": [
+            {
+              "at": 1.155,
+              "kind": "success"
+            },
+            {
+              "at": 1.21,
+              "kind": "success"
+            }
+          ]
+        },
+        {
+          "label": "Handover OK",
+          "sub": "ReconfigurationComplete",
+          "start": 1.312,
+          "end": 1.37,
+          "final": "1,312–1,370 s",
+          "color": "success",
+          "points": [
+            {
+              "at": 1.312,
+              "kind": "success"
+            },
+            {
+              "at": 1.37,
+              "kind": "success"
+            }
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "ok",
+          "title": "Controle intra-RAT estável",
+          "html": "3/3 handovers completos; a cadeia Report → conclusão levou 155–160 ms."
+        },
+        {
+          "kind": "ok",
+          "title": "Medição intra-frequência ativa",
+          "html": "<code>measId=1</code> (A3) e <code>measId=3</code> (A2) já estavam configurados."
+        },
+        {
+          "kind": "ok",
+          "title": "Sem falha de enlace",
+          "html": "O registro 0xB959 manteve OOS_FILT_BLER abaixo do limiar em todas as repetições."
+        },
+        {
+          "kind": "issue",
+          "title": "Log detalhado não fornecido",
+          "html": "O material inclui logs completos para os cenários 2 (DUT) e 3 (CDUT), não para este controle."
+        }
+      ],
+      "notice": "O caso descreve este cenário como controle de mesma frequência. Não há um arquivo de log detalhado anexado para ele; os valores exibidos vêm da ficha do desafio.",
+      "logPath": "",
+      "logLabel": "Sem arquivo de log detalhado para este cenário.",
+      "playbackSteps": [
+        {
+          "msg": "Início da degradação da serving · PCI 88",
+          "summary": "measId=1 (A3, hysteresis 1 dB, TTT 320 ms) e measId=3 (A2, −100 dBm, TTT 160 ms) ativos desde a primeira RRCReconfiguration; a n41 não está configurada.",
+          "offsetMs": 0
+        },
+        {
+          "msg": "Measurement Report · measId=1 (A3)",
+          "summary": "SS-RSRP/SS-RSRQ serving −101 dBm/−13 dB; vizinha PCI 101 −90 dBm/−8 dB.",
+          "offsetMs": 1180
+        },
+        {
+          "msg": "RRCReconfiguration · targetPhysCellId=101",
+          "summary": "reconfigurationWithSync sem absoluteFrequencySSB (mesma frequência), rach-ConfigDedicated presente, t304=2000 ms.",
+          "offsetMs": 1240
+        },
+        {
+          "msg": "Random Access · Msg1 (preâmbulo dedicado)",
+          "summary": "Acesso sem contenção na PCI 101.",
+          "offsetMs": 1285
+        },
+        {
+          "msg": "Random Access Response · Msg2",
+          "summary": "A PCI 101 responde ao preâmbulo dedicado.",
+          "offsetMs": 1310
+        },
+        {
+          "msg": "RRCReconfigurationComplete · sem RLF",
+          "summary": "Handover concluído 155 ms após o Report. Repetições 02 e 03: 1,312 s e 1,370 s; OOS_FILT_BLER (0xB959) sempre abaixo do limiar.",
+          "offsetMs": 1335
+        }
+      ],
+      "stepsTimed": true
+    },
+    {
+      "id": "dut-inter",
+      "number": "02 · DUT",
+      "label": "Meridian · inter-frequência",
+      "kicker": "CENÁRIO 02 · DUT",
+      "title": "Atraso no handover e Radio Link Failure",
+      "description": "Meridian · n78 PCI 88 → n41 PCI 145/160 · três repetições",
+      "status": "Falha reproduzida · 3/3",
+      "statusClass": "bad",
+      "device": "Meridian / DUT",
+      "state": "RRC_CONNECTED · RLF t310-Expiry",
+      "scene": "failure",
+      "rat": "NR · SA",
+      "network": "NovaLink / Site Delta",
+      "leftNode": "gNodeB · serving",
+      "leftCell": "n78 · NR-ARFCN 633180 · PCI 88",
+      "rightNode": "gNodeB · alvo",
+      "rightCell": "n41 · NR-ARFCN 504990 · PCI 145",
+      "axisMax": 4.2,
+      "metrics": [
+        {
+          "label": "Measurement Report A5",
+          "value": "3,660–3,730 s",
+          "note": "TTT configurado: 240 ms",
+          "tone": "warn-text"
+        },
+        {
+          "label": "Radio Link Failure",
+          "value": "3,830–3,870 s",
+          "note": "causa: t310-Expiry",
+          "tone": "bad-text"
+        },
+        {
+          "label": "1ª célula · PCI 88",
+          "value": "6 × Msg1",
+          "note": "sem resposta · critério S reprovado",
+          "tone": "bad-text"
+        },
+        {
+          "label": "Reestabelecimento",
+          "value": "4,063–4,103 s",
+          "note": "RRCReestablishmentComplete · PCI 145",
+          "tone": "warn-text"
+        }
+      ],
+      "rows": [
+        {
+          "label": "Meridian · inter",
+          "sub": "Report A5 · n41",
+          "start": 3.66,
+          "end": 3.73,
+          "final": "3,660–3,730 s",
+          "color": "failure",
+          "points": [
+            {
+              "at": 3.66,
+              "kind": "failure"
+            },
+            {
+              "at": 3.73,
+              "kind": "failure"
+            }
+          ]
+        },
+        {
+          "label": "RLF · T310",
+          "sub": "t310-Expiry",
+          "start": 3.83,
+          "end": 3.87,
+          "final": "3,830–3,870 s",
+          "color": "failure",
+          "points": [
+            {
+              "at": 3.83,
+              "kind": "failure"
+            },
+            {
+              "at": 3.87,
+              "kind": "failure"
+            }
+          ]
+        },
+        {
+          "label": "Recuperação",
+          "sub": "PCI 145 · completa",
+          "start": 4.063,
+          "end": 4.103,
+          "final": "4,063–4,103 s",
+          "color": "failure",
+          "points": [
+            {
+              "at": 4.063,
+              "kind": "failure"
+            },
+            {
+              "at": 4.103,
+              "kind": "failure"
+            }
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "issue",
+          "title": "Medição inter-frequência tardia",
+          "html": "<code>measId=2</code> (A5, TTT 240 ms) reportado somente após 3,660–3,730 s da configuração."
+        },
+        {
+          "kind": "issue",
+          "title": "RLF antes de handover concluído",
+          "html": "<code>t310-Expiry</code> ocorre 3,830–3,870 s; não há conclusão de handover no cenário."
+        },
+        {
+          "kind": "issue",
+          "title": "Tentativa na serving inadequada",
+          "html": "PCI 88 está abaixo do <code>q-RxLevMin</code>; seis Msg1 falham antes da tentativa em PCI 145."
+        },
+        {
+          "kind": "ok",
+          "title": "Recuperação na célula vizinha",
+          "html": "Em PCI 145, RRCReestablishmentRequest e Complete são registrados em todas as três repetições."
+        }
+      ],
+      "notice": "A repetição 01 do log detalhado mostra a sequência completa. O caso não traz coordenadas GPS nem sinalização entre nós (Xn/NGAP); não atribua a causa à rede com base apenas neste log UE.",
+      "logPath": "Desafio 2/Desafio_S03_Log_DUT_Meridian.html",
+      "logLabel": "Fonte: Desafio_S03_Log_DUT_Meridian.html · repetição 01 do cenário 2. O arquivo original é apresentado sem alterações.",
+      "timeReference": {
+        "idx": 38,
+        "label": "Tempo desde a MeasConfig #2"
+      }
+    },
+    {
+      "id": "cdut-solstice",
+      "number": "03 · REFERÊNCIA",
+      "label": "Solstice · inter-frequência",
+      "kicker": "CENÁRIO 03 · REFERÊNCIA",
+      "title": "Handover inter-frequência sem RLF",
+      "description": "Solstice · n78 PCI 88 → n41 PCI 145/160 · mesma rede e sequência de medição",
+      "status": "Referência aprovada · 3/3",
+      "statusClass": "good",
+      "device": "Solstice / CDUT",
+      "state": "RRC_CONNECTED · handover OK",
+      "scene": "reference",
+      "rat": "NR · SA",
+      "network": "NovaLink / Site Delta",
+      "leftNode": "gNodeB · serving",
+      "leftCell": "n78 · NR-ARFCN 633180 · PCI 88",
+      "rightNode": "gNodeB · alvo",
+      "rightCell": "n41 · NR-ARFCN 504990 · PCI 145",
+      "axisMax": 4.2,
+      "metrics": [
+        {
+          "label": "Measurement Report A5",
+          "value": "0,655–0,705 s",
+          "note": "TTT configurado: 240 ms",
+          "tone": "accent-text"
+        },
+        {
+          "label": "Handover concluído",
+          "value": "0,815–0,865 s",
+          "note": "RRCReconfigurationComplete",
+          "tone": "good-text"
+        },
+        {
+          "label": "Radio Link Failure",
+          "value": "0 / 3",
+          "note": "OOS_FILT_BLER abaixo do limiar",
+          "tone": "good-text"
+        },
+        {
+          "label": "Cadeia Report → HO",
+          "value": "≈ 160 ms",
+          "note": "mesma banda alvo n41",
+          "tone": "good-text"
+        }
+      ],
+      "rows": [
+        {
+          "label": "Solstice · inter",
+          "sub": "Report A5 · n41",
+          "start": 0.655,
+          "end": 0.705,
+          "final": "0,655–0,705 s",
+          "color": "reference",
+          "points": [
+            {
+              "at": 0.655,
+              "kind": "reference"
+            },
+            {
+              "at": 0.705,
+              "kind": "reference"
+            }
+          ]
+        },
+        {
+          "label": "Handover OK",
+          "sub": "ReconfigurationComplete",
+          "start": 0.815,
+          "end": 0.865,
+          "final": "0,815–0,865 s",
+          "color": "success",
+          "points": [
+            {
+              "at": 0.815,
+              "kind": "success"
+            },
+            {
+              "at": 0.865,
+              "kind": "success"
+            }
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "ok",
+          "title": "Mesmo cenário inter-frequência",
+          "html": "O CDUT usa o mesmo site, par de bandas e sequência de medição (A2 e A5) do cenário DUT."
+        },
+        {
+          "kind": "ok",
+          "title": "Relatório A5 seguido de handover",
+          "html": "<code>measId=2</code> é reportado entre 0,655–0,705 s; RRCReconfigurationComplete entre 0,815–0,865 s."
+        },
+        {
+          "kind": "ok",
+          "title": "Sem RLF nas repetições",
+          "html": "3/3 handovers concluídos; estatística 0xB959 permanece abaixo do limiar OOS."
+        },
+        {
+          "kind": "issue",
+          "title": "Diferença exige investigação no UE",
+          "html": "O contraste reduz a probabilidade de falha geral do site, mas não prova sozinho a causa raiz."
+        }
+      ],
+      "notice": "A comparação com o CDUT é uma evidência de controle, não uma prova de que todos os parâmetros de RF e de rede eram idênticos em cada instante.",
+      "logPath": "Desafio 2/Desafio_S03_Log_CDUT_Solstice.html",
+      "logLabel": "Fonte: Desafio_S03_Log_CDUT_Solstice.html · repetição 01 do cenário 3. O arquivo original é apresentado sem alterações.",
+      "timeReference": {
+        "idx": 38,
+        "label": "Tempo desde a MeasConfig #2"
+      }
+    }
+  ]
+}
