@@ -28,8 +28,16 @@ O objetivo é apoiar a análise investigativa dos desafios: comparar DUT × CDUT
 - **KPIs em tempo real.** Para cada evento, o painel mostra o procedimento em curso (rejeição NAS com a causa, RLF, critério S, tentativas de Msg1, handover, reestabelecimento…), a tentativa ou sequência, a célula, o PLMN/SUCI ou a medição, e o tempo.
 - **Mesma base de tempo do caso.** Quando o documento do desafio mede os tempos a partir de um evento específico (por exemplo, a *Measurement Configuration #2*), o simulador usa a mesma referência. Os valores na tela são, então, os mesmos do documento.
 - **Topologia animada.** A cena mostra as duas gNodeB/eNodeB e o UE. Uma seta indica a direção da mensagem atual: uplink, downlink ou evento interno.
+- **Evidência de medição (Desafio 2).** Um painel com quatro abas, calculado direto dos logs:
+  - **Medição e corrida:** RSRP da serving (n78) e da vizinha (n41) contra os limiares de entrada do A5, BLER filtrado contra o Qout de 10 %, os temporizadores T310/T304 e a cadência de medição da n41 sobre o padrão de gaps, com o DUT e o CDUT sobrepostos. Marcos numerados (A5 atendido, fim do TTT, out-of-sync, T310, report, RLF…) e um resumo dos fatos medidos. Clicar no gráfico leva a reprodução ao evento.
+  - **DUT × CDUT:** os três cenários no mesmo eixo de tempo, as diferenças calculadas (atraso do report, retorno do serviço, tempo gasto na PCI 88) e a tabela do caso.
+  - **Acesso aleatório:** rampa de potência de cada Msg1 contra a potência máxima, pathloss, critério S da célula e a melhor célula que o próprio UE já tinha medido.
+  - **Hipóteses e conclusão:** cada hipótese com suas evidências, que levam direto à linha do log; o aluno marca as que descarta, e a conclusão (mecanismo, limiar efetivo aparente e estatística com Fisher exato e IC 95 %) fica atrás do botão *Mostrar conclusão*.
+- **Corrida da mobilidade na cena.** Durante a reprodução, um anel em volta do UE mostra o T310 (ou o T304 no handover), e uma faixa abaixo da cena diz há quanto tempo o A5 está atendido sem report e quanto faltava do T310 quando o report saiu. Depois do RLF, a cena destaca a célula que o UE já tinha medido.
+- **Modo guiado.** Cada log do Desafio 2 tem um roteiro de pontos-chave. A reprodução pode pausar em cada um, com uma explicação curta e navegação para o ponto anterior e o seguinte.
 - **Resultado consolidado.** Métricas, faixas de tempo das repetições, evidências e avisos sobre os limites de cada fonte.
 - **Relatório de issue.** Segue a estrutura do template *Relatorio_Issue_G2.docx*, com exportação para PDF pela impressão do navegador.
+- **Glossário de siglas e códigos.** O botão **Glossário**, no topo, abre uma tabela com 99 termos (RRC, NAS, medição, RLM, RACH, códigos 0xB9xx do log do modem, estatística), com busca que ignora acentos, filtro por categoria e opção de mostrar só os termos do desafio atual.
 - **Português e inglês**, com troca de idioma sem recarregar a página.
 - **Tema claro e modo noturno**, com a escolha lembrada pelo navegador.
 - **Layout responsivo**, utilizável em celular.
@@ -81,8 +89,9 @@ Para os alunos, o projeto também pode ser publicado sem alterações em qualque
 2. Em **Reprodução passo a passo**, clique em **▶ Reproduzir** ou use **Anterior / Próximo** para avançar evento a evento.
 3. Acompanhe a cena e os **KPIs em tempo real**. A página não se move sozinha durante a reprodução; só a lista de eventos acompanha a mensagem atual.
 4. Clique numa linha do log para pausar nela. Use **Ver decodificação completa** para ler todos os IEs da mensagem.
-5. Compare com o **Resultado consolidado**, as **Faixas de tempo** das repetições e as **Evidências** do cenário.
-6. Em **Fontes e entregáveis**, abra o log original, visualize o relatório de issue ou exporte-o em PDF.
+5. No Desafio 2, ative o **Modo guiado** para a reprodução parar nos pontos-chave, e use o painel **Evidência de medição** para comparar o DUT com o CDUT. A conclusão só aparece quando o aluno clica em **Mostrar conclusão**.
+6. Compare com o **Resultado consolidado**, as **Faixas de tempo** das repetições e as **Evidências** do cenário.
+7. Em **Fontes e entregáveis**, abra o log original, visualize o relatório de issue ou exporte-o em PDF.
 
 ## Estrutura do projeto
 
@@ -97,6 +106,7 @@ Para os alunos, o projeto também pode ser publicado sem alterações em qualque
 │   ├── data.js                Carga dos desafios, logs e relatórios
 │   ├── replay.js              Motor de reprodução (sem DOM)
 │   ├── analyzer.js            Classificação dos eventos para os KPIs
+│   ├── insights.js            Evidência de medição: séries, marcos, A5, T310, RACH (sem DOM)
 │   ├── i18n.js                Textos da interface (pt-BR / en)
 │   ├── prefs.js               Preferências do usuário (tema, idioma)
 │   ├── dom.js                 Utilitários de DOM e formatação
@@ -106,11 +116,20 @@ Para os alunos, o projeto também pode ser publicado sem alterações em qualque
 │       ├── signaling.js       Seta da mensagem atual sobre a cena
 │       ├── dashboard.js       KPIs em tempo real
 │       ├── playback.js        Controles e lista de eventos
-│       └── modals.js          Log original e relatório de issue
+│       ├── race.js            Corrida A5/T310/T304 sobre a cena
+│       ├── guide.js           Modo guiado (pontos-chave do log)
+│       ├── insight.js         Painel de evidência e gráfico de medição
+│       ├── insight-common.js  Utilitários compartilhados pelas abas
+│       ├── compare.js         Aba DUT × CDUT
+│       ├── rach.js            Aba de acesso aleatório
+│       ├── hypotheses.js      Aba de hipóteses, conclusão e estatística
+│       ├── modals.js          Log original e relatório de issue
+│       └── glossary.js        Glossário de siglas e códigos
 ├── data/
 │   ├── desafios.json          Índice dos desafios e cenário inicial
 │   ├── desafio-1.json         Conteúdo do Desafio 1 (pt-BR, base)
 │   ├── desafio-2.json         Conteúdo do Desafio 2 (pt-BR, base)
+│   ├── glossario.json         Glossário: categorias e termos (pt-BR, base)
 │   ├── relatorios/            Relatórios de issue (pt-BR)
 │   └── i18n/en/               Traduções em inglês (somente textos)
 ├── Desafio 1/                 Material original do Desafio 1 (caso, logs, apresentação)
@@ -129,6 +148,7 @@ data/*.json ──► data.js ──► store.js ◄── replay.js ◄── a
 - **Dados separados do código.** Cada desafio é um arquivo JSON. Incluir um desafio novo não exige alterar o JavaScript.
 - **Estado único** (`store.js`): desafio e cenário selecionados, e o estado do replay (eventos, índice, reproduzindo/pausado, mensagem). As telas apenas leem o estado e se redesenham quando ele muda.
 - **Motor de replay** (`replay.js`): carrega os eventos, controla o temporizador e a velocidade e publica o estado. Não manipula o DOM. Intervalos longos sem mensagens no log (acima de 2 s) são comprimidos na reprodução, com aviso na tela.
+- **Evidência de medição** (`insights.js`): a partir dos eventos do log, extrai as séries de RSRP por camada, o BLER, o instante em que a condição de entrada do A5 passa a valer (TS 38.331, com a hysteresis), o report, o RLF, o início do T310 (inferido como RLF − T310, porque o log não registra esse instante), as tentativas de RACH e a cadência de medição. As mesmas funções alimentam o gráfico, a corrida na cena e as comparações.
 - **Analisador** (`analyzer.js`): classifica cada evento uma única vez, no carregamento, a partir do nome da mensagem e do resumo. A decodificação completa não é usada para classificar, porque contém termos incidentais (por exemplo, `Purpose : RLF` nas estatísticas de RLM) que gerariam rótulos falsos.
 - **Sem build e sem dependências externas.** HTML, CSS e módulos ES nativos.
 
@@ -150,6 +170,9 @@ data/*.json ──► data.js ──► store.js ◄── replay.js ◄── a
 | `sideInfo`, `materials` | Resumo da barra lateral e links para o material do aluno |
 | `report.title`, `report.template` | Título e arquivo do relatório de issue |
 | `scenarios` | Lista de cenários (tabela abaixo) |
+| `insights` | Opcional. Ativa o painel de evidência: camadas `serving`/`target` (`arfcn`, `pci`, `band`), `a5` (`measId`, `threshold1`, `threshold2`, `hysteresis`, `tttMs`, `apparentThreshold2`), `rlm` (`outOfSyncBler`, `t310Ms`), `gap` (`mgrpMs`, `mglMs`) e `pair` = `[id do DUT, id do CDUT]` |
+| `comparison` | Linhas da tabela DUT × CDUT do caso e `counts` de RLF (`{ "dut": [3, 3], "cdut": [0, 3] }`) para o teste de Fisher |
+| `hypotheses`, `conclusion` | Hipóteses com evidências (`links` para `{ scenario, idx }`), vereditos e a conclusão mostrada sob demanda |
 
 ### Campos de um cenário
 
@@ -163,7 +186,12 @@ data/*.json ──► data.js ──► store.js ◄── replay.js ◄── a
 | `logPath`, `logLabel` | Log original a reproduzir e sua descrição |
 | `timeReference` | `{ "idx": 38, "label": "…" }`: evento do log usado como T 0, igual ao documento do caso |
 | `playbackSteps` | Etapas resumidas (`msg`, `summary`, `offsetMs`), usadas quando **não há** log. Se existir log, prefira `logPath`. |
+| `guide` | Roteiro do modo guiado: `[{ "idx": 54, "title": "…", "text": "…" }]`, com `idx` = número da linha no log |
 | `stepsTimed` | `true` quando os `offsetMs` são horários reais informados no caso, não uma cadência didática |
+
+### Glossário
+
+`data/glossario.json` tem `categories` (`id`, `label`) e `terms` (`id`, `term`, `category`, `challenges`, `name`, `description`). O campo `challenges` lista os desafios em que o termo aparece (`"desafio-1"`, `"desafio-2"`) e alimenta o filtro "Só termos do desafio". A tradução em `data/i18n/en/glossario.json` traz apenas os textos, indexados pelo `id`.
 
 ### Formato dos logs
 

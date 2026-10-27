@@ -19,6 +19,7 @@
       <div class="brand"><span class="brand-mark">◈</span><span>FIELDTESTLAB <small data-i18n="brand.sub">/ MOBILIDADE 5G</small></span></div>
       <div class="top-meta">
         <span class="top-site"><i class="live-dot"></i><span data-i18n="top.site">NovaLink · Site Delta</span></span>
+        <button class="top-button" id="open-glossary" type="button" aria-haspopup="dialog"><span aria-hidden="true">Aa</span> <span data-i18n="glossary.open">Glossário</span></button>
         <div class="lang-switch" id="lang-switch" role="group" data-i18n-aria-label="lang.label">
           <button type="button" data-lang="pt-BR" aria-pressed="true">PT</button>
           <button type="button" data-lang="en" aria-pressed="false">EN</button>
@@ -59,6 +60,7 @@
           <div class="scene" data-i18n-aria-label="scene.aria">
             <svg class="scene-art" id="scene-art" aria-hidden="true"></svg>
             <svg class="signaling-overlay" id="signaling-overlay" aria-hidden="true"></svg>
+            <svg class="race-overlay" id="race-overlay" aria-hidden="true"></svg>
             <div class="signal-event-chip" id="signal-event-chip" role="status" aria-live="polite">
               <span class="signal-direction" id="signal-direction"></span>
               <strong id="signal-protocol">—</strong>
@@ -69,6 +71,8 @@
             <div class="scene-label label-phone">UE · <span id="scene-device"></span><small id="scene-state"></small></div>
             <div class="scene-label label-right"><span id="scene-right-node"></span><small id="scene-right-cell"></small></div>
           </div>
+          <div class="race-strip" id="race-strip" hidden></div>
+          <div class="guide-callout" id="guide-callout" aria-live="polite" hidden></div>
           <div class="signal-legend">
             <span><strong class="legend-ul">↑ UL</strong> <span data-i18n="legend.ul"></span></span>
             <span><strong class="legend-dl">↓ DL</strong> <span data-i18n="legend.dl"></span></span>
@@ -92,6 +96,14 @@
           <div class="metric-grid" id="metrics"></div>
         </section>
 
+        <section class="panel insight-panel" id="insight-panel" aria-labelledby="insight-title" hidden>
+          <div class="section-head">
+            <div><div class="eyebrow" data-i18n="insight.eyebrow"></div><h3 id="insight-title" data-i18n="insight.title"></h3></div>
+            <div class="insight-tabs" id="insight-tabs" role="tablist" data-i18n-aria-label="insight.tabsAria"></div>
+          </div>
+          <div id="insight-body"></div>
+        </section>
+
         <section class="panel playback-panel" aria-labelledby="playback-title">
           <div class="playback-head">
             <div><div class="eyebrow" data-i18n="play.eyebrow"></div><h3 id="playback-title" data-i18n="play.title"></h3></div>
@@ -104,6 +116,7 @@
             <button class="button quiet" id="play-restart" type="button" data-i18n="play.restart"></button>
             <label class="eyebrow" for="play-speed" data-i18n="play.speed"></label>
             <select id="play-speed" data-i18n-aria-label="play.speedAria"></select>
+            <label class="guide-toggle" id="guide-toggle-wrap" hidden><input type="checkbox" id="guide-toggle"> <span data-i18n="guide.toggle"></span></label>
             <div class="playback-progress" role="progressbar" data-i18n-aria-label="play.progressAria" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="play-progress"></span></div>
             <span class="playback-count" id="play-count">0 / 0</span>
           </div>
@@ -155,6 +168,17 @@
     <div class="modal-card">
       <div class="modal-head"><div><h2 id="report-modal-title"></h2><span data-i18n="modal.reportSubtitle"></span></div><button class="button quiet" type="button" data-close="report-modal" data-i18n="modal.close"></button></div>
       <div class="report-scroll"><article class="report-page" id="report-content"></article></div>
+    </div>
+  </div>
+  <div class="modal" id="glossary-modal" role="dialog" aria-modal="true" aria-labelledby="glossary-title">
+    <div class="modal-card glossary-card">
+      <div class="modal-head"><div><h2 id="glossary-title" data-i18n="glossary.title"></h2><span id="glossary-count"></span></div><button class="button quiet" type="button" data-close="glossary-modal" data-i18n="modal.close"></button></div>
+      <div class="glossary-controls">
+        <input class="glossary-search" id="glossary-search" type="search" autocomplete="off" data-i18n-placeholder="glossary.search" data-i18n-aria-label="glossary.searchAria">
+        <label class="insight-check"><input type="checkbox" id="glossary-only"><span id="glossary-only-label"></span></label>
+        <div class="glossary-chips" id="glossary-categories" role="group" data-i18n-aria-label="glossary.categoriesAria"></div>
+      </div>
+      <div class="glossary-body" id="glossary-body"></div>
     </div>
   </div>
   <script>
