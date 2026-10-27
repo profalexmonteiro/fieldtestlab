@@ -16,7 +16,8 @@ export const initialReplay = {
 
 // Replay engine: owns the timer and the async log load, and publishes its
 // state in store.replay. It never touches the DOM.
-export function createReplay(store, { getSpeed }) {
+// `getStops(events)` returns the event indices where guided mode pauses.
+export function createReplay(store, { getSpeed, getStops = () => new Set() }) {
   let scenario = null;
   let timer = null;
   let loadAbort = null;
@@ -93,6 +94,10 @@ export function createReplay(store, { getSpeed }) {
         update({ index: next, playing: false, message: t("replay.doneHint") });
         return;
       }
+      if (getStops(replay().events).has(next)) {
+        update({ index: next, playing: false, message: t("replay.guideStop", { index: next + 1, total: replay().events.length }) });
+        return;
+      }
       update(compressed ? { index: next, message: playingMessage() } : { index: next });
       scheduleNext();
     }, delay);
@@ -141,6 +146,19 @@ export function createReplay(store, { getSpeed }) {
     update({ index, playing: false, message: t("replay.paused", { index: index + 1, total: replay().events.length }) });
   }
 
+  // Loads the log if needed and pauses on the event with log number `idx`.
+  async function jumpTo(idx) {
+    pause();
+    try {
+      if (!(await ensureLoaded())) return;
+    } catch (error) {
+      update({ message: t("replay.stepError", { error: error.message }) });
+      return;
+    }
+    const index = replay().events.findIndex((event) => Number(event.idx) === Number(idx));
+    if (index >= 0) seek(index);
+  }
+
   function restart() {
     clearTimer();
     update({
@@ -152,5 +170,5 @@ export function createReplay(store, { getSpeed }) {
     });
   }
 
-  return { reset, toggle, step, seek, restart };
+  return { reset, toggle, step, seek, jumpTo, restart };
 }

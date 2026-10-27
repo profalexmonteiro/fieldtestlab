@@ -52,13 +52,37 @@ function parseLogTimestamp(value) {
 // Reading them directly keeps the published logs as the single source.
 // `timeReference.idx` names the log event the case measures its times from
 // (e.g. Measurement Configuration #2 = T 0); events then carry `refTimeMs`.
-async function loadLogFile(path, signal, timeReference) {
-  const text = await (await fetchOk(path, { signal })).text();
+// Parsed logs are cached by path: the replay and the measurement views read
+// the same files, and a log is several hundred kB.
+const logCache = new Map();
+
+async function fetchLogEntries(path) {
+  const text = await (await fetchOk(path)).text();
   const doc = new DOMParser().parseFromString(text, "text/html");
   const dataElement = doc.querySelector("#log-data");
   if (!dataElement) throw new Error(t("data.noLogData", { path }));
   const data = JSON.parse(dataElement.textContent);
   if (!Array.isArray(data) || data.length === 0) throw new Error(t("data.emptyLog", { path }));
+  return data;
+}
+
+function cachedLogEntries(path) {
+  if (!logCache.has(path)) {
+    const pending = fetchLogEntries(path);
+    pending.catch(() => logCache.delete(path));
+    logCache.set(path, pending);
+  }
+  return logCache.get(path);
+}
+
+const abortable = (promise, signal) => !signal ? promise : new Promise((resolve, reject) => {
+  if (signal.aborted) return reject(new DOMException("Aborted", "AbortError"));
+  signal.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")), { once: true });
+  promise.then(resolve, reject);
+});
+
+export async function loadLogFile(path, signal, timeReference) {
+  const data = await abortable(cachedLogEntries(path), signal);
   const start = parseLogTimestamp(data[0].ts);
   const referenceEntry = timeReference && data.find((entry) => Number(entry.idx) === timeReference.idx);
   const reference = referenceEntry ? parseLogTimestamp(referenceEntry.ts) : NaN;
@@ -101,3 +125,6 @@ export async function loadReport(challenge) {
   const template = await (await fetchOk(challenge.report.template)).text();
   return template.replaceAll("{{data}}", date);
 }
+
+// Glossary of acronyms and log codes: same pt-BR base + overlay layout as the challenges.
+export const loadGlossary = (lang = getLang()) => loadChallenge("data/glossario.json", lang);

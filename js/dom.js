@@ -26,3 +26,10 @@ export function svgEl(name, attributes = {}) {
 
 export const formatSeconds = (value, minimumFractionDigits = 2) =>
   value.toLocaleString(getLang(), { minimumFractionDigits, maximumFractionDigits: 3 });
+
+// "+0,917 s" / "−0,060 s": a time relative to the scenario's reference event.
+export const signedSeconds = (ms) => `${ms < 0 ? "−" : "+"}${formatSeconds(Math.abs(ms) / 1000, 3)} s`;
+
+// Locale number with a typographic minus ("−92,8"), for dBm and dB values.
+export const formatNumber = (value, maximumFractionDigits = 1) =>
+  value.toLocaleString(getLang(), { maximumFractionDigits }).replace("-", "−");
