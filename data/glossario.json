@@ -1,0 +1,1054 @@
+{
+  "categories": [
+    {
+      "id": "rede",
+      "label": "Rede e identificadores"
+    },
+    {
+      "id": "rrc",
+      "label": "RRC e informação de sistema"
+    },
+    {
+      "id": "nas",
+      "label": "NAS e registro"
+    },
+    {
+      "id": "medicao",
+      "label": "Medição e mobilidade"
+    },
+    {
+      "id": "enlace",
+      "label": "Enlace de rádio e temporizadores"
+    },
+    {
+      "id": "acesso",
+      "label": "Acesso aleatório"
+    },
+    {
+      "id": "log",
+      "label": "Códigos do log do modem"
+    },
+    {
+      "id": "teste",
+      "label": "Teste de campo e estatística"
+    }
+  ],
+  "terms": [
+    {
+      "id": "5g-sa",
+      "term": "5G SA",
+      "category": "rede",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "5G Standalone",
+      "description": "5G com núcleo próprio (5GC), sem depender de uma âncora LTE. É o modo avaliado nos dois desafios."
+    },
+    {
+      "id": "nr",
+      "term": "NR",
+      "category": "rede",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "New Radio",
+      "description": "Interface aérea do 5G definida pelo 3GPP."
+    },
+    {
+      "id": "lte",
+      "term": "LTE",
+      "category": "rede",
+      "challenges": [
+        "desafio-1"
+      ],
+      "name": "Long Term Evolution",
+      "description": "Tecnologia de acesso 4G. No Desafio 1 é o cenário de controle."
+    },
+    {
+      "id": "rat",
+      "term": "RAT",
+      "category": "rede",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "Radio Access Technology",
+      "description": "Tecnologia de acesso rádio (por exemplo NR ou LTE)."
+    },
+    {
+      "id": "ue",
+      "term": "UE",
+      "category": "rede",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "User Equipment",
+      "description": "O aparelho do usuário: aqui, o smartphone sob teste."
+    },
+    {
+      "id": "gnb",
+      "term": "gNB / gNodeB",
+      "category": "rede",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "Next Generation NodeB",
+      "description": "Estação rádio base do 5G NR."
+    },
+    {
+      "id": "enb",
+      "term": "eNB / eNodeB",
+      "category": "rede",
+      "challenges": [
+        "desafio-1"
+      ],
+      "name": "Evolved NodeB",
+      "description": "Estação rádio base do LTE."
+    },
+    {
+      "id": "5gc",
+      "term": "5GC",
+      "category": "rede",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "5G Core",
+      "description": "Núcleo da rede 5G. Recebe a sinalização NAS do UE."
+    },
+    {
+      "id": "amf",
+      "term": "AMF",
+      "category": "rede",
+      "challenges": [
+        "desafio-1"
+      ],
+      "name": "Access and Mobility Management Function",
+      "description": "Função do 5GC que trata registro, autenticação e mobilidade do UE (destino das mensagens NAS)."
+    },
+    {
+      "id": "plmn",
+      "term": "PLMN",
+      "category": "rede",
+      "challenges": [
+        "desafio-1"
+      ],
+      "name": "Public Land Mobile Network",
+      "description": "A rede de uma operadora, identificada por MCC/MNC (por exemplo 724/085)."
+    },
+    {
+      "id": "mcc-mnc",
+      "term": "MCC / MNC",
+      "category": "rede",
+      "challenges": [
+        "desafio-1"
+      ],
+      "name": "Mobile Country Code / Mobile Network Code",
+      "description": "Código do país (724 = Brasil) e da operadora. Juntos formam o identificador da PLMN."
+    },
+    {
+      "id": "supi",
+      "term": "SUPI",
+      "category": "rede",
+      "challenges": [
+        "desafio-1"
+      ],
+      "name": "Subscription Permanent Identifier",
+      "description": "Identidade permanente do assinante no 5G (equivalente ao IMSI). Nunca é enviada em claro."
+    },
+    {
+      "id": "suci",
+      "term": "SUCI",
+      "category": "rede",
+      "challenges": [
+        "desafio-1"
+      ],
+      "name": "Subscription Concealed Identifier",
+      "description": "SUPI cifrado enviado no Registration Request. Traz o Home-Network-Id (MCC/MNC da operadora do SIM) em claro, o que permite ver qual perfil o UE usou."
+    },
+    {
+      "id": "msin",
+      "term": "MSIN",
+      "category": "rede",
+      "challenges": [
+        "desafio-1"
+      ],
+      "name": "Mobile Subscription Identification Number",
+      "description": "Parte do identificador do assinante que vem depois do MCC/MNC."
+    },
+    {
+      "id": "guti",
+      "term": "5G-GUTI",
+      "category": "rede",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "5G Globally Unique Temporary Identifier",
+      "description": "Identidade temporária atribuída pela rede no Registration Accept, usada no lugar do SUCI nos acessos seguintes."
+    },
+    {
+      "id": "tac",
+      "term": "TAC",
+      "category": "rede",
+      "challenges": [
+        "desafio-1"
+      ],
+      "name": "Tracking Area Code",
+      "description": "Código da área de rastreamento, divulgado na SIB1."
+    },
+    {
+      "id": "pci",
+      "term": "PCI",
+      "category": "rede",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "Physical Cell Identity",
+      "description": "Identificador físico da célula (0 a 1007 no NR). Ex.: PCI 88 (serving) e PCI 145 (vizinha n41)."
+    },
+    {
+      "id": "nr-arfcn",
+      "term": "NR-ARFCN",
+      "category": "rede",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "NR Absolute Radio Frequency Channel Number",
+      "description": "Número que identifica a frequência da portadora. 633180 = 3497,7 MHz (n78); 504990 = 2524,95 MHz (n41)."
+    },
+    {
+      "id": "n78-n41",
+      "term": "n78 / n41",
+      "category": "rede",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Bandas NR",
+      "description": "n78: 3,3–3,8 GHz (TDD). n41: 2,496–2,690 GHz (TDD). Trocar de uma para a outra é um handover inter-frequência."
+    },
+    {
+      "id": "pdu",
+      "term": "PDU Session",
+      "category": "rede",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Protocol Data Unit Session",
+      "description": "Sessão de dados entre o UE e uma rede de dados (DNN). É o que mantém o serviço ativo durante a mobilidade."
+    },
+    {
+      "id": "dnn",
+      "term": "DNN",
+      "category": "rede",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Data Network Name",
+      "description": "Nome da rede de dados da sessão (equivalente ao APN do LTE). Ex.: internet.novalink."
+    },
+    {
+      "id": "nssai",
+      "term": "NSSAI",
+      "category": "rede",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Network Slice Selection Assistance Information",
+      "description": "Lista de fatias de rede (slices) permitidas, enviada no Registration Accept."
+    },
+    {
+      "id": "drb-srb",
+      "term": "DRB / SRB",
+      "category": "rede",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "Data / Signalling Radio Bearer",
+      "description": "Portadoras de rádio: SRB transporta sinalização (RRC/NAS); DRB transporta os dados do usuário."
+    },
+    {
+      "id": "xn-ngap",
+      "term": "Xn / NGAP",
+      "category": "rede",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Interfaces entre nós de rede",
+      "description": "Xn liga gNBs entre si; NGAP é o protocolo entre gNB e AMF. Não aparecem no log do UE, por isso o caso pede traces de rede."
+    },
+    {
+      "id": "rrc",
+      "term": "RRC",
+      "category": "rrc",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "Radio Resource Control",
+      "description": "Protocolo de controle entre UE e gNB (TS 38.331): conexão, medição, handover e reestabelecimento."
+    },
+    {
+      "id": "rrc-states",
+      "term": "RRC_IDLE / RRC_CONNECTED",
+      "category": "rrc",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "Estados RRC",
+      "description": "Em IDLE o UE apenas acampa numa célula e faz reseleção; em CONNECTED tem conexão ativa e a mobilidade é comandada pela rede (handover)."
+    },
+    {
+      "id": "mib",
+      "term": "MIB",
+      "category": "rrc",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "Master Information Block",
+      "description": "Primeira informação de sistema lida da célula: SFN e se a célula está barrada (cellBarred)."
+    },
+    {
+      "id": "sib",
+      "term": "SIB / SIB1",
+      "category": "rrc",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "System Information Block",
+      "description": "Blocos de informação de sistema. A SIB1 traz PLMN, TAC, identidade da célula, parâmetros de seleção (q-RxLevMin) e a configuração comum de RACH."
+    },
+    {
+      "id": "rrcsetup",
+      "term": "RRCSetup",
+      "category": "rrc",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "Estabelecimento da conexão RRC",
+      "description": "Sequência RRCSetupRequest → RRCSetup → RRCSetupComplete que leva o UE a RRC_CONNECTED. No Desafio 2, o RRCSetup traz N310/T310."
+    },
+    {
+      "id": "rrcreconfig",
+      "term": "RRCReconfiguration",
+      "category": "rrc",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Reconfiguração RRC",
+      "description": "Mensagem que altera a conexão: adiciona portadoras, envia measConfig ou, com reconfigurationWithSync, comanda um handover."
+    },
+    {
+      "id": "rwsync",
+      "term": "reconfigurationWithSync",
+      "category": "rrc",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Comando de handover",
+      "description": "IE da RRCReconfiguration que manda o UE sincronizar e acessar a célula alvo. Inicia o T304 e para o T310."
+    },
+    {
+      "id": "rrcreest",
+      "term": "RRCReestablishment",
+      "category": "rrc",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Reestabelecimento RRC",
+      "description": "Recuperação da conexão após um RLF: Request → RRCReestablishment → Complete, numa célula que passe no critério S."
+    },
+    {
+      "id": "rrcrelease",
+      "term": "RRCRelease",
+      "category": "rrc",
+      "challenges": [
+        "desafio-1"
+      ],
+      "name": "Liberação da conexão RRC",
+      "description": "A rede encerra a conexão e o UE volta a RRC_IDLE. No Desafio 1 vem logo após cada Registration Reject."
+    },
+    {
+      "id": "ie",
+      "term": "IE",
+      "category": "rrc",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "Information Element",
+      "description": "Campo de uma mensagem de sinalização (por exemplo measId, t304, physCellId)."
+    },
+    {
+      "id": "nas",
+      "term": "NAS",
+      "category": "nas",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "Non-Access Stratum",
+      "description": "Sinalização entre UE e núcleo (AMF): registro, autenticação, segurança e sessão. Viaja dentro do RRC (DL/ULInformationTransfer)."
+    },
+    {
+      "id": "5gmm",
+      "term": "5GMM",
+      "category": "nas",
+      "challenges": [
+        "desafio-1"
+      ],
+      "name": "5G Mobility Management",
+      "description": "Subcamada NAS de registro e mobilidade. Um Registration Reject traz um 5GMM cause."
+    },
+    {
+      "id": "cause3",
+      "term": "5GMM cause #3",
+      "category": "nas",
+      "challenges": [
+        "desafio-1"
+      ],
+      "name": "Illegal UE",
+      "description": "A rede considera o UE/assinatura inválido. O UE passa a tratar o SIM como inválido para 5GS até ser desligado ou o cartão ser trocado."
+    },
+    {
+      "id": "cause11",
+      "term": "5GMM cause #11",
+      "category": "nas",
+      "challenges": [
+        "desafio-1"
+      ],
+      "name": "PLMN not allowed",
+      "description": "O assinante não pode usar aquela PLMN. O UE a coloca na lista de PLMNs proibidas e faz nova seleção de rede."
+    },
+    {
+      "id": "registration",
+      "term": "Registration",
+      "category": "nas",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "Registro 5G",
+      "description": "Request → (Authentication, Security Mode) → Accept → Complete. Equivale ao Attach do LTE."
+    },
+    {
+      "id": "attach",
+      "term": "Attach",
+      "category": "nas",
+      "challenges": [
+        "desafio-1"
+      ],
+      "name": "Registro no LTE",
+      "description": "Procedimento LTE equivalente ao registro 5G."
+    },
+    {
+      "id": "auth",
+      "term": "RAND / AUTN / RES*",
+      "category": "nas",
+      "challenges": [
+        "desafio-1"
+      ],
+      "name": "Autenticação 5G-AKA",
+      "description": "A rede envia RAND e AUTN; o SIM verifica a rede e devolve RES*, provando a identidade do assinante."
+    },
+    {
+      "id": "ngksi",
+      "term": "ngKSI",
+      "category": "nas",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "Key Set Identifier",
+      "description": "Identificador do conjunto de chaves de segurança NAS em uso."
+    },
+    {
+      "id": "nea-nia",
+      "term": "NEA2 / NIA2",
+      "category": "nas",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "Algoritmos de cifra e integridade",
+      "description": "Algoritmos baseados em AES-128 escolhidos no Security Mode Command: NEA2 cifra, NIA2 protege a integridade."
+    },
+    {
+      "id": "rsrp",
+      "term": "RSRP / SS-RSRP",
+      "category": "medicao",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Reference Signal Received Power",
+      "description": "Potência média recebida dos sinais de referência (no NR, do SSB), em dBm. É a principal medida de nível de sinal."
+    },
+    {
+      "id": "rsrq",
+      "term": "RSRQ",
+      "category": "medicao",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Reference Signal Received Quality",
+      "description": "Qualidade do sinal em dB, considerando a interferência e a carga."
+    },
+    {
+      "id": "sinr",
+      "term": "SINR",
+      "category": "medicao",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Signal to Interference plus Noise Ratio",
+      "description": "Relação sinal/(interferência + ruído), em dB. No report tardio do DUT a serving estava em −12 dB."
+    },
+    {
+      "id": "ssb",
+      "term": "SSB",
+      "category": "medicao",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "SS/PBCH Block",
+      "description": "Bloco com PSS, SSS e PBCH (MIB) transmitido periodicamente. É o que o UE mede para RSRP/RSRQ."
+    },
+    {
+      "id": "serving-neighbour",
+      "term": "Serving / vizinha",
+      "category": "medicao",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Célula servidora e célula vizinha",
+      "description": "Serving é a célula que atende o UE; vizinha é a candidata a handover."
+    },
+    {
+      "id": "measconfig",
+      "term": "measConfig",
+      "category": "medicao",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Measurement Configuration",
+      "description": "Configuração de medição enviada na RRCReconfiguration: objetos (MO), critérios de report, measIds e gaps. A MeasConfig #2 é o T 0 do Desafio 2."
+    },
+    {
+      "id": "measid",
+      "term": "measId / MO / reportConfigId",
+      "category": "medicao",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Identificadores de medição",
+      "description": "Um measId liga um objeto de medição (MO, uma frequência) a um reportConfig (o evento). Ex.: measId=2 = n41 + A5."
+    },
+    {
+      "id": "mr",
+      "term": "Measurement Report",
+      "category": "medicao",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Relatório de medição",
+      "description": "Mensagem do UE informando que um evento (A2, A3, A5…) foi atendido. É o gatilho para a rede decidir o handover."
+    },
+    {
+      "id": "a2",
+      "term": "Evento A2",
+      "category": "medicao",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Serving abaixo de um limiar",
+      "description": "Entra quando Ms + Hys < Thresh. Avisa a rede que a serving está degradando; no Desafio 2 dispara a MeasConfig #2."
+    },
+    {
+      "id": "a3",
+      "term": "Evento A3",
+      "category": "medicao",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Vizinha melhor que a serving por um offset",
+      "description": "Entra quando Mn + Ofn + Ocn − Hys > Mp + Ofp + Ocp + Off. Usado no handover intra-frequência (cenário 1)."
+    },
+    {
+      "id": "a5",
+      "term": "Evento A5",
+      "category": "medicao",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Serving pior que Thresh1 e vizinha melhor que Thresh2",
+      "description": "Entra quando Mp + Hys < Thresh1 e Mn − Hys > Thresh2. No Desafio 2: serving < −107 dBm e vizinha > −99 dBm (−106/−100 com hysteresis de 1 dB)."
+    },
+    {
+      "id": "hys",
+      "term": "Hysteresis (Hys)",
+      "category": "medicao",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Histerese",
+      "description": "Margem que evita disparos repetidos perto do limiar. O IE vale 0,5 dB por unidade: hysteresis = 2 → 1 dB."
+    },
+    {
+      "id": "ttt",
+      "term": "TTT",
+      "category": "medicao",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Time To Trigger",
+      "description": "Tempo durante o qual a condição de entrada precisa se manter antes de o report sair (240 ms no A5 do Desafio 2)."
+    },
+    {
+      "id": "l3filter",
+      "term": "Filtro L3",
+      "category": "medicao",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Filtragem de camada 3",
+      "description": "Média exponencial das medições: Fn = (1 − a)·Fn−1 + a·Mn. Os eventos são avaliados sobre o valor filtrado."
+    },
+    {
+      "id": "gap",
+      "term": "Measurement gap (MGL / MGRP)",
+      "category": "medicao",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Intervalo de medição",
+      "description": "Janelas em que o UE para de servir a célula atual para medir outra frequência. MGL = duração (6 ms); MGRP = período (40 ms); gapOffset = posição."
+    },
+    {
+      "id": "smtc",
+      "term": "SMTC",
+      "category": "medicao",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "SSB-based Measurement Timing Configuration",
+      "description": "Janela em que o UE deve procurar os SSBs da frequência medida (periodicidade 20 ms, offset 10 na n41)."
+    },
+    {
+      "id": "ho",
+      "term": "HO",
+      "category": "medicao",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Handover",
+      "description": "Troca da célula servidora em RRC_CONNECTED, comandada pela rede. Intra-frequência: mesma portadora; inter-frequência: outra portadora (n78 → n41)."
+    },
+    {
+      "id": "s-criterion",
+      "term": "Critério S (Srxlev / Squal)",
+      "category": "medicao",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Critério de seleção de célula",
+      "description": "Uma célula só é adequada (suitable) se Srxlev > 0 e Squal > 0 (TS 38.304). Srxlev ≈ RSRP medido − q-RxLevMin."
+    },
+    {
+      "id": "qrxlevmin",
+      "term": "q-RxLevMin / q-QualMin",
+      "category": "medicao",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Nível e qualidade mínimos",
+      "description": "Limiares da SIB1 para o critério S. O IE de nível vale 2 dBm por unidade (−59 → −118 dBm). A PCI 88 a −120,8 dBm fica abaixo."
+    },
+    {
+      "id": "cell-reselection",
+      "term": "Seleção / reseleção de célula",
+      "category": "medicao",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Escolha da célula pelo UE",
+      "description": "Processo em que o próprio UE escolhe uma célula adequada (em IDLE ou no reestabelecimento). Diferente do handover, que é comandado pela rede."
+    },
+    {
+      "id": "rlm",
+      "term": "RLM",
+      "category": "enlace",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Radio Link Monitoring",
+      "description": "Monitoração contínua do enlace pelo UE, comparando o BLER estimado com Qout/Qin e gerando indicações de out-of-sync/in-sync."
+    },
+    {
+      "id": "rlf",
+      "term": "RLF",
+      "category": "enlace",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Radio Link Failure",
+      "description": "Falha declarada pelo UE quando o enlace é perdido (por exemplo, T310 expira). Leva ao reestabelecimento."
+    },
+    {
+      "id": "bler",
+      "term": "BLER",
+      "category": "enlace",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Block Error Rate",
+      "description": "Taxa de erro de bloco. No RLM é a de um PDCCH hipotético, filtrada (OOS_FILT_BLER / IS_FILT_BLER)."
+    },
+    {
+      "id": "qout-qin",
+      "term": "Qout / Qin (OOS / IS)",
+      "category": "enlace",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Limiares de out-of-sync e in-sync",
+      "description": "Qout = 10 % de BLER (fora de sincronismo); Qin = 2 % (em sincronismo). No log: Outsync/Insync_Threshold_q24."
+    },
+    {
+      "id": "n310",
+      "term": "N310 / N311",
+      "category": "enlace",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Contadores de RLM",
+      "description": "N310 indicações consecutivas de out-of-sync iniciam o T310; N311 indicações de in-sync o param. No Desafio 2: N310 = 4, N311 = 1."
+    },
+    {
+      "id": "t310",
+      "term": "T310",
+      "category": "enlace",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Temporizador de falha de enlace",
+      "description": "Corre enquanto o enlace está fora de sincronismo. Para com N311 in-sync ou com um comando de handover; se expirar, o UE declara RLF (2000 ms no Desafio 2)."
+    },
+    {
+      "id": "t311",
+      "term": "T311",
+      "category": "enlace",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Temporizador do reestabelecimento",
+      "description": "Inicia no reestabelecimento e para quando o UE encontra uma célula adequada. Se expirar, o UE vai para IDLE (10000 ms)."
+    },
+    {
+      "id": "t304",
+      "term": "T304",
+      "category": "enlace",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Temporizador do handover",
+      "description": "Inicia com o reconfigurationWithSync e para quando o acesso à célula alvo termina. Se expirar, o handover falhou (2000 ms)."
+    },
+    {
+      "id": "rach",
+      "term": "RACH / RA",
+      "category": "acesso",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "Random Access (Channel)",
+      "description": "Procedimento de acesso aleatório usado para conectar, reestabelecer ou entrar na célula alvo do handover."
+    },
+    {
+      "id": "prach",
+      "term": "PRACH",
+      "category": "acesso",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Physical Random Access Channel",
+      "description": "Canal físico em que o UE transmite o preâmbulo (Msg1)."
+    },
+    {
+      "id": "msg1-4",
+      "term": "Msg1 · Msg2 · Msg3 · Msg4",
+      "category": "acesso",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Mensagens do acesso aleatório",
+      "description": "Msg1 = preâmbulo; Msg2 = RAR; Msg3 = primeira mensagem do UE (por exemplo RRCReestablishmentRequest); Msg4 = resolução de contenção."
+    },
+    {
+      "id": "rar",
+      "term": "RAR",
+      "category": "acesso",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Random Access Response",
+      "description": "Resposta da gNB ao preâmbulo (Msg2). Se não chega na janela, a tentativa falha (FAILURE_MSG2_RA_TIMER_EXP)."
+    },
+    {
+      "id": "cfra-cbra",
+      "term": "CFRA / CBRA",
+      "category": "acesso",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Contention-Free / Contention-Based Random Access",
+      "description": "CFRA usa um preâmbulo dedicado enviado no comando de handover (sem disputa); CBRA usa um preâmbulo sorteado e precisa de resolução de contenção."
+    },
+    {
+      "id": "rach-params",
+      "term": "preambleTransMax · powerRampingStep · ra-ResponseWindow",
+      "category": "acesso",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Parâmetros de RACH (RACH-ConfigCommon)",
+      "description": "Máximo de tentativas (6), aumento de potência por tentativa (4 dB) e janela de espera do RAR (sl20 = 10 ms a 30 kHz)."
+    },
+    {
+      "id": "target-power",
+      "term": "preambleReceivedTargetPower",
+      "category": "acesso",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Potência-alvo do preâmbulo",
+      "description": "Potência com que a gNB espera receber o 1º preâmbulo (−130 dBm). O alvo sobe powerRampingStep a cada tentativa."
+    },
+    {
+      "id": "pathloss",
+      "term": "Pathloss (PL)",
+      "category": "acesso",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Perda de percurso",
+      "description": "Atenuação entre gNB e UE, estimada pelo UE a partir do RSRP. Tx do PRACH = min(Pcmax, alvo + PL)."
+    },
+    {
+      "id": "pcmax",
+      "term": "Pcmax / mtpl",
+      "category": "acesso",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Potência máxima do UE",
+      "description": "Teto de potência de transmissão do UE (25 dBm no log). Quando a rampa o atinge, as tentativas seguintes não ganham mais potência."
+    },
+    {
+      "id": "ml1",
+      "term": "ML1",
+      "category": "log",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Modem Layer 1",
+      "description": "Camada física do modem do chipset. Os registros ML1 mostram medições, buscas de célula e RLM."
+    },
+    {
+      "id": "b959",
+      "term": "0xB959",
+      "category": "log",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "NR5G ML1 RLM Stats",
+      "description": "Estatística do RLM: OOS_FILT_BLER e IS_FILT_BLER a cada avaliação, com os limiares Outsync/Insync."
+    },
+    {
+      "id": "b97f",
+      "term": "0xB97F",
+      "category": "log",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "NR5G ML1 Searcher Measurement Database Update Ext",
+      "description": "Atualização das medições por célula (SFN, RSRP/RSRQ). É onde se vê a cadência e o nível da n41."
+    },
+    {
+      "id": "b96d",
+      "term": "0xB96D",
+      "category": "log",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "NR5G ML1 Searcher ACQ Config And Response",
+      "description": "Busca e aquisição de células numa frequência (quantas células, melhor PCI)."
+    },
+    {
+      "id": "b970",
+      "term": "0xB970",
+      "category": "log",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "NR5G ML1 Searcher Idle S Criteria",
+      "description": "Resultado do critério S para a célula avaliada (SUCCESS / FAILURE)."
+    },
+    {
+      "id": "b950",
+      "term": "0xB950",
+      "category": "log",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "NR5G ML1 DL Common Config",
+      "description": "Configuração comum de downlink da célula em que o UE acampou."
+    },
+    {
+      "id": "b884",
+      "term": "0xB884",
+      "category": "log",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "NR5G MAC UL Physical Channel Power Control",
+      "description": "Potência de cada transmissão de uplink; no PRACH mostra transmit_power, pathloss, mtpl e prach_target_power."
+    },
+    {
+      "id": "b889",
+      "term": "0xB889",
+      "category": "log",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "NR5G MAC RACH Trigger",
+      "description": "Início de um procedimento de RACH e o motivo (CONNECTION_REQUEST, RRC_REESTABLISHMENT, HANDOVER)."
+    },
+    {
+      "id": "b88a",
+      "term": "0xB88A",
+      "category": "log",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "NR5G MAC RACH Attempt",
+      "description": "Resultado de cada tentativa de RACH (SUCCESS ou o motivo da falha)."
+    },
+    {
+      "id": "q24",
+      "term": "q24",
+      "category": "log",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Ponto fixo Q24",
+      "description": "Formato numérico do chipset: valor real = inteiro / 2²⁴. Ex.: 1677722 → 0,10 (10 %)."
+    },
+    {
+      "id": "bler-cap",
+      "term": "BLER_Cap",
+      "category": "log",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Teto do BLER registrado",
+      "description": "Valor máximo que o 0xB959 registra (15 %). Leituras de 15,0 % significam saturação, não o BLER real."
+    },
+    {
+      "id": "sfn",
+      "term": "SFN",
+      "category": "log",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "System Frame Number",
+      "description": "Número do quadro de rádio (0 a 1023, 10 ms cada). Permite comparar dois logs no mesmo instante de rádio."
+    },
+    {
+      "id": "pss-sss",
+      "term": "PSS / SSS",
+      "category": "log",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "Primary / Secondary Synchronization Signal",
+      "description": "Sinais de sincronismo que o UE detecta primeiro; juntos dão o PCI."
+    },
+    {
+      "id": "dut",
+      "term": "DUT",
+      "category": "teste",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "Device Under Test",
+      "description": "Aparelho em homologação (Aurora no Desafio 1, Meridian no Desafio 2)."
+    },
+    {
+      "id": "cdut",
+      "term": "CDUT",
+      "category": "teste",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "Comparator DUT",
+      "description": "Aparelho de referência já homologado, testado nas mesmas condições (Boreal no Desafio 1, Solstice no Desafio 2)."
+    },
+    {
+      "id": "kpi",
+      "term": "KPI",
+      "category": "teste",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "Key Performance Indicator",
+      "description": "Indicador usado para julgar o teste (por exemplo, handover sem RLF ou tempo até o report)."
+    },
+    {
+      "id": "3gpp-ts",
+      "term": "3GPP / TS",
+      "category": "teste",
+      "challenges": [
+        "desafio-1",
+        "desafio-2"
+      ],
+      "name": "Especificações técnicas do 3GPP",
+      "description": "TS 38.331 (RRC), TS 38.304 (seleção de célula em IDLE), TS 38.133 (requisitos de RRM), TS 38.533 (testes de conformidade de RRM), TS 24.501 (NAS 5G)."
+    },
+    {
+      "id": "fisher",
+      "term": "Teste exato de Fisher",
+      "category": "teste",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Comparação de proporções em amostras pequenas",
+      "description": "Calcula a chance de um resultado tão extremo quanto 3/3 × 0/3 ocorrer por acaso: p = 0,10 bicaudal, que não é significativo a 5 %."
+    },
+    {
+      "id": "ci",
+      "term": "IC 95 % (Clopper–Pearson)",
+      "category": "teste",
+      "challenges": [
+        "desafio-2"
+      ],
+      "name": "Intervalo de confiança exato",
+      "description": "Faixa plausível para uma taxa real. Com 3 de 3, a taxa de RLF do DUT pode estar entre 29 % e 100 %."
+    }
+  ]
+}
