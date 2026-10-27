@@ -1,4 +1,4 @@
-import { $, el, formatSeconds } from "../dom.js";
+import { $, el, formatSeconds, signedSeconds } from "../dom.js";
 import { t } from "../i18n.js";
 
 // Live KPI cards. Reads the precomputed `event.analysis`; no log parsing here.
@@ -44,7 +44,6 @@ export function mountDashboardView() {
 }
 
 const elapsed = (event) => Number.isFinite(event.replayTimeMs) ? event.replayTimeMs / 1000 : 0;
-const signedSeconds = (ms) => `${ms < 0 ? "−" : "+"}${formatSeconds(Math.abs(ms) / 1000, 3)} s`;
 
 // Time card. When the case measures from a reference (MeasConfig #2, or the
 // start of degradation for timed case steps), show that clock so the replay

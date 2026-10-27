@@ -2,7 +2,7 @@ import { $ } from "../dom.js";
 import { loadReport } from "../data.js";
 import { t } from "../i18n.js";
 
-function openModal(id) {
+export function openModal(id) {
   document.getElementById(id).classList.add("open");
   document.body.style.overflow = "hidden";
 }
