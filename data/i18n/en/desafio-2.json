@@ -88,7 +88,60 @@
       "timelineLabels": {
         "eyebrow": "Switches 01–05",
         "note": "Total time to registration complete, in seconds · bars show the range over the 5 switches"
-      }
+      },
+      "timeReference": {
+        "label": "Time since first cell detection"
+      },
+      "guide": [
+        {
+          "title": "After the switch, the old operator's cell",
+          "text": "The active profile is already Zenith's, but the Aurora first syncs to PCI 177, the Vantis cell. This is T 0: the case measures the total time from here."
+        },
+        {
+          "title": "SIB1 announces Vantis",
+          "text": "PLMN 724/085 in SIB1. The cell is good (RSRP −80 dBm) and not barred: radio is not the problem."
+        },
+        {
+          "title": "Attempt 1: the old profile's identity",
+          "text": "Registration Request with SUCI Home-Network-Id 724/085 and MSIN 4185551234, the Vantis identity. Selected PLMN and SUCI match, but both belong to the profile that was just replaced."
+        },
+        {
+          "title": "Rejection #3 · Illegal UE",
+          "text": "The Vantis AMF refuses the identity presented (5GMM cause #3). Note where the arrow comes from: the core, through the gNodeB. The rejection is NAS, not radio."
+        },
+        {
+          "title": "New search: now the Zenith cell",
+          "text": "1.17 s after the release, the UE syncs to PCI 201 (Zenith), the operator of the active profile."
+        },
+        {
+          "title": "Right PLMN: 724/078",
+          "text": "In RRCSetupComplete the UE already selects PLMN 724/078. So far, the same as the Boreal."
+        },
+        {
+          "title": "Attempt 2: PLMN ≠ SUCI",
+          "text": "The exact point of divergence. The selected PLMN is Zenith's (724/078), but the SUCI still carries Home-Network-Id 724/085 and the Vantis MSIN (4185551234). See the identity card in red."
+        },
+        {
+          "title": "Rejection #11 · PLMN not allowed",
+          "text": "The Zenith AMF refuses a subscriber whose home network (724/085) is not its own. The network reacts correctly to the wrong identity."
+        },
+        {
+          "title": "Attempt 3, on the same cell",
+          "text": "1.91 s later, a new RRC connection on PCI 201, with no new cell search. Only what the UE sends will change."
+        },
+        {
+          "title": "Identity finally aligned",
+          "text": "SUCI with Home-Network-Id 724/078 and MSIN 7729004321, the Zenith profile's identity. Same cell, same network: the only difference from attempt 2 is the identity."
+        },
+        {
+          "title": "The network recognizes the subscriber",
+          "text": "Authentication Request (RAND/AUTN): the Zenith AMF accepted the identity and starts authentication, followed by Security Mode (NIA2/NEA2)."
+        },
+        {
+          "title": "Registered at T +4.55 s",
+          "text": "Registration Complete on the 3rd attempt, matching the time of switch 03 in the case. The Boreal, on the same cell, registers in 0.82 s on the 1st attempt."
+        }
+      ]
     },
     "dut-zenith-nimbus": {
       "label": "Aurora · Zenith → Nimbus · 5G SA",
@@ -285,7 +338,36 @@
       "timelineLabels": {
         "eyebrow": "Switches 01–05",
         "note": "Total time to registration complete, in seconds · bars show the range over the 5 switches"
-      }
+      },
+      "timeReference": {
+        "label": "Time since first cell detection"
+      },
+      "guide": [
+        {
+          "title": "Straight to the Zenith cell",
+          "text": "After the same Vantis → Zenith switch, the Boreal syncs straight to PCI 201. It never goes through the old operator's cell. T 0."
+        },
+        {
+          "title": "PLMN 724/078",
+          "text": "In RRCSetupComplete the selected PLMN is Zenith's, as on the Aurora from attempt 2 onwards."
+        },
+        {
+          "title": "SUCI aligned on the 1st attempt",
+          "text": "Home-Network-Id 724/078 and MSIN 7729009876: the Zenith profile's identity. This is exactly what the Aurora lacks on attempts 1 and 2."
+        },
+        {
+          "title": "Authentication without rejection",
+          "text": "The Zenith AMF answers with Authentication Request: no NAS rejection."
+        },
+        {
+          "title": "NAS security",
+          "text": "Security Mode Command with NIA2/NEA2, the same algorithms as the Aurora's attempt 3."
+        },
+        {
+          "title": "Registered at T +0.82 s",
+          "text": "Registration Complete on the 1st attempt. The case reports 0.98–1.15 s for scenario 4; the log is shorter because the document does not define when the measurement starts."
+        }
+      ]
     }
   }
 }

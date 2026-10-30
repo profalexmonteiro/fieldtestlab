@@ -36,7 +36,7 @@ O objetivo é apoiar a análise investigativa dos desafios: comparar DUT × CDUT
   - **Acesso aleatório:** rampa de potência de cada Msg1 contra a potência máxima, pathloss, critério S da célula e a melhor célula que o próprio UE já tinha medido.
   - **Hipóteses e conclusão:** cada hipótese com suas evidências, que levam direto à linha do log; o aluno marca as que descarta, e a conclusão (mecanismo, limiar efetivo aparente e estatística com Fisher exato e IC 95 %) fica atrás do botão *Mostrar conclusão*.
 - **Corrida da mobilidade na cena.** Durante a reprodução, um anel em volta do UE mostra o T310 (ou o T304 no handover), e uma faixa abaixo da cena diz há quanto tempo o A5 está atendido sem report e quanto faltava do T310 quando o report saiu. Depois do RLF, a cena destaca a célula que o UE já tinha medido.
-- **Modo guiado.** Cada log dos Desafios 3 e 4 tem um roteiro de pontos-chave. A reprodução pode pausar em cada um, com uma explicação curta e navegação para o ponto anterior e o seguinte.
+- **Modo guiado.** Cada log dos Desafios 2, 3 e 4 tem um roteiro de pontos-chave. A reprodução pode pausar em cada um, com uma explicação curta e navegação para o ponto anterior e o seguinte.
 - **Resultado consolidado.** Métricas, faixas de tempo das repetições, evidências e avisos sobre os limites de cada fonte.
 - **Relatório de issue.** Segue a estrutura do template *Relatorio_Issue_G2.docx*, com exportação para PDF pela impressão do navegador.
 - **Glossário de siglas e códigos.** O botão **Glossário**, no topo, abre uma tabela com 122 termos (RRC, NAS, medição, RLM, RACH, IMS/SIP/SDP e codecs de voz, códigos 0xB9xx do log do modem, estatística), com busca que ignora acentos, filtro por categoria e opção de mostrar só os termos do desafio atual.
@@ -104,7 +104,7 @@ Para os alunos, o projeto também pode ser publicado sem alterações em qualque
 2. Em **Reprodução passo a passo**, clique em **▶ Reproduzir** ou use **Anterior / Próximo** para avançar evento a evento.
 3. Acompanhe a cena e os **KPIs em tempo real**. A página não se move sozinha durante a reprodução; só a lista de eventos acompanha a mensagem atual.
 4. Clique numa linha do log para pausar nela. Use **Ver decodificação completa** para ler todos os IEs da mensagem.
-5. Nos Desafios 3 e 4, ative o **Modo guiado** para a reprodução parar nos pontos-chave. No Desafio 3, use também o painel **Evidência de medição** para comparar o DUT com o CDUT. A conclusão só aparece quando o aluno clica em **Mostrar conclusão**.
+5. Nos Desafios 2, 3 e 4, ative o **Modo guiado** para a reprodução parar nos pontos-chave. No Desafio 3, use também o painel **Evidência de medição** para comparar o DUT com o CDUT. A conclusão só aparece quando o aluno clica em **Mostrar conclusão**.
 6. Compare com o **Resultado consolidado**, as **Faixas de tempo** das repetições e as **Evidências** do cenário.
 7. Em **Fontes e entregáveis**, abra o log original, visualize o relatório de issue ou exporte-o em PDF.
 

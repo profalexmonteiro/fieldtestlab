@@ -118,6 +118,12 @@ export function createReplay(store, { getSpeed, getStops = () => new Set() }) {
     const total = replay().events.length;
     let index = replay().index;
     if (index >= total - 1) index = -1;
+    // Starting over: the first event is shown at once, so honour a key point on it here
+    // (scheduleNext only checks the events it advances to).
+    if (index < 0 && getStops(replay().events).has(0)) {
+      update({ index: 0, playing: false, message: t("replay.guideStop", { index: 1, total }) });
+      return;
+    }
     if (index < 0) index = 0;
     const playing = index < total - 1;
     update({ index, playing, message: playing ? playingMessage() : t("replay.done") });

@@ -137,7 +137,73 @@
       ],
       "notice": "O log anexado cobre as 3 tentativas de uma das cinco trocas do cenário 1; o documento não diz qual. A duração do log (4,55 s, da detecção PSS/SSS ao Registration Complete) coincide com o tempo da troca 03. Não há logs individuais das demais trocas. A causalidade interna exata da transição de SUCI não é provada por estes logs: correlacione o estado do perfil e a identidade provisionada.",
       "logPath": "Desafios/Desafio 2/Desafio_S02_Log_DUT_Aurora.html",
-      "logLabel": "Fonte: Desafio_S02_Log_DUT_Aurora.html · cenário 1 · 36 mensagens / 3 tentativas · 4,55 s. Log original sem alterações."
+      "logLabel": "Fonte: Desafio_S02_Log_DUT_Aurora.html · cenário 1 · 36 mensagens / 3 tentativas · 4,55 s. Log original sem alterações.",
+      "timeReference": {
+        "idx": 1,
+        "label": "Tempo desde a 1ª detecção de célula"
+      },
+      "guide": [
+        {
+          "idx": 1,
+          "title": "Depois da troca, a célula da operadora antiga",
+          "text": "O perfil ativo já é o da Zenith, mas o Aurora sincroniza primeiro na PCI 177, a célula da Vantis. Este é o T 0: o caso mede o tempo total a partir daqui."
+        },
+        {
+          "idx": 3,
+          "title": "SIB1 anuncia a Vantis",
+          "text": "PLMN 724/085 no SIB1. A célula está boa (RSRP −80 dBm) e não está barrada: o rádio não é o problema."
+        },
+        {
+          "idx": 7,
+          "title": "Tentativa 1: identidade do perfil antigo",
+          "text": "Registration Request com SUCI Home-Network-Id 724/085 e MSIN 4185551234, a identidade da Vantis. PLMN escolhido e SUCI coincidem, mas os dois são do perfil que acabou de ser substituído."
+        },
+        {
+          "idx": 9,
+          "title": "Rejeição #3 · Illegal UE",
+          "text": "O AMF da Vantis recusa a identidade apresentada (5GMM cause #3). Repare de onde vem a seta: do núcleo, passando pela gNodeB. A rejeição é NAS, não de rádio."
+        },
+        {
+          "idx": 11,
+          "title": "Nova busca: agora a célula da Zenith",
+          "text": "1,17 s depois da liberação, o UE sincroniza na PCI 201 (Zenith), a operadora do perfil ativo."
+        },
+        {
+          "idx": 16,
+          "title": "PLMN certo: 724/078",
+          "text": "No RRCSetupComplete o UE já seleciona o PLMN 724/078. Até aqui, tudo como no Boreal."
+        },
+        {
+          "idx": 17,
+          "title": "Tentativa 2: PLMN ≠ SUCI",
+          "text": "Ponto exato da divergência. O PLMN selecionado é o da Zenith (724/078), mas o SUCI continua com Home-Network-Id 724/085 e o MSIN da Vantis (4185551234). Veja o card de identidade em vermelho."
+        },
+        {
+          "idx": 19,
+          "title": "Rejeição #11 · PLMN not allowed",
+          "text": "O AMF da Zenith recusa um assinante cuja rede de origem (724/085) não é a dele. A rede reage corretamente à identidade errada."
+        },
+        {
+          "idx": 21,
+          "title": "Tentativa 3, na mesma célula",
+          "text": "1,91 s depois, nova conexão RRC na PCI 201, sem nova busca de célula. Só o que o UE envia vai mudar."
+        },
+        {
+          "idx": 24,
+          "title": "Identidade finalmente alinhada",
+          "text": "SUCI com Home-Network-Id 724/078 e MSIN 7729004321, a identidade do perfil Zenith. Mesma célula, mesma rede: a única diferença para a tentativa 2 é a identidade."
+        },
+        {
+          "idx": 26,
+          "title": "A rede reconhece o assinante",
+          "text": "Authentication Request (RAND/AUTN): o AMF da Zenith aceitou a identidade e inicia a autenticação, seguida de Security Mode (NIA2/NEA2)."
+        },
+        {
+          "idx": 36,
+          "title": "Registrado em T +4,55 s",
+          "text": "Registration Complete na 3ª tentativa, igual ao tempo da troca 03 do caso. O Boreal, na mesma célula, registra em 0,82 s na 1ª tentativa."
+        }
+      ]
     },
     {
       "id": "dut-zenith-nimbus",
@@ -482,7 +548,43 @@
       ],
       "notice": "Log de referência do Boreal: uma tentativa, 19 mensagens. Atenção: o log dura 0,82 s (da detecção PSS/SSS ao Registration Complete), menos que qualquer tempo total do cenário 4 no caso (0,98–1,15 s); o documento não define o instante inicial da medição. O relato de 5/5 trocas é agregado; não há cinco arquivos de log individuais.",
       "logPath": "Desafios/Desafio 2/Desafio_S02_Log_CDUT_Boreal.html",
-      "logLabel": "Fonte: Desafio_S02_Log_CDUT_Boreal.html · cenário 4 · 19 mensagens / 1 tentativa bem-sucedida · 0,82 s. Log original sem alterações."
+      "logLabel": "Fonte: Desafio_S02_Log_CDUT_Boreal.html · cenário 4 · 19 mensagens / 1 tentativa bem-sucedida · 0,82 s. Log original sem alterações.",
+      "timeReference": {
+        "idx": 1,
+        "label": "Tempo desde a 1ª detecção de célula"
+      },
+      "guide": [
+        {
+          "idx": 1,
+          "title": "Direto para a célula da Zenith",
+          "text": "Após a mesma troca Vantis → Zenith, o Boreal sincroniza já na PCI 201. Não há passagem pela célula da operadora antiga. T 0."
+        },
+        {
+          "idx": 6,
+          "title": "PLMN 724/078",
+          "text": "No RRCSetupComplete, o PLMN selecionado é o da Zenith, como no Aurora a partir da tentativa 2."
+        },
+        {
+          "idx": 7,
+          "title": "SUCI alinhado já na 1ª tentativa",
+          "text": "Home-Network-Id 724/078 e MSIN 7729009876: a identidade do perfil Zenith. É exatamente o que falta ao Aurora nas tentativas 1 e 2."
+        },
+        {
+          "idx": 9,
+          "title": "Autenticação sem rejeição",
+          "text": "O AMF da Zenith responde com Authentication Request: nenhuma rejeição NAS."
+        },
+        {
+          "idx": 13,
+          "title": "Segurança NAS",
+          "text": "Security Mode Command com NIA2/NEA2, os mesmos algoritmos da tentativa 3 do Aurora."
+        },
+        {
+          "idx": 19,
+          "title": "Registrado em T +0,82 s",
+          "text": "Registration Complete na 1ª tentativa. O caso relata 0,98–1,15 s para o cenário 4; o log é mais curto porque o documento não define o instante inicial da medição."
+        }
+      ]
     }
   ]
 }
