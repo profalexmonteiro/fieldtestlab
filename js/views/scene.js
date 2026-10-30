@@ -1,32 +1,51 @@
 import { $, svgEl } from "../dom.js";
+import { t, getLang } from "../i18n.js";
 
 // Shared layout of the scene, in pixels. The signaling overlay uses the same
 // anchor points so arrows leave from the antennas and reach the UE.
-export function sceneGeometry(w, h) {
+// `kind` "core" lays the scene out along the signal path: UE on the left, the
+// cell (`left`) in the centre facing the UE, and the core node on the right.
+export function sceneGeometry(w, h, kind = "ran") {
+  const isCore = kind === "core";
   const s = Math.min(Math.max((h - 76) / 165, 0.5), 1.1);
   const baseY = h - 46;
-  const phone = { x: w / 2, y: baseY - 64 * s, width: 30 * s, height: 56 * s };
+  const phone = { x: isCore ? w * 0.2 : w / 2, y: baseY - 64 * s, width: 30 * s, height: 56 * s };
   const cell = (x, facing) => ({
     x,
     facing,
     antenna: { x: x + facing * 25 * s, y: baseY - 130 * s },
     ue: { x: phone.x - facing * (phone.width / 2 + 8), y: phone.y - 8 * s }
   });
-  return { s, baseY, phone, left: cell(w * 0.2, 1), right: cell(w * 0.8, -1) };
+  const left = isCore ? cell(w * 0.5, -1) : cell(w * 0.2, 1);
+  const right = cell(w * 0.8, -1);
+  // Wired transport from the cell site to the core node: the IMS is reached
+  // through the RAN, never over the air. It starts under the mast.
+  const wireY = baseY - 10 * s;
+  const core = { x: right.x, entry: { x: right.x - 20 * s, y: wireY }, site: { x: left.x, y: wireY } };
+  // Small core node behind each cell (`coreNodes`, e.g. each operator's AMF), on the outer side.
+  const edgeCore = (c) => {
+    const x = c.facing > 0 ? Math.max(c.x - 82 * s, 16 * s) : Math.min(c.x + 82 * s, w - 16 * s);
+    return { x, entry: { x: x + c.facing * 13 * s, y: wireY }, site: { x: c.x, y: wireY } };
+  };
+  return { s, baseY, phone, left, right, core, edge: { left: edgeCore(left), right: edgeCore(right) } };
 }
 
 // Static network scene (two gNodeBs and the UE). Pure SVG: colours come from
 // CSS custom properties, so it follows the theme without redrawing.
 // `scene` is "failure" | "control" | "reference" and sets the target/UE colour.
+// `rightKind` "core" draws the right node as a core-network server instead of a cell.
 export function mountSceneView() {
   const svg = $("#scene-art");
   let mode = "failure";
+  let rightKind = "ran";
+  let cores = {};
+  let lang = "";
 
   function draw() {
     const bounds = svg.getBoundingClientRect();
     const w = Math.max(bounds.width, 1);
     const h = Math.max(bounds.height, 1);
-    const geo = sceneGeometry(w, h);
+    const geo = sceneGeometry(w, h, rightKind);
     svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
     svg.setAttribute("class", `scene-art mode-${mode}`);
 
@@ -42,20 +61,71 @@ export function mountSceneView() {
       svgEl("rect", { x: 0, y: geo.baseY, width: w, height: h - geo.baseY, class: "scene-ground" }),
       svgEl("line", { x1: 0, y1: geo.baseY, x2: w, y2: geo.baseY, class: "scene-horizon" }),
       link(geo.left, "serving"),
-      link(geo.right, "target"),
-      gNodeB(geo, geo.left, "serving"),
-      gNodeB(geo, geo.right, "target"),
+      ...(rightKind === "core"
+        ? [backhaul(geo), gNodeB(geo, geo.left, "serving"), coreRack(geo.core.x, geo.baseY, geo.s, "target")]
+        : [link(geo.right, "target"),
+          ...["left", "right"].filter((side) => cores[side]).map((side) => edgeCore(geo, side, cores[side])),
+          gNodeB(geo, geo.left, "serving"), gNodeB(geo, geo.right, "target")]),
       phone(geo)
     );
   }
 
   new ResizeObserver(draw).observe(svg);
 
-  return function render(scene) {
+  return function render(scene, kind = "ran", coreNodes = {}) {
     mode = scene;
     svg.setAttribute("class", `scene-art mode-${mode}`);
-    if (!svg.childElementCount) draw();
+    const coresKey = JSON.stringify(coreNodes);
+    if (!svg.childElementCount || kind !== rightKind || lang !== getLang() || coresKey !== JSON.stringify(cores)) {
+      rightKind = kind;
+      cores = coreNodes;
+      lang = getLang();
+      // The HTML labels and the event chip follow the layout (see .scene.layout-core).
+      svg.closest(".scene").classList.toggle("layout-core", kind === "core");
+      draw();
+    }
   };
+}
+
+function backhaul(geo) {
+  const { site, entry } = geo.core;
+  const g = svgEl("g", { class: "scene-backhaul" });
+  g.append(svgEl("line", { x1: site.x, y1: site.y, x2: entry.x, y2: entry.y, class: "backhaul-line" }));
+  // Below the wire, so a signal travelling along it never covers the text.
+  const label = svgEl("text", { x: (site.x + entry.x) / 2, y: site.y + 11, "text-anchor": "middle", class: "backhaul-label" });
+  label.textContent = t("scene.backhaul");
+  g.append(label);
+  return g;
+}
+
+// A cell's own core node (e.g. AMF): short transport wire from the mast, a
+// smaller rack and its name above it.
+function edgeCore(geo, side, name) {
+  const { x, site, entry } = geo.edge[side];
+  const scale = geo.s * 0.6;
+  const g = svgEl("g", { class: "scene-edge-core" });
+  g.append(svgEl("line", { x1: site.x, y1: site.y, x2: entry.x, y2: entry.y, class: "backhaul-line" }));
+  g.append(coreRack(x, geo.baseY, scale, side === "left" ? "serving" : "target"));
+  const label = svgEl("text", { x, y: geo.baseY - 86 * scale - 6, "text-anchor": "middle", class: "core-label" });
+  label.textContent = name;
+  g.append(label);
+  return g;
+}
+
+// Core-network node (e.g. IMS P-CSCF, AMF) drawn as a server rack: no antenna
+// and no radio link, since the UE only reaches it through the RAN and transport.
+function coreRack(x, baseY, scale, role) {
+  const g = svgEl("g", { class: `scene-core ${role}`, transform: `translate(${x} ${baseY}) scale(${scale})` });
+  const add = (name, attributes) => g.append(svgEl(name, attributes));
+  add("ellipse", { cx: 0, cy: 1, rx: 34, ry: 4, class: "tower-shadow" });
+  add("rect", { x: -20, y: -86, width: 40, height: 86, rx: 3, class: "core-rack" });
+  for (let unit = 0; unit < 5; unit++) {
+    const y = -80 + unit * 16;
+    add("rect", { x: -15, y, width: 30, height: 12, rx: 1.5, class: "core-unit" });
+    add("line", { x1: -11, y1: y + 6, x2: 4, y2: y + 6, class: "core-slot" });
+    add("circle", { cx: 10, cy: y + 6, r: 1.8, class: `core-led${unit === 1 ? " blink" : ""}` });
+  }
+  return g;
 }
 
 function link(cell, role) {

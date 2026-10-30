@@ -90,9 +90,12 @@ function cardItems(event, index, total, challenge, scenario) {
 
   const plmn = a?.selectedPlmn || a?.suciPlmn;
   const pci = a?.pci || a?.latestPci;
-  const cellValue = pci ? `PCI ${pci}` : identityPanel && plmn ? `PLMN ${plmn}` : "—";
+  // The SUCI must carry the Home Network of the PLMN the UE selected; a mismatch is flagged.
+  const identityMismatch = identityPanel && a?.selectedPlmn && a?.suciPlmn && a.selectedPlmn !== a.suciPlmn;
+  const cellValue = identityMismatch ? t("kpi.identityMismatch", { pci })
+    : pci ? `PCI ${pci}` : identityPanel && plmn ? `PLMN ${plmn}` : "—";
   const cellDetail = !a ? "" : identityPanel
-    ? [plmn ? `PLMN ${a.selectedPlmn || "—"} · SUCI ${a.suciPlmn || "—"}` : "", a.attempt ? t("kpi.attemptLower", { n: a.attempt }) : ""].filter(Boolean).join(" · ")
+    ? [plmn ? `PLMN ${a.selectedPlmn || "—"} ${identityMismatch ? "≠" : "·"} SUCI ${a.suciPlmn || "—"}` : "", a.attempt ? t("kpi.attemptLower", { n: a.attempt }) : ""].filter(Boolean).join(" · ")
     : [a.measId ? `measId=${a.measId}` : "", a.signal].filter(Boolean).join(" · ");
   const cellNote = cellDetail || event?.cell
     || t(isCase ? "kpi.cellNoneCase" : event ? "kpi.cellNoneLog" : "kpi.cellWaiting");
@@ -100,7 +103,7 @@ function cardItems(event, index, total, challenge, scenario) {
   return [
     [t("kpi.procedure"), procedure, procedureNote, a?.tone || ""],
     [t("kpi.sequence"), sequenceValue, sequenceNote, a?.attempt && a.attemptMax > 1 ? "warn-text" : ""],
-    [t(identityPanel ? "kpi.cellIdentity" : "kpi.cellMeasurement"), cellValue, cellNote, "accent-text"],
+    [t(identityPanel ? "kpi.cellIdentity" : "kpi.cellMeasurement"), cellValue, cellNote, identityMismatch ? "bad-text" : "accent-text"],
     timeItem(event, scenario)
   ];
 }

@@ -1,461 +1,459 @@
 {
   "id": "desafio-2",
-  "tab": "Desafio 02 · Mobilidade 5G",
+  "tab": "Desafio 02 · Registro / Attach",
   "tag": [
     "DESAFIO 2",
-    "RADIO LINK FAILURE"
+    "REGISTRO E ATTACH"
   ],
-  "title": "Handover inter-frequência · 5G SA",
-  "description": "Investigue a falha de mobilidade do Meridian, compare com o controle intra-frequência e com o CDUT Solstice. Os tempos e eventos apresentados são os registrados no caso de campo.",
-  "cellPanel": "measurement",
+  "title": "Registro e Attach · 5G SA / LTE",
+  "description": "Investigue as rejeições de registro do Aurora após troca de perfil entre operadoras; compare 5G SA, o controle LTE e o CDUT Boreal.",
+  "cellPanel": "identity",
   "sideInfo": [
     {
       "label": "RAT avaliado",
-      "value": "5G SA · NR"
+      "value": "5G SA · NR / 4G · LTE"
     },
     {
-      "label": "Serving",
-      "value": "n78 · PCI 88"
+      "label": "PLMN de origem",
+      "value": "Vantis · 724/085"
     },
     {
-      "label": "Alvo inter-frequência",
-      "value": "n41 · PCI 145 / 160"
+      "label": "PLMN de destino",
+      "value": "Zenith · 724/078"
     }
   ],
   "materials": [
     {
-      "label": "Caso do aluno · Desafio_S03_Caso_Aluno.docx",
-      "href": "Desafio 2/material/Desafio_S03_Caso_Aluno.docx"
+      "label": "Caso do aluno · Desafio_Semana_2.docx",
+      "href": "Desafios/Desafio 2/Desafio_Semana_2.docx"
     },
     {
-      "label": "Referência teórica · Sessão teórica.pptx",
-      "href": "Desafio 2/material/Sessão teórica.pptx"
+      "label": "Referência teórica · Sessão Semana 2.pptx",
+      "href": "Desafios/Desafio 2/Sessão_teórica_Semana_2.pptx"
     }
   ],
   "report": {
-    "title": "Relatório de Issue — Teste de Campo",
+    "title": "Relatório de Issue — Desafio 2 · Registro / Attach",
     "template": "data/relatorios/desafio-2.html"
   },
   "scenarios": [
     {
-      "id": "controle-intra",
-      "number": "01 · CONTROLE",
-      "label": "Meridian · intra-frequência",
-      "kicker": "CENÁRIO 01 · CONTROLE",
-      "title": "Handover intra-frequência concluído",
-      "description": "Meridian · n78 PCI 88 → PCI 101 · mesma frequência · três repetições",
-      "status": "Controle aprovado · 3/3",
-      "statusClass": "good",
-      "device": "Meridian / DUT",
-      "state": "RRC_CONNECTED · handover OK",
-      "scene": "control",
-      "rat": "NR · SA",
-      "network": "NovaLink / Site Delta",
-      "leftNode": "gNodeB · serving",
-      "leftCell": "n78 · NR-ARFCN 633180 · PCI 88",
-      "rightNode": "gNodeB · alvo",
-      "rightCell": "n78 · NR-ARFCN 633180 · PCI 101",
-      "axisMax": 4.2,
+      "id": "dut-vantis-zenith",
+      "number": "01 · DUT",
+      "label": "Aurora · Vantis → Zenith · 5G SA",
+      "kicker": "CENÁRIO 01 · DUT · 5G SA",
+      "title": "Cascata de rejeições no registro",
+      "description": "Aurora · Vantis (724/085) → Zenith (724/078) · 5 trocas de perfil",
+      "status": "3 tentativas por troca · 5/5",
+      "statusClass": "bad",
+      "device": "Aurora / DUT",
+      "state": "NR SA · 2 rejeições NAS → registrado",
+      "scene": "device-failure",
+      "rat": "NR · 5G SA",
+      "network": "Vantis → Zenith / Site de homologação",
+      "leftNode": "gNodeB · Vantis · 724/085",
+      "leftCell": "n78 · NR-ARFCN 633120 · PCI 177",
+      "rightNode": "gNodeB · Zenith · 724/078",
+      "rightCell": "n78 · NR-ARFCN 633120 · PCI 201",
+      "coreNodes": {
+        "left": "AMF · Vantis",
+        "right": "AMF · Zenith"
+      },
+      "coreProtocols": [
+        "NAS"
+      ],
+      "timelineLabels": {
+        "eyebrow": "Trocas 01–05",
+        "note": "Tempo total até o registro completo, em segundos · barras mostram a faixa das 5 trocas"
+      },
+      "axisMax": 5,
       "metrics": [
         {
-          "label": "Medição ativa",
-          "value": "A3 · measId=1",
-          "note": "mesma frequência",
-          "tone": "accent-text"
+          "label": "Tentativas de registro",
+          "value": "3 por troca",
+          "note": "5 de 5 trocas · 100%",
+          "tone": "bad-text"
         },
         {
-          "label": "Measurement Report",
-          "value": "1,155–1,210 s",
-          "note": "desde o início da degradação",
-          "tone": ""
+          "label": "1ª rejeição NAS",
+          "value": "5GMM #3",
+          "note": "Illegal UE · PLMN Vantis",
+          "tone": "bad-text"
         },
         {
-          "label": "Conclusão HO",
-          "value": "1,312–1,370 s",
-          "note": "RRCReconfigurationComplete",
-          "tone": "good-text"
+          "label": "2ª rejeição NAS",
+          "value": "5GMM #11",
+          "note": "PLMN not allowed · SUCI antigo",
+          "tone": "warn-text"
         },
         {
-          "label": "RLF",
-          "value": "0 / 3",
-          "note": "OOS_FILT_BLER abaixo do limiar",
-          "tone": "good-text"
+          "label": "Registro completo",
+          "value": "4,55–4,77 s",
+          "note": "na 3ª tentativa · 5/5",
+          "tone": "warn-text"
         }
       ],
       "rows": [
         {
-          "label": "Meridian · intra",
-          "sub": "Report A3",
-          "start": 1.155,
-          "end": 1.21,
-          "final": "1,155–1,210 s",
-          "color": "success",
+          "label": "Tempo total · DUT",
+          "sub": "3 tentativas · 5 trocas",
+          "start": 4.55,
+          "end": 4.77,
+          "final": "4,55–4,77 s",
+          "color": "failure",
           "points": [
             {
-              "at": 1.155,
-              "kind": "success"
+              "at": 4.55,
+              "kind": "failure"
             },
             {
-              "at": 1.21,
-              "kind": "success"
-            }
-          ]
-        },
-        {
-          "label": "Handover OK",
-          "sub": "ReconfigurationComplete",
-          "start": 1.312,
-          "end": 1.37,
-          "final": "1,312–1,370 s",
-          "color": "success",
-          "points": [
-            {
-              "at": 1.312,
-              "kind": "success"
-            },
-            {
-              "at": 1.37,
-              "kind": "success"
+              "at": 4.77,
+              "kind": "failure"
             }
           ]
         }
       ],
       "evidence": [
         {
-          "kind": "ok",
-          "title": "Controle intra-RAT estável",
-          "html": "3/3 handovers completos; a cadeia Report → conclusão levou 155–160 ms."
-        },
-        {
-          "kind": "ok",
-          "title": "Medição intra-frequência ativa",
-          "html": "<code>measId=1</code> (A3) e <code>measId=3</code> (A2) já estavam configurados."
-        },
-        {
-          "kind": "ok",
-          "title": "Sem falha de enlace",
-          "html": "O registro 0xB959 manteve OOS_FILT_BLER abaixo do limiar em todas as repetições."
+          "kind": "issue",
+          "title": "Tentativa 1 · contexto de operadora anterior",
+          "html": "No PCI 177, o SIB1 anuncia PLMN 724/085. A Registration Request usa SUCI 724/085 e recebe <code>5GMM Cause #3 · Illegal UE</code>."
         },
         {
           "kind": "issue",
-          "title": "Log detalhado não fornecido",
-          "html": "O material inclui logs completos para os cenários 2 (DUT) e 3 (CDUT), não para este controle."
+          "title": "Tentativa 2 · PLMN de destino, SUCI antigo",
+          "html": "No PCI 201, o PLMN selecionado já é 724/078, mas o SUCI enviado continua com Home-Network-Id 724/085. A rede rejeita com <code>5GMM Cause #11 · PLMN not allowed</code>."
+        },
+        {
+          "kind": "ok",
+          "title": "Tentativa 3 · identidade alinhada",
+          "html": "A nova Registration Request apresenta SUCI 724/078; seguem Authentication, Security Mode, Registration Accept e Registration Complete."
+        },
+        {
+          "kind": "ok",
+          "title": "A falha ocorre após aquisição e RRC",
+          "html": "PSS/SSS, MIB, SIB1 e RRC Setup completam nas tentativas rejeitadas. A divergência está na sequência de registro NAS, não na detecção da célula."
         }
       ],
-      "notice": "O caso descreve este cenário como controle de mesma frequência. Não há um arquivo de log detalhado anexado para ele; os valores exibidos vêm da ficha do desafio.",
+      "notice": "O log anexado cobre as 3 tentativas de uma das cinco trocas do cenário 1; o documento não diz qual. A duração do log (4,55 s, da detecção PSS/SSS ao Registration Complete) coincide com o tempo da troca 03. Não há logs individuais das demais trocas. A causalidade interna exata da transição de SUCI não é provada por estes logs: correlacione o estado do perfil e a identidade provisionada.",
+      "logPath": "Desafios/Desafio 2/Desafio_S02_Log_DUT_Aurora.html",
+      "logLabel": "Fonte: Desafio_S02_Log_DUT_Aurora.html · cenário 1 · 36 mensagens / 3 tentativas · 4,55 s. Log original sem alterações."
+    },
+    {
+      "id": "dut-zenith-nimbus",
+      "number": "02 · DUT",
+      "label": "Aurora · Zenith → Nimbus · 5G SA",
+      "kicker": "CENÁRIO 02 · DUT · 5G SA",
+      "title": "A mesma cascata em outra operadora",
+      "description": "Aurora · Zenith (724/078) → Nimbus (724/091) · 5 trocas de perfil",
+      "status": "3 tentativas por troca · 5/5",
+      "statusClass": "bad",
+      "device": "Aurora / DUT",
+      "state": "NR SA · registro concluído na 3ª tentativa",
+      "scene": "device-failure",
+      "rat": "NR · 5G SA",
+      "network": "Zenith → Nimbus / Site de homologação",
+      "leftNode": "gNodeB · Zenith · 724/078",
+      "leftCell": "n78 · NR-ARFCN 633120 · PCI 201",
+      "rightNode": "gNodeB · Nimbus · 724/091",
+      "rightCell": "n78 · NR-ARFCN 633120 · PCI 133",
+      "coreNodes": {
+        "left": "AMF · Zenith",
+        "right": "AMF · Nimbus"
+      },
+      "coreProtocols": [
+        "NAS"
+      ],
+      "timelineLabels": {
+        "eyebrow": "Trocas 01–05",
+        "note": "Tempo total até o registro completo, em segundos · barras mostram a faixa das 5 trocas"
+      },
+      "axisMax": 5,
+      "metrics": [
+        {
+          "label": "Tentativas de registro",
+          "value": "3 por troca",
+          "note": "5 de 5 trocas · 100%",
+          "tone": "bad-text"
+        },
+        {
+          "label": "Tempo até registro",
+          "value": "4,58–4,75 s",
+          "note": "após troca de PLMN",
+          "tone": "warn-text"
+        },
+        {
+          "label": "RSRP / RSRQ · Zenith",
+          "value": "−83 / −8 dB",
+          "note": "n78 · PCI 201",
+          "tone": "accent-text"
+        },
+        {
+          "label": "RSRP / RSRQ · Nimbus",
+          "value": "−84 / −8 dB",
+          "note": "n78 · PCI 133",
+          "tone": "accent-text"
+        }
+      ],
+      "rows": [
+        {
+          "label": "Tempo total · DUT",
+          "sub": "3 tentativas · 5 trocas",
+          "start": 4.58,
+          "end": 4.75,
+          "final": "4,58–4,75 s",
+          "color": "failure",
+          "points": [
+            {
+              "at": 4.58,
+              "kind": "failure"
+            },
+            {
+              "at": 4.75,
+              "kind": "failure"
+            }
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "issue",
+          "title": "Anomalia repetida em outra PLMN",
+          "html": "As cinco trocas Zenith → Nimbus também exigem três tentativas em 5G SA."
+        },
+        {
+          "kind": "ok",
+          "title": "Condição de rádio semelhante",
+          "html": "RSRP −83/−84 dBm e RSRQ −8 dB nas células Zenith e Nimbus, respectivamente."
+        },
+        {
+          "kind": "issue",
+          "title": "Sem log de modem individual fornecido",
+          "html": "O documento informa o resultado agregado, mas o log do Aurora anexado cobre apenas uma troca do cenário 1."
+        },
+        {
+          "kind": "ok",
+          "title": "Evidência comparativa por cenário",
+          "html": "A recorrência em duas transições de operadora reduz a hipótese de uma única célula como causa isolada."
+        }
+      ],
+      "notice": "Tempos/faixas vêm do documento do desafio. Não foi fornecido log individual desta transição; não inferimos causas NAS específicas sem a captura correspondente.",
       "logPath": "",
-      "logLabel": "Sem arquivo de log detalhado para este cenário.",
+      "logLabel": "Sem log HTML individual para o cenário 2; consulte o documento do caso e os resultados agregados.",
       "playbackSteps": [
         {
-          "msg": "Início da degradação da serving · PCI 88",
-          "summary": "measId=1 (A3, hysteresis 1 dB, TTT 320 ms) e measId=3 (A2, −100 dBm, TTT 160 ms) ativos desde a primeira RRCReconfiguration; a n41 não está configurada.",
+          "msg": "Resultado agregado · tentativa 1",
+          "summary": "Na troca Zenith → Nimbus, o Aurora inicia o registro 5G SA. O caso não fornece a mensagem individual desta tentativa.",
           "offsetMs": 0
         },
         {
-          "msg": "Measurement Report · measId=1 (A3)",
-          "summary": "SS-RSRP/SS-RSRQ serving −101 dBm/−13 dB; vizinha PCI 101 −90 dBm/−8 dB.",
-          "offsetMs": 1180
+          "msg": "Resultado agregado · tentativa 2",
+          "summary": "A segunda tentativa também é necessária; o log individual desta troca não foi fornecido.",
+          "offsetMs": 1000
         },
         {
-          "msg": "RRCReconfiguration · targetPhysCellId=101",
-          "summary": "reconfigurationWithSync sem absoluteFrequencySSB (mesma frequência), rach-ConfigDedicated presente, t304=2000 ms.",
-          "offsetMs": 1240
+          "msg": "Resultado agregado · tentativa 3",
+          "summary": "Registro concluído após três tentativas em cada uma das cinco trocas.",
+          "offsetMs": 2100
         },
         {
-          "msg": "Random Access · Msg1 (preâmbulo dedicado)",
-          "summary": "Acesso sem contenção na PCI 101.",
-          "offsetMs": 1285
-        },
-        {
-          "msg": "Random Access Response · Msg2",
-          "summary": "A PCI 101 responde ao preâmbulo dedicado.",
-          "offsetMs": 1310
-        },
-        {
-          "msg": "RRCReconfigurationComplete · sem RLF",
-          "summary": "Handover concluído 155 ms após o Report. Repetições 02 e 03: 1,312 s e 1,370 s; OOS_FILT_BLER (0xB959) sempre abaixo do limiar.",
-          "offsetMs": 1335
-        }
-      ],
-      "stepsTimed": true
-    },
-    {
-      "id": "dut-inter",
-      "number": "02 · DUT",
-      "label": "Meridian · inter-frequência",
-      "kicker": "CENÁRIO 02 · DUT",
-      "title": "Atraso no handover e Radio Link Failure",
-      "description": "Meridian · n78 PCI 88 → n41 PCI 145/160 · três repetições",
-      "status": "Falha reproduzida · 3/3",
-      "statusClass": "bad",
-      "device": "Meridian / DUT",
-      "state": "RRC_CONNECTED · RLF t310-Expiry",
-      "scene": "failure",
-      "rat": "NR · SA",
-      "network": "NovaLink / Site Delta",
-      "leftNode": "gNodeB · serving",
-      "leftCell": "n78 · NR-ARFCN 633180 · PCI 88",
-      "rightNode": "gNodeB · alvo",
-      "rightCell": "n41 · NR-ARFCN 504990 · PCI 145",
-      "axisMax": 4.2,
-      "metrics": [
-        {
-          "label": "Measurement Report A5",
-          "value": "3,660–3,730 s",
-          "note": "TTT configurado: 240 ms",
-          "tone": "warn-text"
-        },
-        {
-          "label": "Radio Link Failure",
-          "value": "3,830–3,870 s",
-          "note": "causa: t310-Expiry",
-          "tone": "bad-text"
-        },
-        {
-          "label": "1ª célula · PCI 88",
-          "value": "6 × Msg1",
-          "note": "sem resposta · critério S reprovado",
-          "tone": "bad-text"
-        },
-        {
-          "label": "Reestabelecimento",
-          "value": "4,063–4,103 s",
-          "note": "RRCReestablishmentComplete · PCI 145",
-          "tone": "warn-text"
-        }
-      ],
-      "rows": [
-        {
-          "label": "Meridian · inter",
-          "sub": "Report A5 · n41",
-          "start": 3.66,
-          "end": 3.73,
-          "final": "3,660–3,730 s",
-          "color": "failure",
-          "points": [
-            {
-              "at": 3.66,
-              "kind": "failure"
-            },
-            {
-              "at": 3.73,
-              "kind": "failure"
-            }
-          ]
-        },
-        {
-          "label": "RLF · T310",
-          "sub": "t310-Expiry",
-          "start": 3.83,
-          "end": 3.87,
-          "final": "3,830–3,870 s",
-          "color": "failure",
-          "points": [
-            {
-              "at": 3.83,
-              "kind": "failure"
-            },
-            {
-              "at": 3.87,
-              "kind": "failure"
-            }
-          ]
-        },
-        {
-          "label": "Recuperação",
-          "sub": "PCI 145 · completa",
-          "start": 4.063,
-          "end": 4.103,
-          "final": "4,063–4,103 s",
-          "color": "failure",
-          "points": [
-            {
-              "at": 4.063,
-              "kind": "failure"
-            },
-            {
-              "at": 4.103,
-              "kind": "failure"
-            }
-          ]
-        }
-      ],
-      "evidence": [
-        {
-          "kind": "issue",
-          "title": "Medição inter-frequência tardia",
-          "html": "<code>measId=2</code> (A5, TTT 240 ms) reportado somente após 3,660–3,730 s da configuração."
-        },
-        {
-          "kind": "issue",
-          "title": "RLF antes de handover concluído",
-          "html": "<code>t310-Expiry</code> ocorre 3,830–3,870 s; não há conclusão de handover no cenário."
-        },
-        {
-          "kind": "issue",
-          "title": "Tentativa na serving inadequada",
-          "html": "PCI 88 está abaixo do <code>q-RxLevMin</code>; seis Msg1 falham antes da tentativa em PCI 145."
-        },
-        {
-          "kind": "ok",
-          "title": "Recuperação na célula vizinha",
-          "html": "Em PCI 145, RRCReestablishmentRequest e Complete são registrados em todas as três repetições."
-        }
-      ],
-      "notice": "A repetição 01 do log detalhado mostra a sequência completa. O caso não traz coordenadas GPS nem sinalização entre nós (Xn/NGAP); não atribua a causa à rede com base apenas neste log UE.",
-      "logPath": "Desafio 2/Desafio_S03_Log_DUT_Meridian.html",
-      "logLabel": "Fonte: Desafio_S03_Log_DUT_Meridian.html · repetição 01 do cenário 2. O arquivo original é apresentado sem alterações.",
-      "timeReference": {
-        "idx": 38,
-        "label": "Tempo desde a MeasConfig #2"
-      },
-      "guide": [
-        {
-          "idx": 38,
-          "title": "MeasConfig #2: começa a corrida",
-          "text": "A rede adiciona a n41 (measObjectId 2) e o evento A5: serving < −106 dBm e vizinha > −100 dBm, hysteresis 1 dB, TTT 240 ms, com gaps de 6 ms a cada 40 ms. Este é o T 0 de todos os tempos."
-        },
-        {
-          "idx": 41,
-          "title": "1ª medição da n41 com gap",
-          "text": "SFN 349: PCI 145 em −100,6 dBm. No mesmo SFN, o Solstice mediu −98,8 dBm (1,8 dB a mais). Em idle (linha 2) os dois tinham medido −100,9 dBm."
-        },
-        {
-          "idx": 48,
-          "title": "2ª medição da n41, 400 ms depois",
-          "text": "A próxima atualização só chega em SFN 389: 1 a cada 10 gaps. Na mesma altura (T +0,44 a +0,64 s), o Solstice já media −94,4 e −93,8 dBm: a diferença passou de 1,8 dB para cerca de 5 dB. Compare as duas curvas azuis e a faixa de cadência."
-        },
-        {
-          "idx": 54,
-          "title": "Condição de entrada do A5 atendida",
-          "text": "Pelos valores L3 do próprio DUT: serving −109,8 dBm (< −107) e PCI 145 −98,2 dBm (> −99). Com TTT de 240 ms, o report já poderia sair a partir de T +1,16 s."
-        },
-        {
-          "idx": 56,
-          "title": "Fora de sincronismo: BLER acima de 10 %",
-          "text": "OOS_FILT_BLER 10,6 % passa o limiar Qout de 10 %. O A5 está atendido há 333 ms e nenhum report foi enviado."
-        },
-        {
-          "idx": 62,
-          "title": "T310 em contagem",
-          "text": "Depois de N310 = 4 indicações de out-of-sync, o T310 (2000 ms) começa por volta de T +1,85 s (instante inferido: RLF − 2000 ms). Agora é uma corrida: o handover precisa acontecer antes de o T310 expirar."
-        },
-        {
-          "idx": 78,
-          "title": "Report A5 enviado, tarde demais",
-          "text": "measId=2 sai em T +3,700 s, 2,78 s depois da condição de entrada, com a serving em −119 dBm / −20 dB (SINR −12 dB). Restam só 150 ms de T310. O CDUT recebeu o comando 63 ms após o report, mas aqui o enlace já está fora de sincronismo e nenhum comando de handover chega."
-        },
-        {
-          "idx": 82,
-          "title": "RLF por t310-Expiry",
-          "text": "O T310 expira sem comando de handover. O RLM fez o seu papel: a serving está de fato em −120 dBm, e o OOS_FILT_BLER está no teto do registro (BLER_Cap = 15 %)."
-        },
-        {
-          "idx": 90,
-          "title": "Critério S reprovado na PCI 88",
-          "text": "No reestabelecimento, o UE volta para a n78 e lê a SIB1 da PCI 88: RSRP −120,8 dBm, abaixo do q-RxLevMin de −118 dBm (Srxlev ≈ −2,8 dB), e o critério S dá FAILURE. A PCI 145 (n41) tinha sido medida pouco antes em −92,8 dBm."
-        },
-        {
-          "idx": 91,
-          "title": "RACH mesmo assim",
-          "text": "Apesar da reprovação no critério S, o UE dispara o RACH de reestabelecimento na PCI 88."
-        },
-        {
-          "idx": 103,
-          "title": "6 de 6 Msg1 sem resposta",
-          "text": "Potência de 10 a 25 dBm com pathloss estimado de 140 dB. O 1º preâmbulo já chega no alvo nominal de −130 dBm; a cada tentativa o alvo sobe 4 dB e, nas duas últimas, o UE bate no limite de 25 dBm (a 6ª pedia 30 dBm e chega ≈ 5 dB abaixo do alvo). Nenhum RAR é recebido (FAILURE_MSG2_RA_TIMER_EXP): célula fora do critério S, com o downlink a −120,8 dBm."
-        },
-        {
-          "idx": 104,
-          "title": "Só agora a n41",
-          "text": "Depois de esgotar o preambleTransMax, o UE procura a n41 e encontra a PCI 145 em −92,8 dBm. Foram cerca de 115 ms gastos na PCI 88."
-        },
-        {
-          "idx": 121,
-          "title": "Serviço restaurado",
-          "text": "RRCReestablishmentComplete na PCI 145 em T +4,073 s. O Solstice concluiu o handover em T +0,840 s: +3,2 s de diferença."
+          "msg": "Resultado agregado · 5 trocas",
+          "summary": "Tempos totais entre 4,58 e 4,75 s. Sem call flow individual disponível.",
+          "offsetMs": 3000
         }
       ]
     },
     {
-      "id": "cdut-solstice",
-      "number": "03 · REFERÊNCIA",
-      "label": "Solstice · inter-frequência",
-      "kicker": "CENÁRIO 03 · REFERÊNCIA",
-      "title": "Handover inter-frequência sem RLF",
-      "description": "Solstice · n78 PCI 88 → n41 PCI 145/160 · mesma rede e sequência de medição",
-      "status": "Referência aprovada · 3/3",
+      "id": "lte-controle",
+      "number": "03 · CONTROLE",
+      "label": "Aurora · Vantis → Zenith · LTE",
+      "kicker": "CENÁRIO 03 · DUT · LTE",
+      "title": "Controle LTE registra na primeira tentativa",
+      "description": "Aurora · Vantis → Zenith · LTE Band 3 · cinco trocas",
+      "status": "Attach concluído · 5/5",
       "statusClass": "good",
-      "device": "Solstice / CDUT",
-      "state": "RRC_CONNECTED · handover OK",
-      "scene": "reference",
-      "rat": "NR · SA",
-      "network": "NovaLink / Site Delta",
-      "leftNode": "gNodeB · serving",
-      "leftCell": "n78 · NR-ARFCN 633180 · PCI 88",
-      "rightNode": "gNodeB · alvo",
-      "rightCell": "n41 · NR-ARFCN 504990 · PCI 145",
-      "axisMax": 4.2,
+      "device": "Aurora / DUT",
+      "state": "LTE · Attach Complete",
+      "scene": "control",
+      "rat": "LTE · 4G",
+      "network": "Vantis → Zenith / Site de homologação",
+      "leftNode": "eNodeB · Vantis · 724/085",
+      "leftCell": "LTE Band 3 · EARFCN 1350 · PCI 165",
+      "rightNode": "eNodeB · Zenith · 724/078",
+      "rightCell": "LTE Band 3 · EARFCN 1300 · PCI 220",
+      "coreNodes": {
+        "left": "MME · Vantis",
+        "right": "MME · Zenith"
+      },
+      "coreProtocols": [
+        "NAS"
+      ],
+      "timelineLabels": {
+        "eyebrow": "Trocas 01–05",
+        "note": "Tempo total até o Attach Complete, em segundos · barras mostram a faixa das 5 trocas"
+      },
+      "axisMax": 1.25,
       "metrics": [
         {
-          "label": "Measurement Report A5",
-          "value": "0,655–0,705 s",
-          "note": "TTT configurado: 240 ms",
+          "label": "Tentativas de attach",
+          "value": "1 tentativa",
+          "note": "5 de 5 trocas · 100%",
+          "tone": "good-text"
+        },
+        {
+          "label": "Tempo total",
+          "value": "0,98–1,15 s",
+          "note": "até Attach Complete",
+          "tone": "good-text"
+        },
+        {
+          "label": "RSRP / RSRQ · Vantis",
+          "value": "−82 / −8 dB",
+          "note": "LTE · PCI 165",
           "tone": "accent-text"
         },
         {
-          "label": "Handover concluído",
-          "value": "0,815–0,865 s",
-          "note": "RRCReconfigurationComplete",
+          "label": "RSRP / RSRQ · Zenith",
+          "value": "−85 / −9 dB",
+          "note": "LTE · PCI 220",
+          "tone": "accent-text"
+        }
+      ],
+      "rows": [
+        {
+          "label": "Aurora · LTE",
+          "sub": "Attach · 5 trocas",
+          "start": 0.98,
+          "end": 1.15,
+          "final": "0,98–1,15 s",
+          "color": "success",
+          "points": [
+            {
+              "at": 0.98,
+              "kind": "success"
+            },
+            {
+              "at": 1.15,
+              "kind": "success"
+            }
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "ok",
+          "title": "Controle 4G sem repetição",
+          "html": "As cinco trocas concluem Attach na primeira tentativa."
+        },
+        {
+          "kind": "ok",
+          "title": "Tempo de registro menor",
+          "html": "Attach Complete entre 0,98 e 1,15 s nas cinco repetições."
+        },
+        {
+          "kind": "ok",
+          "title": "Sinal adequado no par de células",
+          "html": "RSRP −82/−85 dBm e RSRQ −8/−9 dB."
+        },
+        {
+          "kind": "issue",
+          "title": "Sem log LTE anexado",
+          "html": "O documento traz métricas agregadas; os HTML disponíveis são logs de registro 5G SA."
+        }
+      ],
+      "notice": "O material descreve LTE como controle adicional, não fornece captura OTA LTE nem detalhes de call flow. A visualização mostra eNodeB/LTE, sem inventar mensagens ausentes.",
+      "logPath": "",
+      "logLabel": "Não há log HTML LTE nos materiais fornecidos.",
+      "playbackSteps": [
+        {
+          "msg": "Resultado agregado · busca LTE",
+          "summary": "Aurora seleciona a célula LTE da operadora de destino; não há captura OTA LTE anexada.",
+          "offsetMs": 0
+        },
+        {
+          "msg": "Resultado agregado · Attach",
+          "summary": "Attach concluído na primeira tentativa em cada uma das cinco trocas.",
+          "offsetMs": 650
+        },
+        {
+          "msg": "Resultado agregado · 5 trocas",
+          "summary": "Tempos totais entre 0,98 e 1,15 s; RSRP/RSRQ no caso: −82/−8 dB e −85/−9 dB.",
+          "offsetMs": 1300
+        }
+      ]
+    },
+    {
+      "id": "cdut-boreal",
+      "number": "04 · REFERÊNCIA",
+      "label": "Boreal · Vantis → Zenith · 5G SA",
+      "kicker": "CENÁRIO 04 · CDUT · 5G SA",
+      "title": "Boreal conclui registro na primeira tentativa",
+      "description": "Boreal · Vantis (724/085) → Zenith (724/078) · mesmas células do cenário 1",
+      "status": "Referência aprovada · 5/5",
+      "statusClass": "good",
+      "device": "Boreal / CDUT",
+      "state": "NR SA · Registration Complete",
+      "scene": "reference",
+      "rat": "NR · 5G SA",
+      "network": "Vantis → Zenith / Site de homologação",
+      "leftNode": "gNodeB · Vantis · 724/085",
+      "leftCell": "n78 · NR-ARFCN 633120 · PCI 177",
+      "rightNode": "gNodeB · Zenith · 724/078",
+      "rightCell": "n78 · NR-ARFCN 633120 · PCI 201",
+      "coreNodes": {
+        "left": "AMF · Vantis",
+        "right": "AMF · Zenith"
+      },
+      "coreProtocols": [
+        "NAS"
+      ],
+      "timelineLabels": {
+        "eyebrow": "Trocas 01–05",
+        "note": "Tempo total até o registro completo, em segundos · barras mostram a faixa das 5 trocas"
+      },
+      "axisMax": 1.25,
+      "metrics": [
+        {
+          "label": "Tentativas de registro",
+          "value": "1 tentativa",
+          "note": "5 de 5 trocas · 100%",
           "tone": "good-text"
         },
         {
-          "label": "Radio Link Failure",
-          "value": "0 / 3",
-          "note": "OOS_FILT_BLER abaixo do limiar",
+          "label": "Tempo até registro",
+          "value": "0,98–1,15 s",
+          "note": "5G SA · sem rejeição",
           "tone": "good-text"
         },
         {
-          "label": "Cadeia Report → HO",
-          "value": "≈ 160 ms",
-          "note": "mesma banda alvo n41",
+          "label": "Authentication",
+          "value": "sucesso",
+          "note": "RES* e NIA2/NEA2",
+          "tone": "accent-text"
+        },
+        {
+          "label": "Registration Complete",
+          "value": "registrado",
+          "note": "5GS-Registration-Result",
           "tone": "good-text"
         }
       ],
       "rows": [
         {
-          "label": "Solstice · inter",
-          "sub": "Report A5 · n41",
-          "start": 0.655,
-          "end": 0.705,
-          "final": "0,655–0,705 s",
+          "label": "Boreal · 5G SA",
+          "sub": "Registration · 5 trocas",
+          "start": 0.98,
+          "end": 1.15,
+          "final": "0,98–1,15 s",
           "color": "reference",
           "points": [
             {
-              "at": 0.655,
+              "at": 0.98,
               "kind": "reference"
             },
             {
-              "at": 0.705,
+              "at": 1.15,
               "kind": "reference"
-            }
-          ]
-        },
-        {
-          "label": "Handover OK",
-          "sub": "ReconfigurationComplete",
-          "start": 0.815,
-          "end": 0.865,
-          "final": "0,815–0,865 s",
-          "color": "success",
-          "points": [
-            {
-              "at": 0.815,
-              "kind": "success"
-            },
-            {
-              "at": 0.865,
-              "kind": "success"
             }
           ]
         }
@@ -463,446 +461,28 @@
       "evidence": [
         {
           "kind": "ok",
-          "title": "Mesmo cenário inter-frequência",
-          "html": "O CDUT usa o mesmo site, par de bandas e sequência de medição (A2 e A5) do cenário DUT."
+          "title": "Mesmo site e mesmas células",
+          "html": "O CDUT acessa PCI 201/PLMN 724/078; a rede aceita a Registration Request já com SUCI 724/078."
         },
         {
           "kind": "ok",
-          "title": "Relatório A5 seguido de handover",
-          "html": "<code>measId=2</code> é reportado entre 0,655–0,705 s; RRCReconfigurationComplete entre 0,815–0,865 s."
+          "title": "Sequência NAS completa",
+          "html": "Authentication Request/Response, Security Mode Command/Complete, Registration Accept e Registration Complete."
         },
         {
           "kind": "ok",
-          "title": "Sem RLF nas repetições",
-          "html": "3/3 handovers concluídos; estatística 0xB959 permanece abaixo do limiar OOS."
+          "title": "Registro 5G SA de primeira",
+          "html": "5/5 trocas concluem na primeira tentativa; log detalhado mostra uma tentativa bem-sucedida."
         },
         {
           "kind": "issue",
-          "title": "Diferença exige investigação no UE",
-          "html": "O contraste reduz a probabilidade de falha geral do site, mas não prova sozinho a causa raiz."
+          "title": "Contraste aponta ao DUT, não prova implementação",
+          "html": "DUT e CDUT diferem em estado de SIM/identidade e hardware; controle localiza o desvio no Aurora, mas não identifica sozinho o mecanismo interno."
         }
       ],
-      "notice": "A comparação com o CDUT é uma evidência de controle, não uma prova de que todos os parâmetros de RF e de rede eram idênticos em cada instante.",
-      "logPath": "Desafio 2/Desafio_S03_Log_CDUT_Solstice.html",
-      "logLabel": "Fonte: Desafio_S03_Log_CDUT_Solstice.html · repetição 01 do cenário 3. O arquivo original é apresentado sem alterações.",
-      "timeReference": {
-        "idx": 38,
-        "label": "Tempo desde a MeasConfig #2"
-      },
-      "guide": [
-        {
-          "idx": 38,
-          "title": "MeasConfig #2: mesma configuração",
-          "text": "A rede envia a mesma measConfig do cenário DUT: n41, A5 −106/−100 dBm, hysteresis 1 dB, TTT 240 ms, gaps de 6 ms a cada 40 ms."
-        },
-        {
-          "idx": 41,
-          "title": "1ª medição da n41 com gap",
-          "text": "SFN 349: PCI 145 em −98,8 dBm. No mesmo SFN, o Meridian mediu −100,6 dBm."
-        },
-        {
-          "idx": 46,
-          "title": "2ª medição, 200 ms depois",
-          "text": "SFN 369: o Solstice atualiza a n41 a cada 120–200 ms (1 a cada 3 a 5 gaps)."
-        },
-        {
-          "idx": 47,
-          "title": "Condição de entrada do A5 atendida",
-          "text": "Serving −107,2 dBm (< −107) e PCI 145 −95,8 dBm (> −99) em T +0,397 s. O TTT de 240 ms começa a contar."
-        },
-        {
-          "idx": 54,
-          "title": "Report A5 em T +0,680 s",
-          "text": "283 ms depois da condição de entrada (TTT de 240 ms + próxima avaliação): serving −109 dBm, PCI 145 −94 dBm."
-        },
-        {
-          "idx": 56,
-          "title": "Comando de handover 63 ms depois",
-          "text": "reconfigurationWithSync para a PCI 145 com rach-ConfigDedicated (CFRA) e T304 = 2000 ms."
-        },
-        {
-          "idx": 64,
-          "title": "RACH na 1ª tentativa",
-          "text": "PRACH a −16 dBm com pathloss de 114 dB: sucesso na primeira tentativa, sem disputa (contention free)."
-        },
-        {
-          "idx": 69,
-          "title": "Handover concluído em T +0,840 s",
-          "text": "RRCReconfigurationComplete na PCI 145. O OOS_FILT_BLER ficou no máximo em 0,9 %: não houve RLF."
-        },
-        {
-          "idx": 71,
-          "title": "T304 com folga",
-          "text": "O T304 termina com 1903 ms restantes: o handover usou menos de 100 ms do temporizador."
-        }
-      ]
+      "notice": "Log de referência do Boreal: uma tentativa, 19 mensagens. Atenção: o log dura 0,82 s (da detecção PSS/SSS ao Registration Complete), menos que qualquer tempo total do cenário 4 no caso (0,98–1,15 s); o documento não define o instante inicial da medição. O relato de 5/5 trocas é agregado; não há cinco arquivos de log individuais.",
+      "logPath": "Desafios/Desafio 2/Desafio_S02_Log_CDUT_Boreal.html",
+      "logLabel": "Fonte: Desafio_S02_Log_CDUT_Boreal.html · cenário 4 · 19 mensagens / 1 tentativa bem-sucedida · 0,82 s. Log original sem alterações."
     }
-  ],
-  "insights": {
-    "serving": {
-      "arfcn": "633180",
-      "pci": "88",
-      "band": "n78"
-    },
-    "target": {
-      "arfcn": "504990",
-      "pci": "145",
-      "band": "n41"
-    },
-    "a5": {
-      "measId": "2",
-      "threshold1": -106,
-      "threshold2": -100,
-      "hysteresis": 1,
-      "tttMs": 240,
-      "apparentThreshold2": -93.5
-    },
-    "rlm": {
-      "outOfSyncBler": 10,
-      "t310Ms": 2000
-    },
-    "gap": {
-      "mgrpMs": 40,
-      "mglMs": 6
-    },
-    "pair": [
-      "dut-inter",
-      "cdut-solstice"
-    ],
-    "labels": {
-      "serving": "Serving n78 · PCI 88",
-      "target": "Vizinha n41 · PCI 145"
-    },
-    "focusNote": "Este cenário não tem log detalhado. O gráfico mostra os logs dos cenários 2 (DUT) e 3 (CDUT)."
-  },
-  "comparison": {
-    "rows": [
-      {
-        "scenario": "controle-intra",
-        "label": "1. Meridian · intra-freq.",
-        "report": "1,155–1,210 s",
-        "outcome": "HO OK · cadeia de 155–160 ms",
-        "service": "≈ 1,31–1,37 s",
-        "rlf": "0/3",
-        "tone": "good"
-      },
-      {
-        "scenario": "cdut-solstice",
-        "label": "3. Solstice · inter-freq.",
-        "report": "0,655–0,705 s",
-        "outcome": "HO OK · sem RLF",
-        "service": "0,815–0,865 s",
-        "rlf": "0/3",
-        "tone": "good"
-      },
-      {
-        "scenario": "dut-inter",
-        "label": "2. Meridian · inter-freq.",
-        "report": "3,660–3,730 s",
-        "outcome": "RLF (t310-Expiry) em 3,83–3,87 s",
-        "service": "4,063–4,103 s (Reest. Complete)",
-        "rlf": "3/3",
-        "tone": "bad"
-      }
-    ],
-    "note": "Faixas das 3 repetições, conforme a ficha do caso. Os cenários 2 e 3 contam a partir da MeasConfig #2; o cenário 1, a partir do início da degradação.",
-    "counts": {
-      "dut": [
-        3,
-        3
-      ],
-      "cdut": [
-        0,
-        3
-      ]
-    }
-  },
-  "hypotheses": [
-    {
-      "id": "rf",
-      "title": "Cobertura / RF",
-      "question": "O DUT estava numa condição de rádio pior que a do CDUT?",
-      "evidence": [
-        {
-          "text": "Serving em −109,3 dBm no mesmo instante relativo (T +0,637 s) nos dois aparelhos.",
-          "links": [
-            {
-              "scenario": "dut-inter",
-              "idx": 51,
-              "label": "DUT #51"
-            },
-            {
-              "scenario": "cdut-solstice",
-              "idx": 52,
-              "label": "CDUT #52"
-            }
-          ]
-        },
-        {
-          "text": "RLM idêntico até a divergência: OOS_FILT_BLER 0,4 % → 0,9 %.",
-          "links": [
-            {
-              "scenario": "dut-inter",
-              "idx": 44,
-              "label": "DUT #44"
-            },
-            {
-              "scenario": "dut-inter",
-              "idx": 50,
-              "label": "DUT #50"
-            },
-            {
-              "scenario": "cdut-solstice",
-              "idx": 44,
-              "label": "CDUT #44"
-            },
-            {
-              "scenario": "cdut-solstice",
-              "idx": 51,
-              "label": "CDUT #51"
-            }
-          ]
-        },
-        {
-          "text": "Em idle, a n41 mede o mesmo nos dois: PCI 145 em −100,9 dBm.",
-          "links": [
-            {
-              "scenario": "dut-inter",
-              "idx": 2,
-              "label": "DUT #2"
-            },
-            {
-              "scenario": "cdut-solstice",
-              "idx": 2,
-              "label": "CDUT #2"
-            }
-          ]
-        },
-        {
-          "text": "A n41 do DUT parte 1,8 dB abaixo no mesmo SFN 349 e fica ~5 dB abaixo em T +0,5 s, enquanto a serving segue idêntica: a diferença está na medição do aparelho, não no rádio.",
-          "links": [
-            {
-              "scenario": "dut-inter",
-              "idx": 41,
-              "label": "DUT #41"
-            },
-            {
-              "scenario": "cdut-solstice",
-              "idx": 41,
-              "label": "CDUT #41"
-            },
-            {
-              "scenario": "dut-inter",
-              "idx": 48,
-              "label": "DUT #48"
-            },
-            {
-              "scenario": "cdut-solstice",
-              "idx": 48,
-              "label": "CDUT #48"
-            }
-          ]
-        },
-        {
-          "text": "O CDUT conclui o handover nesse mesmo ambiente.",
-          "links": [
-            {
-              "scenario": "cdut-solstice",
-              "idx": 69,
-              "label": "CDUT #69"
-            }
-          ]
-        }
-      ],
-      "verdict": "Descartada: a trajetória de RF e o RLM são iguais nos dois aparelhos até o ponto em que a mobilidade diverge."
-    },
-    {
-      "id": "rlm",
-      "title": "RLM mal configurado",
-      "question": "Os temporizadores ou limiares de RLM do DUT eram diferentes?",
-      "evidence": [
-        {
-          "text": "N310 = 4 e T310 = 2000 ms para os dois aparelhos.",
-          "links": [
-            {
-              "scenario": "dut-inter",
-              "idx": 17,
-              "label": "DUT #17"
-            },
-            {
-              "scenario": "cdut-solstice",
-              "idx": 17,
-              "label": "CDUT #17"
-            }
-          ]
-        },
-        {
-          "text": "Limiares de IS/OOS idênticos no 0xB959: 2 % / 10 % (Insync 335544 e Outsync 1677722, em unidades de 2⁻²⁴).",
-          "links": [
-            {
-              "scenario": "dut-inter",
-              "idx": 62,
-              "label": "DUT #62"
-            },
-            {
-              "scenario": "cdut-solstice",
-              "idx": 44,
-              "label": "CDUT #44"
-            }
-          ]
-        },
-        {
-          "text": "No report tardio a serving já estava em −119 dBm / −20 dB.",
-          "links": [
-            {
-              "scenario": "dut-inter",
-              "idx": 78,
-              "label": "DUT #78"
-            }
-          ]
-        }
-      ],
-      "verdict": "Descartada: o RLF é legítimo. O RLM funcionou; quem falhou foi a mobilidade, que deveria ter acontecido antes."
-    },
-    {
-      "id": "rach",
-      "title": "RACH mal configurado",
-      "question": "A falha de acesso vem dos parâmetros de RACH?",
-      "evidence": [
-        {
-          "text": "Mesmo RACH-ConfigCommon nos dois: preambleTransMax = 6, passo de 4 dB, janela de 10 ms (sl20).",
-          "links": [
-            {
-              "scenario": "dut-inter",
-              "idx": 6,
-              "label": "DUT #6"
-            },
-            {
-              "scenario": "cdut-solstice",
-              "idx": 6,
-              "label": "CDUT #6"
-            }
-          ]
-        },
-        {
-          "text": "O CDUT acerta o CFRA na n41 de primeira (pathloss 114 dB).",
-          "links": [
-            {
-              "scenario": "cdut-solstice",
-              "idx": 63,
-              "label": "CDUT #63"
-            },
-            {
-              "scenario": "cdut-solstice",
-              "idx": 64,
-              "label": "CDUT #64"
-            }
-          ]
-        },
-        {
-          "text": "O DUT acerta na PCI 145 de primeira (pathloss 112 dB).",
-          "links": [
-            {
-              "scenario": "dut-inter",
-              "idx": 116,
-              "label": "DUT #116"
-            },
-            {
-              "scenario": "dut-inter",
-              "idx": 119,
-              "label": "DUT #119"
-            }
-          ]
-        },
-        {
-          "text": "Na PCI 88: RSRP −120,8 dBm, abaixo do q-RxLevMin de −118 dBm (critério S reprovado). O 1º preâmbulo já chega no alvo nominal de −130 dBm; a rampa esgota a potência do UE (25 dBm) e nenhum RAR chega na janela de 10 ms.",
-          "links": [
-            {
-              "scenario": "dut-inter",
-              "idx": 87,
-              "label": "DUT #87"
-            },
-            {
-              "scenario": "dut-inter",
-              "idx": 90,
-              "label": "DUT #90"
-            },
-            {
-              "scenario": "dut-inter",
-              "idx": 92,
-              "label": "DUT #92"
-            },
-            {
-              "scenario": "dut-inter",
-              "idx": 102,
-              "label": "DUT #102"
-            }
-          ]
-        }
-      ],
-      "verdict": "Descartada: com o mesmo RACH-ConfigCommon, o acesso funciona de primeira na PCI 145 e no CDUT. Na PCI 88 a falha vem de a célula estar fora de cobertura útil (reprovada no critério S), não do parâmetro. O log do UE não mostra se o gNB deixou de detectar o preâmbulo ou se o UE não decodificou o RAR. No intra-frequência (cenário 1) o RACH também não tem problemas."
-    },
-    {
-      "id": "site",
-      "title": "Site / operadora / célula",
-      "question": "O problema é da rede no Site Delta?",
-      "evidence": [
-        {
-          "text": "Mesmo Site Delta, mesmas PCIs e a mesma measConfig byte a byte.",
-          "links": [
-            {
-              "scenario": "dut-inter",
-              "idx": 38,
-              "label": "DUT #38"
-            },
-            {
-              "scenario": "cdut-solstice",
-              "idx": 38,
-              "label": "CDUT #38"
-            }
-          ]
-        },
-        {
-          "text": "O CDUT passa 3 de 3 vezes no inter-frequência.",
-          "links": [
-            {
-              "scenario": "cdut-solstice",
-              "idx": 0,
-              "label": "Cenário 3"
-            }
-          ]
-        },
-        {
-          "text": "O próprio DUT passa 3 de 3 vezes no intra-frequência.",
-          "links": [
-            {
-              "scenario": "controle-intra",
-              "idx": 0,
-              "label": "Cenário 1"
-            }
-          ]
-        }
-      ],
-      "verdict": "Descartada: a divergência acompanha o aparelho combinado com inter-frequência, não a rede."
-    }
-  ],
-  "conclusion": {
-    "title": "Mecanismo único",
-    "summary": "Defeito no firmware do DUT ao tratar a camada inter-frequência (n41) em RRC_CONNECTED (build MRD-B2408.1 / NR-MOD 17.3.0; o CDUT usa 17.2.5). O modem usa mal os gaps, mede a n41 devagar e com viés para baixo, e demora a avaliar o A5. Na prática, o UE fica “ancorado” na camada da serving (n78).",
-    "symptoms": [
-      "RLF: o A5 só dispara com o T310 quase vencido (150 ms de folga, com o enlace já fora de sincronismo). Nenhum comando de handover chega e o UE declara t310-Expiry.",
-      "Falha na 1ª tentativa: no reestabelecimento, o UE volta para a n78/PCI 88 em vez de usar a melhor célula que ele mesmo já mediu na n41, e insiste no RACH numa célula reprovada no critério S (contra a TS 38.304 e o reestabelecimento da TS 38.331). Só passa para a n41 depois de esgotar o preambleTransMax."
-    ],
-    "closing": "Os dois sintomas vêm da mesma causa: o DUT não confia, ou não usa a tempo, o que mede na outra frequência.",
-    "apparentThreshold": "Pelos valores L3 que o próprio DUT registra, a PCI 145 passou de −94 dBm em T +2,917 s (−93,994 dBm) sem disparar o A5. O momento do report casa com um limiar efetivo entre −94 e −93 dBm (≈ −93,5 dBm, linha pontilhada no gráfico), contra −99 dBm configurado. É um indício, não uma prova: pode ser erro no limiar/hysteresis do A5 ou atraso na avaliação do evento inter-frequência.",
-    "statsTitle": "O que falta para fechar com certeza estatística",
-    "stats": [
-      "Mais repetições: ≥ 20–30 por cenário, com intervalo de confiança para a taxa de RLF e para o tempo até o report.",
-      "Teste A/B de firmware: o mesmo Meridian com outro build/modem (por exemplo NR-MOD 17.2.5), para isolar a regressão.",
-      "Teste conduzido em laboratório com emulador de canal e níveis fixos de n78/n41: período de medição inter-frequência e precisão do RSRP frente à TS 38.133 (conformidade RRM pela TS 38.533), e o A5 com variações de limiar e hysteresis.",
-      "Logs internos que o log atual não mostra: agendamento e ocupação de cada gap pelo ML1, avaliação do A5 com o TTT andando e a lógica de seleção de célula no reestabelecimento.",
-      "Traces do lado da rede (gNB/NGAP): confirmar se o report de 34.178 chegou e se algum comando de handover foi enviado.",
-      "Variações de cenário: outros pares de banda (n78→n1), o sentido inverso (n41→n78), outro site ou operadora e a troca de SIM entre os aparelhos."
-    ]
-  }
+  ]
 }

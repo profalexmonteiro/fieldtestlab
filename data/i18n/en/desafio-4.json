@@ -1,0 +1,452 @@
+{
+  "tab": "Challenge 04 · Voice over IMS",
+  "tag": [
+    "CHALLENGE 4",
+    "IMS REGISTRATION AND VOICE CALL"
+  ],
+  "title": "IMS registration and voice call · VoNR / VoLTE",
+  "description": "Investigate why the Vanguard does not receive the MT call over VoNR and why the voice of the MO VoLTE call is unintelligible. Compare each symptom with the Solstice CDUT and decide whether there is one cause or two.",
+  "sideInfo": [
+    {
+      "label": "Evaluated RATs"
+    },
+    {
+      "label": "Serving cells"
+    },
+    {
+      "label": "IMS core"
+    }
+  ],
+  "materials": [
+    {
+      "label": "Student case · Desafio_S04.docx"
+    },
+    {
+      "label": "Theory reference · Sessão teórica_S04.pptx"
+    },
+    {
+      "label": "Report template · Template_Relatorio_Issue.docx"
+    }
+  ],
+  "report": {
+    "title": "Issue Report — Challenge 4 · Voice over IMS",
+    "template": "data/i18n/en/relatorios/desafio-4.html"
+  },
+  "scenarios": {
+    "cen1-dut": {
+      "number": "01 · DUT",
+      "kicker": "SCENARIO 01 · DUT · TEST CASE #1",
+      "title": "IMS registration rejected: the MT call never arrives",
+      "description": "Vanguard · airplane mode toggle + MT call over VoNR · n78 PCI 88 · three repetitions",
+      "status": "Failure reproduced · 3/3",
+      "state": "NR SA registered · IMS DEREGISTERED",
+      "metrics": [
+        {
+          "label": "Authenticated attempts",
+          "note": "3 of 3 repetitions · 100%"
+        },
+        {
+          "label": "Rejection reason"
+        },
+        {
+          "label": "IMS registration",
+          "value": "abandoned"
+        },
+        {
+          "note": "n78 · stationary UE"
+        }
+      ],
+      "rows": [
+        {
+          "label": "1st 403 Forbidden",
+          "sub": "REGISTER CSeq 2 · cached nonce",
+          "final": "0.104–0.116 s"
+        },
+        {
+          "label": "2nd 403 Forbidden",
+          "sub": "REGISTER CSeq 4 · registration abandoned",
+          "final": "0.212–0.231 s"
+        }
+      ],
+      "evidence": [
+        {
+          "title": "Authorization with the wrong nonce",
+          "html": "The 401 carries <code>nonce=\"N1-7f3a9c1e4b\"</code>, but REGISTER CSeq 2 answers with <code>nonce=\"N0-000000-init\"</code>, a cached value that survived the airplane mode toggle."
+        },
+        {
+          "title": "Always one challenge behind",
+          "html": "The cache is only updated after the 403. In REGISTER CSeq 4 the DUT uses <code>N1-7f3a9c1e4b</code>, while the latest challenge was already <code>N2-8d5e0f2a91</code>."
+        },
+        {
+          "title": "No IMS, no voice in 5G SA",
+          "html": "After 2 rejections the IMS client abandons registration and Voice Domain Selection concludes <code>ims_voice_over_nr: not available</code>. The log ends with no paging and no INVITE."
+        },
+        {
+          "title": "Radio, NAS and PDU are fine",
+          "html": "5G SA Registration Accept and both PDU sessions (internet and IMS) are accepted before the first REGISTER, just as on the CDUT."
+        }
+      ],
+      "notice": "Log of repetition 01. Repetitions 02 and 03 (403 at 0.104/0.212 s and 0.116/0.231 s) come from the case document. The test bench uses SIP Digest MD5 instead of IMS-AKA. The UE log does not show the P-CSCF/S-CSCF side; the reason for the 403 comes from the response's Warning header.",
+      "logLabel": "Source: Desafio_S04_Log_Cen1_MT_VoNR_DUT_Vanguard.html · scenario 1, repetition 01 · 66 events · 5.9 s. Original log, unchanged.",
+      "timeReference": {
+        "label": "Time since REGISTER #1"
+      },
+      "guide": [
+        {
+          "title": "Airplane mode toggle",
+          "text": "The procedure restarts the IMS client without rebooting the device: 5G deregistration and radio off for about 1.4 s. Keep this in mind: what survives a toggle does not survive a power cycle."
+        },
+        {
+          "title": "5G SA registers normally",
+          "text": "Authentication, Security Mode and Registration Accept follow the same sequence and timing as the CDUT. Radio and NAS do not diverge."
+        },
+        {
+          "title": "IMS PDU session ready",
+          "text": "PDU session 2 (IMS) accepted. SIP registration with the P-CSCF starts here."
+        },
+        {
+          "title": "REGISTER #1: T 0",
+          "text": "First REGISTER, with an empty Authorization (CSeq 1), as the Digest flow requires. The case times are counted from here."
+        },
+        {
+          "title": "401: challenge N1",
+          "text": "WWW-Authenticate: Digest nonce=\"N1-7f3a9c1e4b\", qop=auth, MD5. To answer, the UE must use exactly this nonce."
+        },
+        {
+          "title": "Authorization built with a CACHED nonce",
+          "text": "The internal event shows the error: \"using CACHED nonce N0-000000-init\". At the same point the CDUT uses the challenge nonce (\"using challenge nonce\")."
+        },
+        {
+          "title": "1st 403 Forbidden at T +0.110 s",
+          "text": "Warning: 399 \"nonce does not match latest challenge\". The network says exactly what is wrong: the nonce, not the password or the identity."
+        },
+        {
+          "title": "Cache updated too late",
+          "text": "Only now does the cache move to N1. The DUT restarts with REGISTER #3 without Authorization and gets a fresh challenge, N2-8d5e0f2a91."
+        },
+        {
+          "title": "One challenge behind again",
+          "text": "\"using CACHED nonce N1-7f3a9c1e4b\": the DUT answers the previous challenge, not the current one (N2). If the \"init\" value alone were the defect, this attempt would have passed."
+        },
+        {
+          "title": "2nd 403 Forbidden at T +0.220 s",
+          "text": "Same Warning 399. This is the second rejected authenticated attempt."
+        },
+        {
+          "title": "IMS registration abandoned",
+          "text": "max_auth_attempts = 2 reached: ims_state DEREGISTERED. The client does not try again."
+        },
+        {
+          "title": "No voice in 5G SA",
+          "text": "Voice Domain Selection: IMS not registered, no CS domain reachable from 5GS, and the UE stays in 5G SA without voice. The remote terminal's call cannot be delivered: the log ends with no paging and no INVITE."
+        }
+      ]
+    },
+    "cen1-cdut": {
+      "number": "02 · REFERENCE",
+      "kicker": "SCENARIO 01 · CDUT · TEST CASE #1",
+      "title": "Registered on the 1st attempt, MT call answered",
+      "description": "Solstice · same airplane mode toggle + MT call over VoNR · n78 PCI 88 · three repetitions",
+      "status": "Reference passed · 3/3",
+      "state": "IMS REGISTERED · VoNR call",
+      "metrics": [
+        {
+          "label": "Authenticated attempts",
+          "value": "1 attempt",
+          "note": "3 of 3 repetitions · 100%"
+        },
+        {
+          "label": "REGISTER 200 OK",
+          "value": "0.098–0.109 s",
+          "note": "since REGISTER #1"
+        },
+        {
+          "label": "MT call",
+          "value": "received and answered",
+          "note": "VoNR · EVS 24.4 kbps · PT 97"
+        },
+        {
+          "label": "RTP at T+10 s",
+          "note": "repetition 01 · clear audio"
+        }
+      ],
+      "rows": [
+        {
+          "sub": "1st authenticated attempt · 3 rep.",
+          "final": "0.098–0.109 s"
+        }
+      ],
+      "evidence": [
+        {
+          "title": "Answers the current challenge",
+          "html": "After the 401 with <code>nonce=\"N1-5c20e9b7d1\"</code>, REGISTER CSeq 2 uses the same nonce and the 200 OK arrives at T +0.102 s."
+        },
+        {
+          "title": "Same procedure as the DUT",
+          "html": "Same cell (PCI 88), same SIP realm, same airplane mode toggle and the same remote terminal originating the call."
+        },
+        {
+          "title": "MT call delivered",
+          "html": "Paging → RRC Setup <code>mt-Access</code> → INVITE → 183 → QoS preconditions (5QI 1) → 180 Ringing → 200 OK. EVS vocoder on PT 97, the same as in the SDP."
+        },
+        {
+          "title": "Contrast localizes, it does not prove",
+          "html": "The CDUT shows that the network and realm accept Digest MD5 on the 1st attempt. The DUT's internal mechanism comes from the <code>Authorization Build</code> events in the Vanguard's own log."
+        }
+      ],
+      "notice": "Log of repetition 01. The 200 OK times of repetitions 02 and 03 (0.098 s and 0.109 s) come from the case document. The MT call arrives about 12 s after registration, when the remote terminal places the call; the replay compresses long gaps.",
+      "logLabel": "Source: Desafio_S04_Log_Cen1_MT_VoNR_CDUT_Solstice.html · scenario 1, repetition 01 · 97 events · 34.1 s. Original log, unchanged.",
+      "timeReference": {
+        "label": "Time since REGISTER #1"
+      },
+      "guide": [
+        {
+          "title": "REGISTER #1: T 0",
+          "text": "Same sequence as the DUT so far: airplane mode toggle, 5G SA registration and two PDU sessions."
+        },
+        {
+          "title": "401 with nonce N1",
+          "text": "nonce=\"N1-5c20e9b7d1\", qop=auth, MD5, realm ims.novalink.com.br."
+        },
+        {
+          "title": "Authorization with the challenge nonce",
+          "text": "\"using challenge nonce N1-5c20e9b7d1\". This is the exact point where the DUT diverges: there it reads \"using CACHED nonce\"."
+        },
+        {
+          "title": "200 OK at T +0.102 s",
+          "text": "IMS registration completed on the 1st authenticated attempt, followed by the reg-event SUBSCRIBE/NOTIFY."
+        },
+        {
+          "title": "Paging: the network reaches the UE",
+          "text": "With IMS registered, the remote terminal's call becomes paging in 5G SA. The UE answers with RRC Setup, establishmentCause mt-Access."
+        },
+        {
+          "title": "MT INVITE with SDP offer",
+          "text": "The network offers EVS (PT 97), AMR-WB (96/99), AMR (98/101) and DTMF. Here the network is the offerer and PT 97 is EVS on both sides."
+        },
+        {
+          "title": "Voice bearer: 5QI 1",
+          "text": "PDU session modification with QFI 2 / 5QI 1 (GBR 53 kbps). The QoS preconditions are met on both ends in the UPDATE."
+        },
+        {
+          "title": "180 Ringing",
+          "text": "The device rings: the MT call was delivered, the opposite of the DUT."
+        },
+        {
+          "title": "EVS vocoder on PT 97",
+          "text": "EVS 24.4 kbps SWB on PT 97: the vocoder codec is the one the SDP binds to PT 97."
+        },
+        {
+          "title": "RTP at T+10 s",
+          "text": "TX 500 / RX 498 packets on PT 97, with clear audio."
+        }
+      ]
+    },
+    "cen2-dut": {
+      "number": "03 · DUT",
+      "kicker": "SCENARIO 02 · DUT · TEST CASE #2",
+      "title": "Call established, unintelligible voice",
+      "description": "Vanguard · power cycle + MO call over VoLTE · Band 3 EARFCN 1575 PCI 41 · three repetitions",
+      "status": "Failure reproduced · 3/3",
+      "state": "VoLTE call active · codec mismatch",
+      "timelineLabels": {
+        "eyebrow": "Repetition 01 · log",
+        "note": "Seconds since INVITE · marks: INVITE, 183, 200 OK; vocoder start, RTP at T+10 s, BYE"
+      },
+      "metrics": [
+        {
+          "label": "IMS registration",
+          "value": "1st attempt",
+          "note": "200 OK in 0.110 s · after power cycle"
+        },
+        {
+          "label": "Network SDP · PT 97",
+          "note": "183 and UPDATE 200 OK"
+        },
+        {
+          "label": "DUT vocoder · PT 97",
+          "value": "EVS 24.4 kbps",
+          "note": "payload type mismatch"
+        },
+        {
+          "label": "RTP at T+10 s",
+          "note": "3/3 unintelligible voice"
+        }
+      ],
+      "rows": [
+        {
+          "label": "SIP signalling",
+          "sub": "INVITE → 200 OK · no errors",
+          "final": "2.105 s"
+        },
+        {
+          "label": "RTP audio",
+          "sub": "EVS × AMR on PT 97",
+          "final": "unintelligible voice"
+        }
+      ],
+      "evidence": [
+        {
+          "title": "Same number, different codecs",
+          "html": "The DUT's INVITE declares <code>a=rtpmap:97 EVS/16000</code> (AMR/8000 is PT 98). The network's answer in the 183 picks AMR and labels it <code>a=rtpmap:97 AMR/8000</code>."
+        },
+        {
+          "title": "The DUT ignores the answer's rtpmap",
+          "html": "In the UPDATE the DUT re-offers <code>PT 97 = EVS/16000</code>, and the network again answers <code>PT 97 = AMR/8000</code>. The vocoder starts as <code>EVS 24.4 kbps (SWB), PT 97</code>."
+        },
+        {
+          "title": "Transport and QoS are normal",
+          "html": "QCI 1 dedicated bearer (GBR 53 kbps), preconditions met and TX 500 / RX 498 at T+10 s: the packets arrive, but are decoded with the wrong codec."
+        },
+        {
+          "title": "No IMS registration defect here",
+          "html": "After the power cycle the nonce cache is empty (<code>cache empty → using challenge nonce</code>) and registration passes on the 1st attempt. The scenario 1 symptom does not appear."
+        }
+      ],
+      "notice": "Log of repetition 01. The RTP counters of repetitions 02 and 03 (RX 497 and 499) come from the case document. This is a UE log: it does not show the payload the network actually sends, only the SDPs exchanged and the vocoder the DUT selected.",
+      "logLabel": "Source: Desafio_S04_Log_Cen2_MO_VoLTE_DUT_Vanguard.html · scenario 2, repetition 01 · 101 events · 25.7 s. Original log, unchanged.",
+      "timeReference": {
+        "label": "Time since INVITE"
+      },
+      "guide": [
+        {
+          "title": "Full power cycle",
+          "text": "Unlike scenario 1, the device is fully rebooted here. Keep this contrast in mind when ruling out hypotheses."
+        },
+        {
+          "title": "Empty nonce cache",
+          "text": "\"cache empty -> using challenge nonce\": with no stale value cached, the DUT answers the right challenge."
+        },
+        {
+          "title": "IMS registered on the 1st attempt",
+          "text": "200 OK in 0.110 s, practically the same as the CDUT (0.101 s). The scenario 1 authentication defect does not show up: same SIM, same credentials."
+        },
+        {
+          "title": "MO INVITE: the DUT's offer",
+          "text": "m=audio 42010 RTP/AVP 97 96 99 98 101 102 103. The DUT numbers: 97 = EVS/16000, 96/99 = AMR-WB, 98/101 = AMR/8000. This is T 0."
+        },
+        {
+          "title": "183: the network picks AMR and calls it 97",
+          "text": "SDP answer m=audio 36020 RTP/AVP 97 103 with a=rtpmap:97 AMR/8000. The network selected AMR (narrowband) but reused number 97, which for the DUT is EVS. This is the exact point of divergence."
+        },
+        {
+          "title": "DUT UPDATE: 97 is still EVS",
+          "text": "The DUT re-offers m=audio 42010 RTP/AVP 97 103 with a=rtpmap:97 EVS/16000. It did not adopt the answer's codec. Compare with the CDUT, whose UPDATE already re-offers 97 = AMR/8000."
+        },
+        {
+          "title": "UPDATE 200 OK: the network insists",
+          "text": "Again a=rtpmap:97 AMR/8000. Within one session, PT 97 now has two meanings: EVS for the DUT, AMR for the network."
+        },
+        {
+          "title": "Call answered, no SIP error",
+          "text": "All signalling was accepted: no 4xx/5xx, QCI 1 bearer active. Nothing in the call flow flags a failure, which makes the defect hard to see without reading the SDP."
+        },
+        {
+          "title": "EVS vocoder on PT 97",
+          "text": "\"EVS 24.4 kbps (SWB), PT 97\". On the CDUT the same event shows \"AMR-NB 12.2 kbps, PT 97\". The DUT encodes and decodes EVS while the far end uses AMR."
+        },
+        {
+          "title": "Normal RTP, garbled audio",
+          "text": "TX 500 / RX 498 on PT 97, practically the same as the CDUT (RX 497). There is no packet loss: the problem is the codec, not the transport."
+        },
+        {
+          "title": "BYE: unintelligible voice",
+          "text": "The user ends the call (\"audio unintelligible\"). The symptom repeats in 3 of 3 repetitions."
+        }
+      ]
+    },
+    "cen2-cdut": {
+      "number": "04 · REFERENCE",
+      "kicker": "SCENARIO 02 · CDUT · TEST CASE #2",
+      "title": "Same signalling, clear audio",
+      "description": "Solstice · power cycle + MO call over VoLTE · Band 3 EARFCN 1575 PCI 41 · three repetitions",
+      "status": "Reference passed · 3/3",
+      "state": "VoLTE call active · AMR-NB",
+      "timelineLabels": {
+        "eyebrow": "Repetition 01 · log",
+        "note": "Seconds since INVITE · marks: INVITE, 183, 200 OK; vocoder start, RTP at T+10 s, BYE"
+      },
+      "metrics": [
+        {
+          "label": "IMS registration",
+          "value": "1st attempt",
+          "note": "200 OK in 0.101 s"
+        },
+        {
+          "label": "Network SDP · PT 97",
+          "note": "same as offered by the CDUT"
+        },
+        {
+          "label": "CDUT vocoder · PT 97",
+          "value": "AMR-NB 12.2 kbps",
+          "note": "consistent with the SDP"
+        },
+        {
+          "label": "RTP at T+10 s",
+          "note": "3/3 clear audio"
+        }
+      ],
+      "rows": [
+        {
+          "label": "SIP signalling",
+          "sub": "INVITE → 200 OK · no errors",
+          "final": "2.105 s"
+        },
+        {
+          "label": "RTP audio",
+          "sub": "AMR-NB on PT 97",
+          "final": "clear audio"
+        }
+      ],
+      "evidence": [
+        {
+          "title": "Consistent payload type map",
+          "html": "The CDUT offers <code>97 = AMR/8000</code> (EVS is 107), and the network answers <code>a=rtpmap:97 AMR/8000</code>: the same number with the same codec on both sides."
+        },
+        {
+          "title": "UPDATE follows the answer",
+          "html": "The UPDATE re-offers only <code>97 = AMR/8000</code>, the negotiated codec, and the vocoder starts as <code>AMR-NB 12.2 kbps, PT 97</code>."
+        },
+        {
+          "title": "Same signalling and counters",
+          "html": "Same 183, PRACK, QCI 1 bearer, UPDATE, 180 and 200 OK timing as the DUT. RTP at TX 500 / RX 497, practically the same as the DUT."
+        },
+        {
+          "title": "The control does not exercise remapping",
+          "html": "The CDUT's numbering matches the network's, so this log does not show how the Solstice would handle a payload type renumbered in the answer. The contrast localizes the defect in the DUT; the mechanism comes from the Vanguard's own SDPs."
+        }
+      ],
+      "notice": "Log of repetition 01. The RTP counters of repetitions 02 and 03 (RX 498 and 496) come from the case document.",
+      "logLabel": "Source: Desafio_S04_Log_Cen2_MO_VoLTE_CDUT_Solstice.html · scenario 2, repetition 01 · 101 events · 25.7 s. Original log, unchanged.",
+      "timeReference": {
+        "label": "Time since INVITE"
+      },
+      "guide": [
+        {
+          "title": "IMS registered on the 1st attempt",
+          "text": "Same flow as the DUT after the power cycle: empty cache, challenge nonce, 200 OK in 0.101 s."
+        },
+        {
+          "title": "MO INVITE: the CDUT's offer",
+          "text": "m=audio 40020 RTP/AVP 107 104 110 97 108 105 100. The CDUT numbers: 107 = EVS, 104/110 = AMR-WB, 97/108 = AMR/8000. This is T 0."
+        },
+        {
+          "title": "183: the network picks AMR on 97",
+          "text": "a=rtpmap:97 AMR/8000, the same number and codec the CDUT offered. No ambiguity."
+        },
+        {
+          "title": "UPDATE with the negotiated codec",
+          "text": "The CDUT re-offers m=audio 40020 RTP/AVP 97 100 with a=rtpmap:97 AMR/8000. The offer follows the previous answer."
+        },
+        {
+          "title": "AMR-NB vocoder on PT 97",
+          "text": "\"AMR-NB 12.2 kbps, PT 97\": the vocoder uses the codec the SDP binds to PT 97. On the DUT this same event shows EVS."
+        },
+        {
+          "title": "RTP at T+10 s",
+          "text": "TX 500 / RX 497 on PT 97, practically the same counters as the DUT, with clear audio. The difference is the codec, not the packets."
+        }
+      ]
+    }
+  }
+}

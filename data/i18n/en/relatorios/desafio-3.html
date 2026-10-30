@@ -1,0 +1,41 @@
+<!-- Report fragment; {{data}} is replaced with the generation date. -->
+<h1>Issue Report — Field Test</h1>
+<div class="report-meta">Challenge 3 · S03 · NovaLink Telecom / Site Delta · Generated on {{data}}</div>
+<h2>1. Identification</h2>
+<p><strong>Title:</strong> RLF due to inter-frequency handover delay and access attempt on an ineligible cell — Meridian 5G SA.</p>
+<p><strong>Severity / Priority:</strong> High — loss of connection continuity in 3/3 repetitions of the inter-frequency scenario; recovery requires an attempt on a second cell.</p>
+<p><strong>Reported by / Date:</strong> Field test / {{data}}</p>
+<h2>2. Device configuration</h2>
+<table><thead><tr><th>Item</th><th>DUT</th><th>CDUT (reference)</th></tr></thead><tbody>
+  <tr><td>Model</td><td>Meridian</td><td>Solstice</td></tr>
+  <tr><td>SW / build / modem</td><td>2.4.1 · MRD-B2408.1 · NR-MOD 17.3.0</td><td>3.1.0 · SOL-B2402.7 · NR-MOD 17.2.5</td></tr>
+  <tr><td>SIM / plan / UE category</td><td>Not specified in the material</td><td>Not specified in the material</td></tr>
+  <tr><td>Mode / RAT</td><td>5G SA · NR</td><td>5G SA · NR</td></tr>
+  <tr><td>Logging tool</td><td colspan="2">Modem log via the device's diagnostic port</td></tr>
+  <tr><td>File</td><td>Desafio_S03_Log_DUT_Meridian.html</td><td>Desafio_S03_Log_CDUT_Solstice.html</td></tr>
+</tbody></table>
+<h2>3. Test environment and scenario</h2>
+<p><strong>Network / operator:</strong> NovaLink Telecom, commercial network. <strong>Site:</strong> Delta.</p>
+<p><strong>Serving:</strong> n78 · NR-ARFCN 633180 · PCI 88. <strong>Target:</strong> n41 · NR-ARFCN 504990 · PCI 145 and 160.</p>
+<p><strong>Route / condition:</strong> same route and condition for DUT and CDUT, per the case; route/time and coordinates not stated.</p>
+<h2>4. Steps to reproduce</h2>
+<ol><li>Establish a 5G SA data session and start moving along the test route.</li><li>Confirm intra-frequency measurements (A3/A2) and the inter-frequency A5 configuration (measId=2, TTT=240 ms).</li><li>Degrade the n78 serving cell and observe Measurement Report, handover/RLF, RACH and recovery.</li><li>Repeat three full cycles and compare Meridian with Solstice at the same location.</li></ol>
+<h2>5. Reproducibility</h2>
+<table><thead><tr><th>Scenario</th><th>Device</th><th>Result</th><th>Frequency</th></tr></thead><tbody>
+  <tr><td>Control</td><td>Meridian · DUT</td><td>3/3 without RLF</td><td>Intra-frequency · n78</td></tr>
+  <tr><td>Failure</td><td>Meridian · DUT</td><td>3/3 with RLF</td><td>Inter-frequency · n78 → n41</td></tr>
+  <tr><td>Reference</td><td>Solstice · CDUT</td><td>3/3 without RLF</td><td>Inter-frequency · n78 → n41</td></tr>
+</tbody></table>
+<h2>6. Observed symptom</h2>
+<ul><li>Meridian: in the inter-frequency scenario, the A5 report occurs 3.660–3.730 s after the second measurement configuration; RLF due to t310-Expiry at 3.830–3.870 s.</li><li>After RLF, serving PCI 88 does not answer six Msg1 attempts; the UE tries PCI 145 and completes re-establishment between 4.063–4.103 s.</li><li>Solstice completes the inter-frequency handover in 0.815–0.865 s, without RLF. Meridian also completes the intra-frequency control without RLF.</li></ul>
+<h2>7. Comparison (Repetition 01 and ranges over three repetitions)</h2>
+<table><thead><tr><th>Metric</th><th>DUT · inter (3 rep.)</th><th>CDUT · inter (3 rep.)</th><th>DUT · intra (3 rep.)</th></tr></thead><tbody>
+  <tr><td>Measurement Report A5</td><td>3.660–3.730 s</td><td>0.655–0.705 s</td><td>Not applicable; A3 at 1.155–1.210 s</td></tr>
+  <tr><td>Mobility result</td><td>RLF 3.830–3.870 s</td><td>Complete 0.815–0.865 s</td><td>Complete 1.312–1.370 s</td></tr>
+  <tr><td>Recovery</td><td>PCI 145; Complete 4.063–4.103 s</td><td>No RLF observed</td><td>No RLF observed</td></tr>
+</tbody></table>
+<h2>8. Attached evidence</h2>
+<ul><li>Desafio_S03_Log_DUT_Meridian.html — scenario 2, repetition 01.</li><li>Desafio_S03_Log_CDUT_Solstice.html — scenario 3, repetition 01.</li><li>Relevant records: measConfig #2, measId=2 / A5, RLM statistics 0xB959, t310-Expiry, six Random Access attempts on PCI 88, and re-establishment on PCI 145.</li><li>Map/route/GPS coordinates: not available in the source material.</li></ul>
+<h2>9. Field tester comments</h2>
+<p>The contrast between Meridian's intra-frequency control and the successful inter-frequency CDUT localizes the deviation in the DUT's inter-frequency behaviour, with no evidence of widespread RLF or a general site failure. The data point to a delay in the measurement/handover decision path and a post-RLF access attempt on PCI 88 even though it fails the S criterion.</p>
+<p class="caution"><strong>Preliminary conclusion:</strong> the evidence is consistent with an anomaly in Meridian's inter-frequency measurement processing/triggering and in its post-RLF cell selection. The exact root cause cannot be closed with these UE logs alone: Xn/NGAP signalling, additional repeated samples, detailed RF values over time and confirmation of the internal eligibility decision for PCI 88 are missing. Correlating these data and repeating the test after a modem/software fix is recommended.</p>

@@ -41,14 +41,30 @@ const RULES = [
   { when: (m) => /PRACH attempt\s*\d+/i.test(m.summary), tone: "warn-text",
     label: (m) => t("proc.msg1", { n: m.summary.match(/PRACH attempt\s*(\d+)/i)[1] }) },
   { when: (m) => /RACH Trigger|RACH_START/i.test(m.msg), tone: "warn-text", label: () => t("proc.rach") },
+  // IMS / SIP: responses are named by their status line ("401 Unauthorized").
+  { when: (m) => /^401\b/.test(m.msg), tone: "accent-text", label: () => t("proc.sipChallenge") },
+  { when: (m) => /^[456]\d\d\b/.test(m.msg), tone: "bad-text", label: (m) => t("proc.sipError", { status: m.msg }) },
+  { when: (m) => /IMS Registration Failure/i.test(m.msg), tone: "bad-text", label: () => t("proc.imsFailed") },
+  { when: (m) => /Voice Domain Selection/i.test(m.msg) && /unavailable/i.test(m.summary), tone: "bad-text", label: () => t("proc.noVoice") },
+  { when: (m) => (/^200 OK$/i.test(m.msg) && /registration complete/i.test(m.summary))
+      || (/IMS Registration State/i.test(m.msg) && /\bREGISTERED\b/.test(m.summary)),
+    tone: "good-text", label: () => t("proc.imsRegistered") },
+  { when: (m) => /^REGISTER$/i.test(m.msg), tone: "accent-text", label: () => t("proc.imsRegister") },
+  { when: (m) => /Authorization Build/i.test(m.msg) && /CACHED/.test(m.summary), tone: "warn-text", label: () => t("proc.nonceCached") },
+  { when: (m) => /^INVITE$/i.test(m.msg), tone: "accent-text", label: () => t("proc.invite") },
+  { when: (m) => /^180 Ringing$|^Incoming Call$/i.test(m.msg), tone: "good-text", label: () => t("proc.ringing") },
+  { when: (m) => /^200 OK$/i.test(m.msg) && /call answered/i.test(m.summary), tone: "good-text", label: () => t("proc.answered") },
+  { when: (m) => /^Vocoder Started$/i.test(m.msg), tone: "accent-text", label: (m) => t("proc.vocoder", { codec: m.summary }) },
+  { when: (m) => /RTP\/RTCP Statistics/i.test(m.msg), tone: "", label: () => t("proc.rtpStats") },
+  { when: (m) => /Deregistration request|Detach request/i.test(m.msg), tone: "warn-text", label: () => t("proc.deregistration") },
   { when: (m) => /Registration Accept|Attach Accept/i.test(m.msg), tone: "good-text", label: () => t("proc.accepted") },
   { when: (m) => /Registration Complete|Attach Complete/i.test(m.msg), tone: "good-text", label: () => t("proc.registered") },
   { when: (m) => /Registration Request|Attach Request/i.test(m.msg), tone: "accent-text", label: () => t("proc.registrationRequest") },
   { when: (m) => /^Authentication (Request|Response)$/i.test(m.msg), tone: "accent-text", label: () => t("proc.auth") },
   { when: (m) => /^Security Mode (Command|Complete)$/i.test(m.msg), tone: "accent-text", label: () => t("proc.security") },
   { when: (m) => /PDU session establishment/i.test(m.msg), tone: "accent-text", label: () => t("proc.pduSession") },
-  { when: (m) => /^RRCSetup(Request|Complete)?$/i.test(m.msg), tone: "accent-text", label: () => t("proc.rrc") },
-  { when: (m) => /^RRCRelease$/i.test(m.msg), tone: "warn-text", label: () => t("proc.rrcRelease") },
+  { when: (m) => /^RRCSetup(Request|Complete)?$|^rrcConnection(Request|Setup|SetupComplete)$/i.test(m.msg), tone: "accent-text", label: () => t("proc.rrc") },
+  { when: (m) => /^RRCRelease$|^rrcConnectionRelease$/i.test(m.msg), tone: "warn-text", label: () => t("proc.rrcRelease") },
   { when: (m) => /^(MIB|MasterInformationBlock|SIB\d+|systemInformationBlockType\d+)$/i.test(m.msg), tone: "", label: () => t("proc.sysInfo") },
   { when: (m) => /Measurement Database Update/i.test(m.msg), tone: "", label: () => t("proc.l1Measurement") },
   { when: (m) => /ACQ Config|PSS\/SSS/i.test(m.msg), tone: "", label: () => t("proc.cellSearch") }
@@ -78,6 +94,8 @@ function classify(event) {
 // (PRACH preambles are UL Msg1 even though the log files them as "Event").
 function linkDirection(event) {
   if (/PRACH attempt\s*\d+/i.test(event.summary || "")) return "UL";
+  // Cell detection is the UE receiving the cell's sync signals (PSS/SSS, SSB): downlink.
+  if (/PSS\/SSS Detected|SSB Detected/i.test(event.msg || "")) return "DL";
   return "";
 }
 
@@ -95,9 +113,16 @@ export function analyzeEvents(events) {
   let suciPlmn = "";
   let latestCell = "";
   let measurementSummary = "";
+  let currentAttempt = null;
 
   return events.map((event) => {
     const text = `${event.msg || ""} ${event.summary || ""} ${event.full || ""}`;
+    // Identity is per registration attempt: don't carry the previous attempt's PLMN/SUCI over.
+    if (event.attempt && event.attempt !== currentAttempt) {
+      currentAttempt = event.attempt;
+      selectedPlmn = "";
+      suciPlmn = "";
+    }
     selectedPlmn = lastMatch(text, /selectedPLMN[=: ]+([0-9/]+)/gi) || selectedPlmn;
     suciPlmn = lastMatch(text, /Home-Network-Id[=: ]+([0-9/]+)/gi) || suciPlmn;
     if (event.cell) latestCell = event.cell;

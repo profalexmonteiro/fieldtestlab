@@ -153,7 +153,7 @@ async function main() {
     const { challenge, scenario } = current();
     renderScenario(catalog, challenge, scenario);
     renderModals(scenario);
-    renderScene(scenario.scene);
+    renderScene(scenario.scene, scenario.rightKind, scenario.coreNodes);
     ensureTraces(challenge);
     refreshGlossary();
   };

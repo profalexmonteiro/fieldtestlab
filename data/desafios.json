@@ -1,10 +1,11 @@
 {
   "challenges": [
-    "data/desafio-1.json",
-    "data/desafio-2.json"
+    "data/desafio-2.json",
+    "data/desafio-3.json",
+    "data/desafio-4.json"
   ],
   "default": {
-    "challenge": "desafio-2",
+    "challenge": "desafio-3",
     "scenario": "dut-inter"
   }
 }

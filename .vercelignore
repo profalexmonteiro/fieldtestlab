@@ -1,0 +1,33 @@
+# Publica somente o que o simulador usa. Tudo o que estiver nas pastas
+# dos desafios fica fora do deploy, exceto os arquivos liberados abaixo
+# (logs reproduzidos e material linkado na página).
+# Para publicar outro arquivo, acrescente uma linha "!caminho/do/arquivo".
+
+/Desafios/Desafio 2/*
+!/Desafios/Desafio 2/Desafio_S02_Log_DUT_Aurora.html
+!/Desafios/Desafio 2/Desafio_S02_Log_CDUT_Boreal.html
+!/Desafios/Desafio 2/Desafio_Semana_2.docx
+!/Desafios/Desafio 2/Sessão_teórica_Semana_2.pptx
+
+/Desafios/Desafio 3/*
+!/Desafios/Desafio 3/Desafio_S03_Log_DUT_Meridian.html
+!/Desafios/Desafio 3/Desafio_S03_Log_CDUT_Solstice.html
+!/Desafios/Desafio 3/material/
+/Desafios/Desafio 3/material/*
+!/Desafios/Desafio 3/material/Desafio_S03_Caso_Aluno.docx
+!/Desafios/Desafio 3/material/Sessão teórica.pptx
+
+/Desafios/Desafio 4/*
+!/Desafios/Desafio 4/Desafio_S04_Log_Cen1_MT_VoNR_DUT_Vanguard.html
+!/Desafios/Desafio 4/Desafio_S04_Log_Cen1_MT_VoNR_CDUT_Solstice.html
+!/Desafios/Desafio 4/Desafio_S04_Log_Cen2_MO_VoLTE_DUT_Vanguard.html
+!/Desafios/Desafio 4/Desafio_S04_Log_Cen2_MO_VoLTE_CDUT_Solstice.html
+!/Desafios/Desafio 4/Desafio_S04.docx
+!/Desafios/Desafio 4/Sessão teórica_S04.pptx
+!/Desafios/Desafio 4/Template_Relatorio_Issue.docx
+
+# Arquivos do repositório que não fazem parte do site
+README.md
+# Arte original do logotipo; o site usa os recortes em assets/
+logo.jpeg
+.vercelignore

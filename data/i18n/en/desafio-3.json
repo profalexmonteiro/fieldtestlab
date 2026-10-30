@@ -1,0 +1,462 @@
+{
+  "tab": "Challenge 03 · 5G Mobility",
+  "tag": [
+    "CHALLENGE 3",
+    "RADIO LINK FAILURE"
+  ],
+  "title": "Inter-frequency handover · 5G SA",
+  "description": "Investigate Meridian's mobility failure and compare it with the intra-frequency control and the Solstice CDUT. The times and events shown are the ones recorded in the field case.",
+  "sideInfo": [
+    {
+      "label": "Evaluated RAT"
+    },
+    {
+      "label": "Serving"
+    },
+    {
+      "label": "Inter-frequency target"
+    }
+  ],
+  "materials": [
+    {
+      "label": "Student case · Desafio_S03_Caso_Aluno.docx"
+    },
+    {
+      "label": "Theory reference · Sessão teórica.pptx"
+    }
+  ],
+  "report": {
+    "title": "Issue Report — Field Test",
+    "template": "data/i18n/en/relatorios/desafio-3.html"
+  },
+  "scenarios": {
+    "controle-intra": {
+      "number": "01 · CONTROL",
+      "label": "Meridian · intra-frequency",
+      "kicker": "SCENARIO 01 · CONTROL",
+      "title": "Intra-frequency handover completed",
+      "description": "Meridian · n78 PCI 88 → PCI 101 · same frequency · three repetitions",
+      "status": "Control passed · 3/3",
+      "leftNode": "gNodeB · serving",
+      "rightNode": "gNodeB · target",
+      "metrics": [
+        {
+          "label": "Active measurement",
+          "note": "same frequency"
+        },
+        {
+          "value": "1.155–1.210 s",
+          "note": "since degradation onset"
+        },
+        {
+          "label": "HO completion",
+          "value": "1.312–1.370 s"
+        },
+        {
+          "note": "OOS_FILT_BLER below threshold"
+        }
+      ],
+      "rows": [
+        {
+          "final": "1.155–1.210 s"
+        },
+        {
+          "final": "1.312–1.370 s"
+        }
+      ],
+      "evidence": [
+        {
+          "title": "Stable intra-RAT control",
+          "html": "3/3 handovers complete; the Report → completion chain took 155–160 ms."
+        },
+        {
+          "title": "Intra-frequency measurement active",
+          "html": "<code>measId=1</code> (A3) and <code>measId=3</code> (A2) were already configured."
+        },
+        {
+          "title": "No link failure",
+          "html": "Record 0xB959 kept OOS_FILT_BLER below threshold in every repetition."
+        },
+        {
+          "title": "Detailed log not provided",
+          "html": "The material includes full logs for scenarios 2 (DUT) and 3 (CDUT), not for this control."
+        }
+      ],
+      "notice": "The case describes this scenario as a same-frequency control. No detailed log file is attached for it; the values shown come from the challenge sheet.",
+      "logLabel": "No detailed log file for this scenario.",
+      "playbackSteps": [
+        {
+          "msg": "Start of serving degradation · PCI 88",
+          "summary": "measId=1 (A3, hysteresis 1 dB, TTT 320 ms) and measId=3 (A2, −100 dBm, TTT 160 ms) active since the first RRCReconfiguration; n41 is not configured."
+        },
+        {
+          "msg": "Measurement Report · measId=1 (A3)",
+          "summary": "SS-RSRP/SS-RSRQ serving −101 dBm/−13 dB; neighbour PCI 101 −90 dBm/−8 dB."
+        },
+        {
+          "msg": "RRCReconfiguration · targetPhysCellId=101",
+          "summary": "reconfigurationWithSync without absoluteFrequencySSB (same frequency), rach-ConfigDedicated present, t304=2000 ms."
+        },
+        {
+          "msg": "Random Access · Msg1 (dedicated preamble)",
+          "summary": "Contention-free access on PCI 101."
+        },
+        {
+          "msg": "Random Access Response · Msg2",
+          "summary": "PCI 101 answers the dedicated preamble."
+        },
+        {
+          "msg": "RRCReconfigurationComplete · no RLF",
+          "summary": "Handover complete 155 ms after the Report. Repetitions 02 and 03: 1.312 s and 1.370 s; OOS_FILT_BLER (0xB959) always below threshold."
+        }
+      ]
+    },
+    "dut-inter": {
+      "label": "Meridian · inter-frequency",
+      "kicker": "SCENARIO 02 · DUT",
+      "title": "Handover delay and Radio Link Failure",
+      "description": "Meridian · n78 PCI 88 → n41 PCI 145/160 · three repetitions",
+      "status": "Failure reproduced · 3/3",
+      "leftNode": "gNodeB · serving",
+      "rightNode": "gNodeB · target",
+      "metrics": [
+        {
+          "value": "3.660–3.730 s",
+          "note": "Configured TTT: 240 ms"
+        },
+        {
+          "value": "3.830–3.870 s",
+          "note": "cause: t310-Expiry"
+        },
+        {
+          "label": "1st cell · PCI 88",
+          "note": "no response · S criterion failed"
+        },
+        {
+          "label": "Re-establishment",
+          "value": "4.063–4.103 s"
+        }
+      ],
+      "rows": [
+        {
+          "final": "3.660–3.730 s"
+        },
+        {
+          "final": "3.830–3.870 s"
+        },
+        {
+          "label": "Recovery",
+          "sub": "PCI 145 · complete",
+          "final": "4.063–4.103 s"
+        }
+      ],
+      "evidence": [
+        {
+          "title": "Late inter-frequency measurement",
+          "html": "<code>measId=2</code> (A5, TTT 240 ms) reported only 3.660–3.730 s after configuration."
+        },
+        {
+          "title": "RLF before handover completion",
+          "html": "<code>t310-Expiry</code> occurs at 3.830–3.870 s; no handover completes in this scenario."
+        },
+        {
+          "title": "Attempt on an unsuitable serving cell",
+          "html": "PCI 88 is below <code>q-RxLevMin</code>; six Msg1 fail before the attempt on PCI 145."
+        },
+        {
+          "title": "Recovery on the neighbour cell",
+          "html": "On PCI 145, RRCReestablishmentRequest and Complete are recorded in all three repetitions."
+        }
+      ],
+      "notice": "Repetition 01 of the detailed log shows the full sequence. The case provides neither GPS coordinates nor inter-node signalling (Xn/NGAP); do not attribute the cause to the network based on this UE log alone.",
+      "logLabel": "Source: Desafio_S03_Log_DUT_Meridian.html · repetition 01 of scenario 2. The original file is shown unmodified.",
+      "timeReference": {
+        "label": "Time since MeasConfig #2"
+      },
+      "guide": [
+        {
+          "title": "MeasConfig #2: the race begins",
+          "text": "The network adds n41 (measObjectId 2) and event A5: serving < −106 dBm and neighbour > −100 dBm, hysteresis 1 dB, TTT 240 ms, with 6 ms gaps every 40 ms. This is T 0 for all times."
+        },
+        {
+          "title": "1st n41 measurement with gaps",
+          "text": "SFN 349: PCI 145 at −100.6 dBm. In the same SFN, the Solstice measured −98.8 dBm (1.8 dB more). In idle (line 2) both had measured −100.9 dBm."
+        },
+        {
+          "title": "2nd n41 measurement, 400 ms later",
+          "text": "The next update only arrives at SFN 389: 1 in every 10 gaps. At the same point (T +0.44 to +0.64 s) the Solstice was already measuring −94.4 and −93.8 dBm: the difference grew from 1.8 dB to about 5 dB. Compare the two blue curves and the cadence strip."
+        },
+        {
+          "title": "A5 entering condition met",
+          "text": "Using the DUT's own L3 values: serving −109.8 dBm (< −107) and PCI 145 −98.2 dBm (> −99). With a 240 ms TTT, the report could already go out from T +1.16 s."
+        },
+        {
+          "title": "Out of sync: BLER above 10 %",
+          "text": "OOS_FILT_BLER 10.6 % crosses the 10 % Qout threshold. A5 has been met for 333 ms and no report has been sent."
+        },
+        {
+          "title": "T310 running",
+          "text": "After N310 = 4 out-of-sync indications, T310 (2000 ms) starts at about T +1.85 s (inferred instant: RLF − 2000 ms). It is now a race: the handover must happen before T310 expires."
+        },
+        {
+          "title": "A5 report sent, too late",
+          "text": "measId=2 goes out at T +3.700 s, 2.78 s after the entering condition, with the serving at −119 dBm / −20 dB (SINR −12 dB). Only 150 ms of T310 are left. The CDUT received its command 63 ms after the report, but here the link is already out of sync and no handover command arrives."
+        },
+        {
+          "title": "RLF on t310-Expiry",
+          "text": "T310 expires with no handover command. RLM did its job: the serving really is at −120 dBm, and OOS_FILT_BLER is at the record's cap (BLER_Cap = 15 %)."
+        },
+        {
+          "title": "S criterion failed on PCI 88",
+          "text": "During re-establishment the UE goes back to n78 and reads PCI 88's SIB1: RSRP −120.8 dBm, below the −118 dBm q-RxLevMin (Srxlev ≈ −2.8 dB), and the S criterion gives FAILURE. PCI 145 (n41) had been measured shortly before at −92.8 dBm."
+        },
+        {
+          "title": "RACH anyway",
+          "text": "Despite failing the S criterion, the UE triggers the re-establishment RACH on PCI 88."
+        },
+        {
+          "title": "6 out of 6 Msg1 unanswered",
+          "text": "Power from 10 to 25 dBm with an estimated 140 dB pathloss. The 1st preamble already reaches the nominal −130 dBm target; each attempt raises the target by 4 dB and, on the last two, the UE hits its 25 dBm limit (the 6th needed 30 dBm and arrives ≈ 5 dB below its target). No RAR is received (FAILURE_MSG2_RA_TIMER_EXP): a cell that fails the S criterion, with the downlink at −120.8 dBm."
+        },
+        {
+          "title": "Only now n41",
+          "text": "After exhausting preambleTransMax, the UE searches n41 and finds PCI 145 at −92.8 dBm. About 115 ms were spent on PCI 88."
+        },
+        {
+          "title": "Service restored",
+          "text": "RRCReestablishmentComplete on PCI 145 at T +4.073 s. The Solstice completed its handover at T +0.840 s: a 3.2 s difference."
+        }
+      ]
+    },
+    "cdut-solstice": {
+      "number": "03 · REFERENCE",
+      "label": "Solstice · inter-frequency",
+      "kicker": "SCENARIO 03 · REFERENCE",
+      "title": "Inter-frequency handover without RLF",
+      "description": "Solstice · n78 PCI 88 → n41 PCI 145/160 · same network and measurement sequence",
+      "status": "Reference passed · 3/3",
+      "leftNode": "gNodeB · serving",
+      "rightNode": "gNodeB · target",
+      "metrics": [
+        {
+          "value": "0.655–0.705 s",
+          "note": "Configured TTT: 240 ms"
+        },
+        {
+          "label": "Handover complete",
+          "value": "0.815–0.865 s"
+        },
+        {
+          "note": "OOS_FILT_BLER below threshold"
+        },
+        {
+          "label": "Report → HO chain",
+          "note": "same target band n41"
+        }
+      ],
+      "rows": [
+        {
+          "final": "0.655–0.705 s"
+        },
+        {
+          "final": "0.815–0.865 s"
+        }
+      ],
+      "evidence": [
+        {
+          "title": "Same inter-frequency scenario",
+          "html": "The CDUT uses the same site, band pair and measurement sequence (A2 and A5) as the DUT scenario."
+        },
+        {
+          "title": "A5 report followed by handover",
+          "html": "<code>measId=2</code> is reported between 0.655–0.705 s; RRCReconfigurationComplete between 0.815–0.865 s."
+        },
+        {
+          "title": "No RLF across repetitions",
+          "html": "3/3 handovers complete; the 0xB959 statistic stays below the OOS threshold."
+        },
+        {
+          "title": "The difference calls for UE investigation",
+          "html": "The contrast lowers the likelihood of a general site failure but does not by itself prove the root cause."
+        }
+      ],
+      "notice": "The comparison with the CDUT is control evidence, not proof that every RF and network parameter was identical at every instant.",
+      "logLabel": "Source: Desafio_S03_Log_CDUT_Solstice.html · repetition 01 of scenario 3. The original file is shown unmodified.",
+      "timeReference": {
+        "label": "Time since MeasConfig #2"
+      },
+      "guide": [
+        {
+          "title": "MeasConfig #2: same configuration",
+          "text": "The network sends the same measConfig as in the DUT scenario: n41, A5 −106/−100 dBm, hysteresis 1 dB, TTT 240 ms, 6 ms gaps every 40 ms."
+        },
+        {
+          "title": "1st n41 measurement with gaps",
+          "text": "SFN 349: PCI 145 at −98.8 dBm. In the same SFN, the Meridian measured −100.6 dBm."
+        },
+        {
+          "title": "2nd measurement, 200 ms later",
+          "text": "SFN 369: the Solstice updates n41 every 120–200 ms (1 in every 3 to 5 gaps)."
+        },
+        {
+          "title": "A5 entering condition met",
+          "text": "Serving −107.2 dBm (< −107) and PCI 145 −95.8 dBm (> −99) at T +0.397 s. The 240 ms TTT starts counting."
+        },
+        {
+          "title": "A5 report at T +0.680 s",
+          "text": "283 ms after the entering condition (240 ms TTT + next evaluation): serving −109 dBm, PCI 145 −94 dBm."
+        },
+        {
+          "title": "Handover command 63 ms later",
+          "text": "reconfigurationWithSync to PCI 145 with rach-ConfigDedicated (CFRA) and T304 = 2000 ms."
+        },
+        {
+          "title": "RACH on the 1st attempt",
+          "text": "PRACH at −16 dBm with 114 dB pathloss: success on the first attempt, contention free."
+        },
+        {
+          "title": "Handover completed at T +0.840 s",
+          "text": "RRCReconfigurationComplete on PCI 145. OOS_FILT_BLER peaked at 0.9 %: no RLF."
+        },
+        {
+          "title": "T304 with headroom",
+          "text": "T304 ends with 1903 ms remaining: the handover used less than 100 ms of the timer."
+        }
+      ]
+    }
+  },
+  "insights": {
+    "labels": {
+      "serving": "Serving n78 · PCI 88",
+      "target": "Neighbour n41 · PCI 145"
+    },
+    "focusNote": "This scenario has no detailed log. The chart shows the logs of scenarios 2 (DUT) and 3 (CDUT)."
+  },
+  "comparison": {
+    "rows": [
+      {
+        "label": "1. Meridian · intra-freq.",
+        "report": "1.155–1.210 s",
+        "outcome": "HO OK · 155–160 ms chain",
+        "service": "≈ 1.31–1.37 s"
+      },
+      {
+        "label": "3. Solstice · inter-freq.",
+        "report": "0.655–0.705 s",
+        "outcome": "HO OK · no RLF",
+        "service": "0.815–0.865 s"
+      },
+      {
+        "label": "2. Meridian · inter-freq.",
+        "report": "3.660–3.730 s",
+        "outcome": "RLF (t310-Expiry) at 3.83–3.87 s",
+        "service": "4.063–4.103 s (Reest. Complete)"
+      }
+    ],
+    "note": "Ranges over the 3 repetitions, as stated in the case sheet. Scenarios 2 and 3 count from MeasConfig #2; scenario 1 counts from the start of the degradation."
+  },
+  "hypotheses": {
+    "rf": {
+      "title": "Coverage / RF",
+      "question": "Was the DUT in worse radio conditions than the CDUT?",
+      "evidence": [
+        {
+          "text": "Serving at −109.3 dBm at the same relative instant (T +0.637 s) on both devices."
+        },
+        {
+          "text": "Identical RLM until the divergence: OOS_FILT_BLER 0.4 % → 0.9 %."
+        },
+        {
+          "text": "In idle, n41 measures the same on both: PCI 145 at −100.9 dBm."
+        },
+        {
+          "text": "The DUT's n41 starts 1.8 dB lower in the same SFN 349 and is ~5 dB lower by T +0.5 s, while the serving stays identical: the difference is in the device's measurement, not in the radio."
+        },
+        {
+          "text": "The CDUT completes the handover in this same environment."
+        }
+      ],
+      "verdict": "Ruled out: the RF trajectory and the RLM are the same on both devices up to the point where mobility diverges."
+    },
+    "rlm": {
+      "title": "Misconfigured RLM",
+      "question": "Were the DUT's RLM timers or thresholds different?",
+      "evidence": [
+        {
+          "text": "N310 = 4 and T310 = 2000 ms for both devices."
+        },
+        {
+          "text": "Identical IS/OOS thresholds in 0xB959: 2 % / 10 % (Insync 335544 and Outsync 1677722, in units of 2⁻²⁴)."
+        },
+        {
+          "text": "At the late report the serving was already at −119 dBm / −20 dB."
+        }
+      ],
+      "verdict": "Ruled out: the RLF is legitimate. RLM worked; what failed was mobility, which should have happened earlier."
+    },
+    "rach": {
+      "title": "Misconfigured RACH",
+      "question": "Does the access failure come from the RACH parameters?",
+      "evidence": [
+        {
+          "text": "Same RACH-ConfigCommon on both: preambleTransMax = 6, 4 dB step, 10 ms window (sl20)."
+        },
+        {
+          "text": "The CDUT gets CFRA on n41 on the first try (pathloss 114 dB)."
+        },
+        {
+          "text": "The DUT succeeds on PCI 145 on the first try (pathloss 112 dB)."
+        },
+        {
+          "text": "On PCI 88: RSRP −120.8 dBm, below the −118 dBm q-RxLevMin (S criterion failed). The 1st preamble already reaches the nominal −130 dBm target; the ramp exhausts the UE power (25 dBm) and no RAR arrives within the 10 ms window."
+        }
+      ],
+      "verdict": "Ruled out: with the same RACH-ConfigCommon, access works on the first try on PCI 145 and on the CDUT. On PCI 88 the failure comes from the cell being out of useful coverage (failed S criterion), not from the parameter. The UE log does not show whether the gNB missed the preamble or the UE failed to decode the RAR. In intra-frequency (scenario 1) RACH has no problems either."
+    },
+    "site": {
+      "title": "Site / operator / cell",
+      "question": "Is it a network problem at Site Delta?",
+      "evidence": [
+        {
+          "text": "Same Site Delta, same PCIs and byte-for-byte the same measConfig."
+        },
+        {
+          "text": "The CDUT passes 3 out of 3 times in inter-frequency.",
+          "links": [
+            {
+              "label": "Scenario 3"
+            }
+          ]
+        },
+        {
+          "text": "The DUT itself passes 3 out of 3 times in intra-frequency.",
+          "links": [
+            {
+              "label": "Scenario 1"
+            }
+          ]
+        }
+      ],
+      "verdict": "Ruled out: the divergence follows the device combined with inter-frequency, not the network."
+    }
+  },
+  "conclusion": {
+    "title": "Single mechanism",
+    "summary": "A defect in the DUT firmware when handling the inter-frequency layer (n41) in RRC_CONNECTED (build MRD-B2408.1 / NR-MOD 17.3.0; the CDUT uses 17.2.5). The modem makes poor use of the gaps, measures n41 slowly and with a low bias, and is slow to evaluate A5. In practice, the UE stays “anchored” to the serving layer (n78).",
+    "symptoms": [
+      "RLF: A5 only fires when T310 is almost expired (150 ms left, with the link already out of sync). No handover command arrives and the UE declares t310-Expiry.",
+      "First-attempt failure: during re-establishment, the UE goes back to n78/PCI 88 instead of using the best cell it had itself measured on n41, and insists on RACH on a cell that failed the S criterion (against TS 38.304 and the TS 38.331 re-establishment procedure). It only moves to n41 after exhausting preambleTransMax."
+    ],
+    "closing": "Both symptoms share one cause: the DUT does not trust, or does not use in time, what it measures on the other frequency.",
+    "apparentThreshold": "Using the DUT's own logged L3 values, PCI 145 went above −94 dBm at T +2.917 s (−93.994 dBm) without triggering A5. The report timing matches an effective threshold between −94 and −93 dBm (≈ −93.5 dBm, dotted line on the chart), against the configured −99 dBm. This is a clue, not proof: it could be an error in the A5 threshold/hysteresis or a delay in evaluating the inter-frequency event.",
+    "statsTitle": "What is still needed for statistical certainty",
+    "stats": [
+      "More repetitions: ≥ 20–30 per scenario, with a confidence interval for the RLF rate and for the time to report.",
+      "Firmware A/B test: the same Meridian with another build/modem (e.g. NR-MOD 17.2.5) to isolate the regression.",
+      "Conducted lab test with a channel emulator and fixed n78/n41 levels: inter-frequency measurement period and RSRP accuracy against TS 38.133 (RRM conformance per TS 38.533), and A5 with threshold and hysteresis variations.",
+      "Internal logs the current log doesn't show: ML1 scheduling and use of each gap, A5 evaluation with the TTT running, and cell selection logic during re-establishment.",
+      "Network-side traces (gNB/NGAP): confirm whether the 34.178 report arrived and whether any handover command was sent.",
+      "Scenario variations: other band pairs (n78→n1), the reverse direction (n41→n78), another site or operator, and swapping SIMs between devices."
+    ]
+  }
+}

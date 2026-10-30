@@ -1,235 +1,290 @@
 {
-  "tab": "Challenge 02 · 5G Mobility",
+  "tab": "Challenge 02 · Registration / Attach",
   "tag": [
     "CHALLENGE 2",
-    "RADIO LINK FAILURE"
+    "REGISTRATION AND ATTACH"
   ],
-  "title": "Inter-frequency handover · 5G SA",
-  "description": "Investigate Meridian's mobility failure and compare it with the intra-frequency control and the Solstice CDUT. The times and events shown are the ones recorded in the field case.",
+  "title": "Registration and Attach · 5G SA / LTE",
+  "description": "Investigate Aurora's registration rejections after switching profiles between operators; compare 5G SA, the LTE control and the Boreal CDUT.",
   "sideInfo": [
     {
       "label": "Evaluated RAT"
     },
     {
-      "label": "Serving"
+      "label": "Source PLMN"
     },
     {
-      "label": "Inter-frequency target"
+      "label": "Target PLMN"
     }
   ],
   "materials": [
     {
-      "label": "Student case · Desafio_S03_Caso_Aluno.docx"
+      "label": "Student case · Desafio_Semana_2.docx"
     },
     {
-      "label": "Theory reference · Sessão teórica.pptx"
+      "label": "Theory reference · Sessão Semana 2.pptx"
     }
   ],
   "report": {
-    "title": "Issue Report — Field Test",
+    "title": "Issue Report — Challenge 2 · Registration / Attach",
     "template": "data/i18n/en/relatorios/desafio-2.html"
   },
   "scenarios": {
-    "controle-intra": {
-      "number": "01 · CONTROL",
-      "label": "Meridian · intra-frequency",
-      "kicker": "SCENARIO 01 · CONTROL",
-      "title": "Intra-frequency handover completed",
-      "description": "Meridian · n78 PCI 88 → PCI 101 · same frequency · three repetitions",
-      "status": "Control passed · 3/3",
-      "leftNode": "gNodeB · serving",
-      "rightNode": "gNodeB · target",
+    "dut-vantis-zenith": {
+      "label": "Aurora · Vantis → Zenith · 5G SA",
+      "kicker": "SCENARIO 01 · DUT · 5G SA",
+      "title": "Registration rejection cascade",
+      "description": "Aurora · Vantis (724/085) → Zenith (724/078) · 5 profile switches",
+      "status": "3 attempts per switch · 5/5",
+      "state": "NR SA · 2 NAS rejections → registered",
+      "network": "Vantis → Zenith / Certification site",
       "metrics": [
         {
-          "label": "Active measurement",
-          "note": "same frequency"
+          "label": "Registration attempts",
+          "value": "3 per switch",
+          "note": "5 of 5 switches · 100%"
         },
         {
-          "value": "1.155–1.210 s",
-          "note": "since degradation onset"
+          "label": "1st NAS rejection",
+          "note": "Illegal UE · Vantis PLMN"
         },
         {
-          "label": "HO completion",
-          "value": "1.312–1.370 s"
+          "label": "2nd NAS rejection",
+          "note": "PLMN not allowed · old SUCI"
         },
         {
-          "note": "OOS_FILT_BLER below threshold"
+          "label": "Registration complete",
+          "value": "4.55–4.77 s",
+          "note": "on the 3rd attempt · 5/5"
         }
       ],
       "rows": [
         {
-          "final": "1.155–1.210 s"
-        },
-        {
-          "final": "1.312–1.370 s"
+          "label": "Total time · DUT",
+          "sub": "3 attempts · 5 switches",
+          "final": "4.55–4.77 s"
         }
       ],
       "evidence": [
         {
-          "title": "Stable intra-RAT control",
-          "html": "3/3 handovers complete; the Report → completion chain took 155–160 ms."
+          "title": "Attempt 1 · previous operator context",
+          "html": "On PCI 177, SIB1 advertises PLMN 724/085. The Registration Request uses SUCI 724/085 and receives <code>5GMM Cause #3 · Illegal UE</code>."
         },
         {
-          "title": "Intra-frequency measurement active",
-          "html": "<code>measId=1</code> (A3) and <code>measId=3</code> (A2) were already configured."
+          "title": "Attempt 2 · target PLMN, old SUCI",
+          "html": "On PCI 201, the selected PLMN is already 724/078, but the SUCI sent still carries Home-Network-Id 724/085. The network rejects with <code>5GMM Cause #11 · PLMN not allowed</code>."
         },
         {
-          "title": "No link failure",
-          "html": "Record 0xB959 kept OOS_FILT_BLER below threshold in every repetition."
+          "title": "Attempt 3 · identity aligned",
+          "html": "The new Registration Request presents SUCI 724/078; Authentication, Security Mode, Registration Accept and Registration Complete follow."
         },
         {
-          "title": "Detailed log not provided",
-          "html": "The material includes full logs for scenarios 2 (DUT) and 3 (CDUT), not for this control."
+          "title": "The failure happens after acquisition and RRC",
+          "html": "PSS/SSS, MIB, SIB1 and RRC Setup complete in the rejected attempts. The divergence is in the NAS registration sequence, not in cell detection."
         }
       ],
-      "notice": "The case describes this scenario as a same-frequency control. No detailed log file is attached for it; the values shown come from the challenge sheet.",
-      "logLabel": "No detailed log file for this scenario.",
-      "playbackSteps": [
-        {
-          "msg": "Start of serving degradation · PCI 88",
-          "summary": "measId=1 (A3, hysteresis 1 dB, TTT 320 ms) and measId=3 (A2, −100 dBm, TTT 160 ms) active since the first RRCReconfiguration; n41 is not configured."
-        },
-        {
-          "msg": "Measurement Report · measId=1 (A3)",
-          "summary": "SS-RSRP/SS-RSRQ serving −101 dBm/−13 dB; neighbour PCI 101 −90 dBm/−8 dB."
-        },
-        {
-          "msg": "RRCReconfiguration · targetPhysCellId=101",
-          "summary": "reconfigurationWithSync without absoluteFrequencySSB (same frequency), rach-ConfigDedicated present, t304=2000 ms."
-        },
-        {
-          "msg": "Random Access · Msg1 (dedicated preamble)",
-          "summary": "Contention-free access on PCI 101."
-        },
-        {
-          "msg": "Random Access Response · Msg2",
-          "summary": "PCI 101 answers the dedicated preamble."
-        },
-        {
-          "msg": "RRCReconfigurationComplete · no RLF",
-          "summary": "Handover complete 155 ms after the Report. Repetitions 02 and 03: 1.312 s and 1.370 s; OOS_FILT_BLER (0xB959) always below threshold."
-        }
-      ]
-    },
-    "dut-inter": {
-      "label": "Meridian · inter-frequency",
-      "kicker": "SCENARIO 02 · DUT",
-      "title": "Handover delay and Radio Link Failure",
-      "description": "Meridian · n78 PCI 88 → n41 PCI 145/160 · three repetitions",
-      "status": "Failure reproduced · 3/3",
-      "leftNode": "gNodeB · serving",
-      "rightNode": "gNodeB · target",
-      "metrics": [
-        {
-          "value": "3.660–3.730 s",
-          "note": "Configured TTT: 240 ms"
-        },
-        {
-          "value": "3.830–3.870 s",
-          "note": "cause: t310-Expiry"
-        },
-        {
-          "label": "1st cell · PCI 88",
-          "note": "no response · S criterion failed"
-        },
-        {
-          "label": "Re-establishment",
-          "value": "4.063–4.103 s"
-        }
-      ],
-      "rows": [
-        {
-          "final": "3.660–3.730 s"
-        },
-        {
-          "final": "3.830–3.870 s"
-        },
-        {
-          "label": "Recovery",
-          "sub": "PCI 145 · complete",
-          "final": "4.063–4.103 s"
-        }
-      ],
-      "evidence": [
-        {
-          "title": "Late inter-frequency measurement",
-          "html": "<code>measId=2</code> (A5, TTT 240 ms) reported only 3.660–3.730 s after configuration."
-        },
-        {
-          "title": "RLF before handover completion",
-          "html": "<code>t310-Expiry</code> occurs at 3.830–3.870 s; no handover completes in this scenario."
-        },
-        {
-          "title": "Attempt on an unsuitable serving cell",
-          "html": "PCI 88 is below <code>q-RxLevMin</code>; six Msg1 fail before the attempt on PCI 145."
-        },
-        {
-          "title": "Recovery on the neighbour cell",
-          "html": "On PCI 145, RRCReestablishmentRequest and Complete are recorded in all three repetitions."
-        }
-      ],
-      "notice": "Repetition 01 of the detailed log shows the full sequence. The case provides neither GPS coordinates nor inter-node signalling (Xn/NGAP); do not attribute the cause to the network based on this UE log alone.",
-      "logLabel": "Source: Desafio_S03_Log_DUT_Meridian.html · repetition 01 of scenario 2. The original file is shown unmodified.",
-      "timeReference": {
-        "label": "Time since MeasConfig #2"
+      "notice": "The attached log covers the 3 attempts of one of the five switches in scenario 1; the document does not say which. The log duration (4.55 s, from PSS/SSS detection to Registration Complete) matches the time of switch 03. There are no individual logs for the other switches. The exact internal causality of the SUCI transition is not proven by these logs: correlate the profile state and the provisioned identity.",
+      "logLabel": "Source: Desafio_S02_Log_DUT_Aurora.html · scenario 1 · 36 messages / 3 attempts · 4.55 s. Original log, unmodified.",
+      "timelineLabels": {
+        "eyebrow": "Switches 01–05",
+        "note": "Total time to registration complete, in seconds · bars show the range over the 5 switches"
       }
     },
-    "cdut-solstice": {
-      "number": "03 · REFERENCE",
-      "label": "Solstice · inter-frequency",
-      "kicker": "SCENARIO 03 · REFERENCE",
-      "title": "Inter-frequency handover without RLF",
-      "description": "Solstice · n78 PCI 88 → n41 PCI 145/160 · same network and measurement sequence",
-      "status": "Reference passed · 3/3",
-      "leftNode": "gNodeB · serving",
-      "rightNode": "gNodeB · target",
+    "dut-zenith-nimbus": {
+      "label": "Aurora · Zenith → Nimbus · 5G SA",
+      "kicker": "SCENARIO 02 · DUT · 5G SA",
+      "title": "The same cascade on another operator",
+      "description": "Aurora · Zenith (724/078) → Nimbus (724/091) · 5 profile switches",
+      "status": "3 attempts per switch · 5/5",
+      "state": "NR SA · registered on the 3rd attempt",
+      "network": "Zenith → Nimbus / Certification site",
       "metrics": [
         {
-          "value": "0.655–0.705 s",
-          "note": "Configured TTT: 240 ms"
+          "label": "Registration attempts",
+          "value": "3 per switch",
+          "note": "5 of 5 switches · 100%"
         },
         {
-          "label": "Handover complete",
-          "value": "0.815–0.865 s"
+          "label": "Time to registration",
+          "value": "4.58–4.75 s",
+          "note": "after PLMN switch"
         },
-        {
-          "note": "OOS_FILT_BLER below threshold"
-        },
-        {
-          "label": "Report → HO chain",
-          "note": "same target band n41"
-        }
+        {},
+        {}
       ],
       "rows": [
         {
-          "final": "0.655–0.705 s"
-        },
-        {
-          "final": "0.815–0.865 s"
+          "label": "Total time · DUT",
+          "sub": "3 attempts · 5 switches",
+          "final": "4.58–4.75 s"
         }
       ],
       "evidence": [
         {
-          "title": "Same inter-frequency scenario",
-          "html": "The CDUT uses the same site, band pair and measurement sequence (A2 and A5) as the DUT scenario."
+          "title": "Anomaly repeated on another PLMN",
+          "html": "All five Zenith → Nimbus switches also require three attempts in 5G SA."
         },
         {
-          "title": "A5 report followed by handover",
-          "html": "<code>measId=2</code> is reported between 0.655–0.705 s; RRCReconfigurationComplete between 0.815–0.865 s."
+          "title": "Similar radio conditions",
+          "html": "RSRP −83/−84 dBm and RSRQ −8 dB on the Zenith and Nimbus cells, respectively."
         },
         {
-          "title": "No RLF across repetitions",
-          "html": "3/3 handovers complete; the 0xB959 statistic stays below the OOS threshold."
+          "title": "No individual modem log provided",
+          "html": "The document reports the aggregate result, but the attached Aurora log covers only one switch of scenario 1."
         },
         {
-          "title": "The difference calls for UE investigation",
-          "html": "The contrast lowers the likelihood of a general site failure but does not by itself prove the root cause."
+          "title": "Comparative evidence across scenarios",
+          "html": "Recurrence across two operator transitions weakens the hypothesis of a single cell as an isolated cause."
         }
       ],
-      "notice": "The comparison with the CDUT is control evidence, not proof that every RF and network parameter was identical at every instant.",
-      "logLabel": "Source: Desafio_S03_Log_CDUT_Solstice.html · repetition 01 of scenario 3. The original file is shown unmodified.",
-      "timeReference": {
-        "label": "Time since MeasConfig #2"
+      "notice": "Times/ranges come from the challenge document. No individual log was provided for this transition; we do not infer specific NAS causes without the corresponding capture.",
+      "logLabel": "No individual HTML log for scenario 2; see the case document and the aggregate results.",
+      "playbackSteps": [
+        {
+          "msg": "Aggregate result · attempt 1",
+          "summary": "On the Zenith → Nimbus switch, Aurora starts 5G SA registration. The case does not provide the individual message for this attempt."
+        },
+        {
+          "msg": "Aggregate result · attempt 2",
+          "summary": "A second attempt is also needed; the individual log for this switch was not provided."
+        },
+        {
+          "msg": "Aggregate result · attempt 3",
+          "summary": "Registration completes after three attempts in each of the five switches."
+        },
+        {
+          "msg": "Aggregate result · 5 switches",
+          "summary": "Total times between 4.58 and 4.75 s. No individual call flow available."
+        }
+      ],
+      "timelineLabels": {
+        "eyebrow": "Switches 01–05",
+        "note": "Total time to registration complete, in seconds · bars show the range over the 5 switches"
+      }
+    },
+    "lte-controle": {
+      "number": "03 · CONTROL",
+      "label": "Aurora · Vantis → Zenith · LTE",
+      "kicker": "SCENARIO 03 · DUT · LTE",
+      "title": "LTE control registers on the first attempt",
+      "description": "Aurora · Vantis → Zenith · LTE Band 3 · five switches",
+      "status": "Attach complete · 5/5",
+      "network": "Vantis → Zenith / Certification site",
+      "metrics": [
+        {
+          "label": "Attach attempts",
+          "value": "1 attempt",
+          "note": "5 of 5 switches · 100%"
+        },
+        {
+          "label": "Total time",
+          "value": "0.98–1.15 s",
+          "note": "until Attach Complete"
+        },
+        {},
+        {}
+      ],
+      "rows": [
+        {
+          "sub": "Attach · 5 switches",
+          "final": "0.98–1.15 s"
+        }
+      ],
+      "evidence": [
+        {
+          "title": "4G control without retries",
+          "html": "All five switches complete Attach on the first attempt."
+        },
+        {
+          "title": "Shorter registration time",
+          "html": "Attach Complete between 0.98 and 1.15 s across the five repetitions."
+        },
+        {
+          "title": "Adequate signal on the cell pair",
+          "html": "RSRP −82/−85 dBm and RSRQ −8/−9 dB."
+        },
+        {
+          "title": "No LTE log attached",
+          "html": "The document provides aggregate metrics; the available HTML files are 5G SA registration logs."
+        }
+      ],
+      "notice": "The material describes LTE as an additional control and provides neither an LTE OTA capture nor call-flow details. The visualization shows eNodeB/LTE without inventing missing messages.",
+      "logLabel": "There is no LTE HTML log in the provided materials.",
+      "playbackSteps": [
+        {
+          "msg": "Aggregate result · LTE search",
+          "summary": "Aurora selects the target operator's LTE cell; no LTE OTA capture is attached."
+        },
+        {
+          "msg": "Aggregate result · Attach",
+          "summary": "Attach completes on the first attempt in each of the five switches."
+        },
+        {
+          "msg": "Aggregate result · 5 switches",
+          "summary": "Total times between 0.98 and 1.15 s; RSRP/RSRQ in the case: −82/−8 dB and −85/−9 dB."
+        }
+      ],
+      "timelineLabels": {
+        "eyebrow": "Switches 01–05",
+        "note": "Total time to Attach Complete, in seconds · bars show the range over the 5 switches"
+      }
+    },
+    "cdut-boreal": {
+      "number": "04 · REFERENCE",
+      "label": "Boreal · Vantis → Zenith · 5G SA",
+      "kicker": "SCENARIO 04 · CDUT · 5G SA",
+      "title": "Boreal registers on the first attempt",
+      "description": "Boreal · Vantis (724/085) → Zenith (724/078) · same cells as scenario 1",
+      "status": "Reference passed · 5/5",
+      "network": "Vantis → Zenith / Certification site",
+      "metrics": [
+        {
+          "label": "Registration attempts",
+          "value": "1 attempt",
+          "note": "5 of 5 switches · 100%"
+        },
+        {
+          "label": "Time to registration",
+          "value": "0.98–1.15 s",
+          "note": "5G SA · no rejection"
+        },
+        {
+          "value": "success",
+          "note": "RES* and NIA2/NEA2"
+        },
+        {
+          "value": "registered"
+        }
+      ],
+      "rows": [
+        {
+          "sub": "Registration · 5 switches",
+          "final": "0.98–1.15 s"
+        }
+      ],
+      "evidence": [
+        {
+          "title": "Same site and same cells",
+          "html": "The CDUT accesses PCI 201/PLMN 724/078; the network accepts the Registration Request already carrying SUCI 724/078."
+        },
+        {
+          "title": "Complete NAS sequence",
+          "html": "Authentication Request/Response, Security Mode Command/Complete, Registration Accept and Registration Complete."
+        },
+        {
+          "title": "5G SA registration at first try",
+          "html": "5/5 switches complete on the first attempt; the detailed log shows a single successful attempt."
+        },
+        {
+          "title": "The contrast points to the DUT, it does not prove the implementation",
+          "html": "DUT and CDUT differ in SIM/identity state and hardware; the control localizes the deviation in Aurora but does not by itself identify the internal mechanism."
+        }
+      ],
+      "notice": "Boreal reference log: one attempt, 19 messages. Note: the log lasts 0.82 s (from PSS/SSS detection to Registration Complete), less than any total time for scenario 4 in the case (0.98–1.15 s); the document does not define when the measurement starts. The 5/5 switch report is aggregate; there are not five individual log files.",
+      "logLabel": "Source: Desafio_S02_Log_CDUT_Boreal.html · scenario 4 · 19 messages / 1 successful attempt · 0.82 s. Original log, unmodified.",
+      "timelineLabels": {
+        "eyebrow": "Switches 01–05",
+        "note": "Total time to registration complete, in seconds · bars show the range over the 5 switches"
       }
     }
   }

@@ -1,41 +1,44 @@
 <!-- Report fragment; {{data}} is replaced with the generation date. -->
 <h1>Issue Report — Field Test</h1>
-<div class="report-meta">Challenge 2 · S03 · NovaLink Telecom / Site Delta · Generated on {{data}}</div>
+<div class="report-meta">Challenge 2 · Registration / Attach · Aurora certification · Generated on {{data}}</div>
 <h2>1. Identification</h2>
-<p><strong>Title:</strong> RLF due to inter-frequency handover delay and access attempt on an ineligible cell — Meridian 5G SA.</p>
-<p><strong>Severity / Priority:</strong> High — loss of connection continuity in 3/3 repetitions of the inter-frequency scenario; recovery requires an attempt on a second cell.</p>
-<p><strong>Reported by / Date:</strong> Field test / {{data}}</p>
+<p><strong>Title:</strong> NAS rejection cascade and 5G SA registration only on the third attempt — Aurora model after Vantis → Zenith profile switch.</p>
+<p><strong>Severity / Priority:</strong> High — 5/5 Aurora 5G SA switches require three attempts, versus one attempt on the CDUT in 5/5; impact on registration time and reliability.</p>
+<p><strong>Reported by / Date:</strong> Field test engineering / {{data}}</p>
 <h2>2. Device configuration</h2>
 <table><thead><tr><th>Item</th><th>DUT</th><th>CDUT (reference)</th></tr></thead><tbody>
-  <tr><td>Model</td><td>Meridian</td><td>Solstice</td></tr>
-  <tr><td>SW / build / modem</td><td>2.4.1 · MRD-B2408.1 · NR-MOD 17.3.0</td><td>3.1.0 · SOL-B2402.7 · NR-MOD 17.2.5</td></tr>
-  <tr><td>SIM / plan / UE category</td><td>Not specified in the material</td><td>Not specified in the material</td></tr>
-  <tr><td>Mode / RAT</td><td>5G SA · NR</td><td>5G SA · NR</td></tr>
-  <tr><td>Logging tool</td><td colspan="2">Modem log via the device's diagnostic port</td></tr>
-  <tr><td>File</td><td>Desafio_S03_Log_DUT_Meridian.html</td><td>Desafio_S03_Log_CDUT_Solstice.html</td></tr>
+  <tr><td>Model</td><td>Aurora · pre-series</td><td>Boreal · previous certified generation</td></tr>
+  <tr><td>SW / build / modem</td><td>Not stated in the material</td><td>Not stated in the material</td></tr>
+  <tr><td>SIM / plan / UE category</td><td>eSIM or pSIM profile per operator</td><td>Same switch sequence; other data not stated</td></tr>
+  <tr><td>Mode / RAT</td><td>5G SA (NR) and LTE control</td><td>5G SA (NR)</td></tr>
+  <tr><td>Logging tool</td><td colspan="2">Interactive HTML logs derived from the device's OTA diagnostics</td></tr>
+  <tr><td>File</td><td>Desafio_S02_Log_DUT_Aurora.html</td><td>Desafio_S02_Log_CDUT_Boreal.html</td></tr>
 </tbody></table>
 <h2>3. Test environment and scenario</h2>
-<p><strong>Network / operator:</strong> NovaLink Telecom, commercial network. <strong>Site:</strong> Delta.</p>
-<p><strong>Serving:</strong> n78 · NR-ARFCN 633180 · PCI 88. <strong>Target:</strong> n41 · NR-ARFCN 504990 · PCI 145 and 160.</p>
-<p><strong>Route / condition:</strong> same route and condition for DUT and CDUT, per the case; route/time and coordinates not stated.</p>
+<p><strong>Operators:</strong> Vantis Telecom (PLMN 724/085), Zenith Telecom (724/078), Nimbus Móvel (724/091). Same certification environment.</p>
+<p><strong>Main scenario:</strong> Vantis → Zenith profile switch, NR n78, NR-ARFCN 633120; Vantis cell PCI 177 (−80 dBm / −7 dB) and Zenith cell PCI 201 (−83 dBm / −8 dB).</p>
+<p><strong>Route/condition:</strong> same location and sequence for DUT/CDUT per the case. Detailed route/time not stated.</p>
 <h2>4. Steps to reproduce</h2>
-<ol><li>Establish a 5G SA data session and start moving along the test route.</li><li>Confirm intra-frequency measurements (A3/A2) and the inter-frequency A5 configuration (measId=2, TTT=240 ms).</li><li>Degrade the n78 serving cell and observe Measurement Report, handover/RLF, RACH and recovery.</li><li>Repeat three full cycles and compare Meridian with Solstice at the same location.</li></ol>
+<ol><li>Select the Vantis profile (724/085), record the source state and switch to Zenith (724/078).</li><li>Observe cell selection, MIB/SIB1, RRC Setup and Registration Request / NAS responses.</li><li>Record each attempt until Registration Complete and repeat five times.</li><li>Compare Aurora with Boreal on the same site and run the Vantis → Zenith LTE control.</li></ol>
 <h2>5. Reproducibility</h2>
-<table><thead><tr><th>Scenario</th><th>Device</th><th>Result</th><th>Frequency</th></tr></thead><tbody>
-  <tr><td>Control</td><td>Meridian · DUT</td><td>3/3 without RLF</td><td>Intra-frequency · n78</td></tr>
-  <tr><td>Failure</td><td>Meridian · DUT</td><td>3/3 with RLF</td><td>Inter-frequency · n78 → n41</td></tr>
-  <tr><td>Reference</td><td>Solstice · CDUT</td><td>3/3 without RLF</td><td>Inter-frequency · n78 → n41</td></tr>
+<table><thead><tr><th>Scenario</th><th>Device</th><th>Result</th><th>RAT / target</th></tr></thead><tbody>
+  <tr><td>1 · Vantis → Zenith</td><td>Aurora · DUT</td><td>5/5 with 3 attempts · 4.55–4.77 s in individual times</td><td>5G SA · Zenith</td></tr>
+  <tr><td>2 · Zenith → Nimbus</td><td>Aurora · DUT</td><td>5/5 with 3 attempts · 4.58–4.75 s</td><td>5G SA · Nimbus</td></tr>
+  <tr><td>3 · Vantis → Zenith</td><td>Aurora · DUT</td><td>5/5 with 1 attempt · 0.98–1.15 s</td><td>4G LTE · Zenith</td></tr>
+  <tr><td>4 · Vantis → Zenith</td><td>Boreal · CDUT</td><td>5/5 with 1 attempt · 0.98–1.15 s</td><td>5G SA · Zenith</td></tr>
 </tbody></table>
 <h2>6. Observed symptom</h2>
-<ul><li>Meridian: in the inter-frequency scenario, the A5 report occurs 3.660–3.730 s after the second measurement configuration; RLF due to t310-Expiry at 3.830–3.870 s.</li><li>After RLF, serving PCI 88 does not answer six Msg1 attempts; the UE tries PCI 145 and completes re-establishment between 4.063–4.103 s.</li><li>Solstice completes the inter-frequency handover in 0.815–0.865 s, without RLF. Meridian also completes the intra-frequency control without RLF.</li></ul>
-<h2>7. Comparison (Repetition 01 and ranges over three repetitions)</h2>
-<table><thead><tr><th>Metric</th><th>DUT · inter (3 rep.)</th><th>CDUT · inter (3 rep.)</th><th>DUT · intra (3 rep.)</th></tr></thead><tbody>
-  <tr><td>Measurement Report A5</td><td>3.660–3.730 s</td><td>0.655–0.705 s</td><td>Not applicable; A3 at 1.155–1.210 s</td></tr>
-  <tr><td>Mobility result</td><td>RLF 3.830–3.870 s</td><td>Complete 0.815–0.865 s</td><td>Complete 1.312–1.370 s</td></tr>
-  <tr><td>Recovery</td><td>PCI 145; Complete 4.063–4.103 s</td><td>No RLF observed</td><td>No RLF observed</td></tr>
+<ul><li>In 5G SA, Aurora needs exactly three attempts in all five switches of scenarios 1 and 2.</li><li>In the scenario 1 log, attempt 1 receives Registration Reject 5GMM Cause #3 “Illegal UE”; attempt 2 receives Cause #11 “PLMN not allowed”; attempt 3 completes registration.</li><li>Aurora's LTE control and the Boreal CDUT in 5G SA register on the first attempt.</li></ul>
+<h2>7. Comparison · Vantis → Zenith switch</h2>
+<table><thead><tr><th>Metric</th><th>Aurora · 5G SA</th><th>Boreal · 5G SA</th><th>Aurora · LTE</th></tr></thead><tbody>
+  <tr><td>Attempts</td><td>3 in 5/5 switches</td><td>1 in 5/5 switches</td><td>1 in 5/5 switches</td></tr>
+  <tr><td>Total time</td><td>4.55–4.77 s (readings); document summarizes 4.55–4.80 s</td><td>0.98–1.15 s</td><td>0.98–1.15 s</td></tr>
+  <tr><td>Target PLMN / PCI</td><td>724/078 · PCI 201</td><td>724/078 · PCI 201</td><td>724/078 · PCI 220</td></tr>
+  <tr><td>NAS result</td><td>Cause #3 → Cause #11 → Accept</td><td>Authentication → Accept on 1st attempt</td><td>Attach Complete on 1st attempt</td></tr>
 </tbody></table>
 <h2>8. Attached evidence</h2>
-<ul><li>Desafio_S03_Log_DUT_Meridian.html — scenario 2, repetition 01.</li><li>Desafio_S03_Log_CDUT_Solstice.html — scenario 3, repetition 01.</li><li>Relevant records: measConfig #2, measId=2 / A5, RLM statistics 0xB959, t310-Expiry, six Random Access attempts on PCI 88, and re-establishment on PCI 145.</li><li>Map/route/GPS coordinates: not available in the source material.</li></ul>
+<ul><li>Desafio_S02_Log_DUT_Aurora.html — scenario 1, 36 messages and three attempts; the document does not identify the switch (the log duration, 4.55 s, matches switch 03).</li><li>Desafio_S02_Log_CDUT_Boreal.html — scenario 4, one successful attempt and 19 messages; the log lasts 0.82 s, below the 0.98–1.15 s range reported in the case (measurement start not defined in the document).</li><li>Desafio_Semana_2.docx and Sessão_teórica_Semana_2.pptx — case and theory reference.</li></ul>
 <h2>9. Field tester comments</h2>
-<p>The contrast between Meridian's intra-frequency control and the successful inter-frequency CDUT localizes the deviation in the DUT's inter-frequency behaviour, with no evidence of widespread RLF or a general site failure. The data point to a delay in the measurement/handover decision path and a post-RLF access attempt on PCI 88 even though it fails the S criterion.</p>
-<p class="caution"><strong>Preliminary conclusion:</strong> the evidence is consistent with an anomaly in Meridian's inter-frequency measurement processing/triggering and in its post-RLF cell selection. The exact root cause cannot be closed with these UE logs alone: Xn/NGAP signalling, additional repeated samples, detailed RF values over time and confirmation of the internal eligibility decision for PCI 88 are missing. Correlating these data and repeating the test after a modem/software fix is recommended.</p>
+<p>Acquisition and the RRC connection do not explain the rejections: in the Aurora log, attempts 1 and 2 detect valid cells (MIB/SIB1), complete RRC Setup and send NAS. The divergence happens in the Registration Request / NAS response. On attempt 2, the selected cell already advertises PLMN 724/078, but the request still carries SUCI Home-Network-Id 724/085; on the third attempt, the SUCI changes to 724/078 and the network authenticates, activates security and accepts the registration.</p>
+<p>The repetition on Nimbus and the adequate signal lower the likelihood of a single cell/coverage failure; Aurora's own LTE success and the successful Boreal on the same PLMN/PCI lower the likelihood of a general network or site failure. The results point to a problem in how Aurora handles/updates the subscriber identity or profile state during the operator transition in 5G SA.</p>
+<p class="caution"><strong>Preliminary conclusion:</strong> the traceable evidence is the mismatch between the selected PLMN (724/078) and the Home-Network-Id of the transmitted SUCI (724/085) on the second attempt, followed by the SUCI correction and success on the third. The logs do not reveal why the terminal still uses the previous identity, nor do they allow distinguishing a provisioning defect from UE state/cache. Confirm by correlating IMSI/SUCI in a protected way, eSIM/pSIM state and core network responses; repeat with NAS capture and controlled profiles, without exposing subscriber identifiers.</p>

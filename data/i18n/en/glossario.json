@@ -1,0 +1,530 @@
+{
+  "categories": {
+    "rede": {
+      "label": "Network and identifiers"
+    },
+    "rrc": {
+      "label": "RRC and system information"
+    },
+    "nas": {
+      "label": "NAS and registration"
+    },
+    "medicao": {
+      "label": "Measurement and mobility"
+    },
+    "enlace": {
+      "label": "Radio link and timers"
+    },
+    "acesso": {
+      "label": "Random access"
+    },
+    "log": {
+      "label": "Modem log codes"
+    },
+    "teste": {
+      "label": "Field testing and statistics"
+    },
+    "ims": {
+      "label": "IMS and voice"
+    }
+  },
+  "terms": {
+    "5g-sa": {
+      "name": "5G Standalone",
+      "description": "5G with its own core (5GC), without an LTE anchor. The mode evaluated in every challenge."
+    },
+    "nr": {
+      "name": "New Radio",
+      "description": "The 5G air interface defined by 3GPP."
+    },
+    "lte": {
+      "name": "Long Term Evolution",
+      "description": "4G access technology. The control scenario in Challenge 2."
+    },
+    "rat": {
+      "name": "Radio Access Technology",
+      "description": "Radio access technology (e.g. NR or LTE)."
+    },
+    "ue": {
+      "name": "User Equipment",
+      "description": "The user's device: here, the smartphone under test."
+    },
+    "gnb": {
+      "name": "Next Generation NodeB",
+      "description": "The 5G NR base station."
+    },
+    "enb": {
+      "name": "Evolved NodeB",
+      "description": "The LTE base station."
+    },
+    "5gc": {
+      "name": "5G Core",
+      "description": "The 5G core network. Receives the UE's NAS signalling."
+    },
+    "amf": {
+      "name": "Access and Mobility Management Function",
+      "description": "The 5GC function that handles UE registration, authentication and mobility (the endpoint of NAS messages)."
+    },
+    "plmn": {
+      "name": "Public Land Mobile Network",
+      "description": "An operator's network, identified by MCC/MNC (e.g. 724/085)."
+    },
+    "mcc-mnc": {
+      "name": "Mobile Country Code / Mobile Network Code",
+      "description": "Country code (724 = Brazil) and operator code. Together they identify the PLMN."
+    },
+    "supi": {
+      "name": "Subscription Permanent Identifier",
+      "description": "The subscriber's permanent 5G identity (equivalent to the IMSI). Never sent in clear."
+    },
+    "suci": {
+      "name": "Subscription Concealed Identifier",
+      "description": "The encrypted SUPI sent in the Registration Request. Its Home-Network-Id (MCC/MNC of the SIM's operator) is in clear, showing which profile the UE used."
+    },
+    "msin": {
+      "name": "Mobile Subscription Identification Number",
+      "description": "The part of the subscriber identifier that follows the MCC/MNC."
+    },
+    "guti": {
+      "name": "5G Globally Unique Temporary Identifier",
+      "description": "A temporary identity assigned in the Registration Accept, used instead of the SUCI on later accesses."
+    },
+    "tac": {
+      "name": "Tracking Area Code",
+      "description": "Tracking area code, broadcast in SIB1."
+    },
+    "pci": {
+      "name": "Physical Cell Identity",
+      "description": "The cell's physical identifier (0 to 1007 in NR). E.g. PCI 88 (serving) and PCI 145 (n41 neighbour)."
+    },
+    "nr-arfcn": {
+      "name": "NR Absolute Radio Frequency Channel Number",
+      "description": "Number identifying the carrier frequency. 633180 = 3497.7 MHz (n78); 504990 = 2524.95 MHz (n41)."
+    },
+    "n78-n41": {
+      "name": "NR bands",
+      "description": "n78: 3.3–3.8 GHz (TDD). n41: 2.496–2.690 GHz (TDD). Moving between them is an inter-frequency handover."
+    },
+    "pdu": {
+      "name": "Protocol Data Unit Session",
+      "description": "A data session between the UE and a data network (DNN). What keeps service alive during mobility."
+    },
+    "dnn": {
+      "name": "Data Network Name",
+      "description": "Name of the session's data network (equivalent to the LTE APN). E.g. internet.novalink."
+    },
+    "nssai": {
+      "name": "Network Slice Selection Assistance Information",
+      "description": "The list of allowed network slices, sent in the Registration Accept."
+    },
+    "drb-srb": {
+      "name": "Data / Signalling Radio Bearer",
+      "description": "Radio bearers: SRB carries signalling (RRC/NAS); DRB carries user data."
+    },
+    "xn-ngap": {
+      "name": "Interfaces between network nodes",
+      "description": "Xn connects gNBs; NGAP is the protocol between gNB and AMF. They don't appear in the UE log, hence the request for network traces."
+    },
+    "rrc": {
+      "name": "Radio Resource Control",
+      "description": "Control protocol between UE and gNB (TS 38.331): connection, measurement, handover and re-establishment."
+    },
+    "rrc-states": {
+      "name": "RRC states",
+      "description": "In IDLE the UE just camps on a cell and reselects; in CONNECTED it has an active connection and mobility is network-controlled (handover)."
+    },
+    "mib": {
+      "name": "Master Information Block",
+      "description": "The first system information read from a cell: SFN and whether the cell is barred (cellBarred)."
+    },
+    "sib": {
+      "name": "System Information Block",
+      "description": "System information blocks. SIB1 carries PLMN, TAC, cell identity, selection parameters (q-RxLevMin) and the common RACH configuration."
+    },
+    "rrcsetup": {
+      "name": "RRC connection setup",
+      "description": "The RRCSetupRequest → RRCSetup → RRCSetupComplete sequence that takes the UE to RRC_CONNECTED. In Challenge 3, RRCSetup carries N310/T310."
+    },
+    "rrcreconfig": {
+      "name": "RRC reconfiguration",
+      "description": "Message that changes the connection: adds bearers, sends measConfig or, with reconfigurationWithSync, commands a handover."
+    },
+    "rwsync": {
+      "name": "Handover command",
+      "description": "RRCReconfiguration IE telling the UE to synchronise with and access the target cell. Starts T304 and stops T310."
+    },
+    "rrcreest": {
+      "name": "RRC re-establishment",
+      "description": "Connection recovery after an RLF: Request → RRCReestablishment → Complete, on a cell that passes the S criterion."
+    },
+    "rrcrelease": {
+      "name": "RRC connection release",
+      "description": "The network ends the connection and the UE returns to RRC_IDLE. In Challenge 2 it follows each Registration Reject."
+    },
+    "ie": {
+      "name": "Information Element",
+      "description": "A field of a signalling message (e.g. measId, t304, physCellId)."
+    },
+    "nas": {
+      "name": "Non-Access Stratum",
+      "description": "Signalling between UE and core (AMF): registration, authentication, security and sessions. Carried inside RRC (DL/ULInformationTransfer)."
+    },
+    "5gmm": {
+      "name": "5G Mobility Management",
+      "description": "The NAS sublayer for registration and mobility. A Registration Reject carries a 5GMM cause."
+    },
+    "cause3": {
+      "name": "Illegal UE",
+      "description": "The network considers the UE/subscription invalid. The UE treats the SIM as invalid for 5GS until power-off or card change."
+    },
+    "cause11": {
+      "name": "PLMN not allowed",
+      "description": "The subscriber may not use that PLMN. The UE adds it to the forbidden PLMN list and selects another network."
+    },
+    "registration": {
+      "name": "5G registration",
+      "description": "Request → (Authentication, Security Mode) → Accept → Complete. The 5G equivalent of the LTE Attach."
+    },
+    "attach": {
+      "name": "LTE registration",
+      "description": "The LTE procedure equivalent to 5G registration."
+    },
+    "auth": {
+      "name": "5G-AKA authentication",
+      "description": "The network sends RAND and AUTN; the SIM verifies the network and returns RES*, proving the subscriber's identity."
+    },
+    "ngksi": {
+      "name": "Key Set Identifier",
+      "description": "Identifier of the NAS security key set in use."
+    },
+    "nea-nia": {
+      "name": "Ciphering and integrity algorithms",
+      "description": "AES-128-based algorithms chosen in the Security Mode Command: NEA2 ciphers, NIA2 protects integrity."
+    },
+    "rsrp": {
+      "name": "Reference Signal Received Power",
+      "description": "Average received power of the reference signals (in NR, of the SSB), in dBm. The main signal-level measure."
+    },
+    "rsrq": {
+      "name": "Reference Signal Received Quality",
+      "description": "Signal quality in dB, accounting for interference and load."
+    },
+    "sinr": {
+      "name": "Signal to Interference plus Noise Ratio",
+      "description": "Signal to (interference + noise) ratio, in dB. At the DUT's late report the serving was at −12 dB."
+    },
+    "ssb": {
+      "name": "SS/PBCH Block",
+      "description": "A block with PSS, SSS and PBCH (MIB) sent periodically. What the UE measures for RSRP/RSRQ."
+    },
+    "serving-neighbour": {
+      "term": "Serving / neighbour",
+      "name": "Serving and neighbour cell",
+      "description": "Serving is the cell currently serving the UE; neighbour is the handover candidate."
+    },
+    "measconfig": {
+      "name": "Measurement Configuration",
+      "description": "Measurement setup sent in RRCReconfiguration: objects (MO), report criteria, measIds and gaps. MeasConfig #2 is T 0 in Challenge 3."
+    },
+    "measid": {
+      "name": "Measurement identifiers",
+      "description": "A measId links a measurement object (MO, one frequency) to a reportConfig (the event). E.g. measId=2 = n41 + A5."
+    },
+    "mr": {
+      "name": "Measurement report",
+      "description": "UE message stating that an event (A2, A3, A5…) was met. It triggers the network's handover decision."
+    },
+    "a2": {
+      "term": "Event A2",
+      "name": "Serving below a threshold",
+      "description": "Enters when Ms + Hys < Thresh. Tells the network the serving is degrading; in Challenge 3 it triggers MeasConfig #2."
+    },
+    "a3": {
+      "term": "Event A3",
+      "name": "Neighbour offset better than serving",
+      "description": "Enters when Mn + Ofn + Ocn − Hys > Mp + Ofp + Ocp + Off. Used for intra-frequency handover (scenario 1)."
+    },
+    "a5": {
+      "term": "Event A5",
+      "name": "Serving worse than Thresh1 and neighbour better than Thresh2",
+      "description": "Enters when Mp + Hys < Thresh1 and Mn − Hys > Thresh2. In Challenge 3: serving < −107 dBm and neighbour > −99 dBm (−106/−100 with 1 dB hysteresis)."
+    },
+    "hys": {
+      "name": "Hysteresis",
+      "description": "Margin that prevents repeated triggers near the threshold. The IE is in 0.5 dB steps: hysteresis = 2 → 1 dB."
+    },
+    "ttt": {
+      "name": "Time To Trigger",
+      "description": "How long the entering condition must hold before the report is sent (240 ms for the A5 in Challenge 3)."
+    },
+    "l3filter": {
+      "term": "L3 filter",
+      "name": "Layer 3 filtering",
+      "description": "Exponential averaging of measurements: Fn = (1 − a)·Fn−1 + a·Mn. Events are evaluated on the filtered value."
+    },
+    "gap": {
+      "name": "Measurement gap",
+      "description": "Windows in which the UE stops serving the current cell to measure another frequency. MGL = length (6 ms); MGRP = period (40 ms); gapOffset = position."
+    },
+    "smtc": {
+      "name": "SSB-based Measurement Timing Configuration",
+      "description": "The window in which the UE looks for the measured frequency's SSBs (20 ms period, offset 10 on n41)."
+    },
+    "ho": {
+      "name": "Handover",
+      "description": "Change of serving cell in RRC_CONNECTED, commanded by the network. Intra-frequency: same carrier; inter-frequency: another carrier (n78 → n41)."
+    },
+    "s-criterion": {
+      "term": "S criterion (Srxlev / Squal)",
+      "name": "Cell selection criterion",
+      "description": "A cell is suitable only if Srxlev > 0 and Squal > 0 (TS 38.304). Srxlev ≈ measured RSRP − q-RxLevMin."
+    },
+    "qrxlevmin": {
+      "name": "Minimum level and quality",
+      "description": "SIB1 thresholds for the S criterion. The level IE is in 2 dBm steps (−59 → −118 dBm). PCI 88 at −120.8 dBm is below it."
+    },
+    "cell-reselection": {
+      "term": "Cell selection / reselection",
+      "name": "Cell selection / reselection",
+      "description": "The UE itself picks a suitable cell (in IDLE or during re-establishment). Unlike handover, which the network commands."
+    },
+    "rlm": {
+      "name": "Radio Link Monitoring",
+      "description": "The UE's continuous link monitoring, comparing estimated BLER with Qout/Qin and producing out-of-sync/in-sync indications."
+    },
+    "rlf": {
+      "name": "Radio Link Failure",
+      "description": "Failure declared by the UE when the link is lost (e.g. T310 expires). Leads to re-establishment."
+    },
+    "bler": {
+      "name": "Block Error Rate",
+      "description": "Block error rate. In RLM it is that of a hypothetical PDCCH, filtered (OOS_FILT_BLER / IS_FILT_BLER)."
+    },
+    "qout-qin": {
+      "name": "Out-of-sync and in-sync thresholds",
+      "description": "Qout = 10 % BLER (out of sync); Qin = 2 % (in sync). In the log: Outsync/Insync_Threshold_q24."
+    },
+    "n310": {
+      "name": "RLM counters",
+      "description": "N310 consecutive out-of-sync indications start T310; N311 in-sync indications stop it. In Challenge 3: N310 = 4, N311 = 1."
+    },
+    "t310": {
+      "name": "Radio link failure timer",
+      "description": "Runs while the link is out of sync. Stops on N311 in-sync or a handover command; on expiry the UE declares RLF (2000 ms in Challenge 3)."
+    },
+    "t311": {
+      "name": "Re-establishment timer",
+      "description": "Starts at re-establishment and stops when the UE finds a suitable cell. On expiry the UE goes to IDLE (10000 ms)."
+    },
+    "t304": {
+      "name": "Handover timer",
+      "description": "Starts with reconfigurationWithSync and stops when access to the target cell completes. On expiry the handover failed (2000 ms)."
+    },
+    "rach": {
+      "name": "Random Access (Channel)",
+      "description": "The random access procedure used to connect, re-establish or enter the handover target cell."
+    },
+    "prach": {
+      "name": "Physical Random Access Channel",
+      "description": "The physical channel on which the UE sends the preamble (Msg1)."
+    },
+    "msg1-4": {
+      "name": "Random access messages",
+      "description": "Msg1 = preamble; Msg2 = RAR; Msg3 = the UE's first message (e.g. RRCReestablishmentRequest); Msg4 = contention resolution."
+    },
+    "rar": {
+      "name": "Random Access Response",
+      "description": "The gNB's answer to the preamble (Msg2). If it doesn't arrive within the window, the attempt fails (FAILURE_MSG2_RA_TIMER_EXP)."
+    },
+    "cfra-cbra": {
+      "name": "Contention-Free / Contention-Based Random Access",
+      "description": "CFRA uses a dedicated preamble sent in the handover command (no contention); CBRA uses a random preamble and needs contention resolution."
+    },
+    "rach-params": {
+      "name": "RACH parameters (RACH-ConfigCommon)",
+      "description": "Maximum attempts (6), power increase per attempt (4 dB) and RAR wait window (sl20 = 10 ms at 30 kHz)."
+    },
+    "target-power": {
+      "name": "Preamble target power",
+      "description": "The power at which the gNB expects to receive the 1st preamble (−130 dBm). The target rises by powerRampingStep each attempt."
+    },
+    "pathloss": {
+      "name": "Path loss",
+      "description": "Attenuation between gNB and UE, estimated by the UE from RSRP. PRACH Tx = min(Pcmax, target + PL)."
+    },
+    "pcmax": {
+      "name": "UE maximum power",
+      "description": "The UE's transmit power ceiling (25 dBm in the log). Once the ramp hits it, further attempts gain no power."
+    },
+    "ml1": {
+      "name": "Modem Layer 1",
+      "description": "The chipset modem's physical layer. ML1 records show measurements, cell searches and RLM."
+    },
+    "b959": {
+      "name": "NR5G ML1 RLM Stats",
+      "description": "RLM statistics: OOS_FILT_BLER and IS_FILT_BLER per evaluation, with the Outsync/Insync thresholds."
+    },
+    "b97f": {
+      "name": "NR5G ML1 Searcher Measurement Database Update Ext",
+      "description": "Per-cell measurement updates (SFN, RSRP/RSRQ). Where the n41 cadence and level can be seen."
+    },
+    "b96d": {
+      "name": "NR5G ML1 Searcher ACQ Config And Response",
+      "description": "Cell search and acquisition on a frequency (how many cells, best PCI)."
+    },
+    "b970": {
+      "name": "NR5G ML1 Searcher Idle S Criteria",
+      "description": "S criterion result for the evaluated cell (SUCCESS / FAILURE)."
+    },
+    "b950": {
+      "name": "NR5G ML1 DL Common Config",
+      "description": "Common downlink configuration of the cell the UE camped on."
+    },
+    "b884": {
+      "name": "NR5G MAC UL Physical Channel Power Control",
+      "description": "Power of each uplink transmission; for PRACH it shows transmit_power, pathloss, mtpl and prach_target_power."
+    },
+    "b889": {
+      "name": "NR5G MAC RACH Trigger",
+      "description": "Start of a RACH procedure and its cause (CONNECTION_REQUEST, RRC_REESTABLISHMENT, HANDOVER)."
+    },
+    "b88a": {
+      "name": "NR5G MAC RACH Attempt",
+      "description": "Result of each RACH attempt (SUCCESS or the failure reason)."
+    },
+    "q24": {
+      "name": "Q24 fixed point",
+      "description": "Chipset number format: real value = integer / 2²⁴. E.g. 1677722 → 0.10 (10 %)."
+    },
+    "bler-cap": {
+      "name": "Logged BLER ceiling",
+      "description": "The maximum value 0xB959 records (15 %). Readings of 15.0 % mean saturation, not the actual BLER."
+    },
+    "sfn": {
+      "name": "System Frame Number",
+      "description": "Radio frame number (0 to 1023, 10 ms each). Lets two logs be compared at the same radio instant."
+    },
+    "pss-sss": {
+      "name": "Primary / Secondary Synchronization Signal",
+      "description": "The synchronisation signals the UE detects first; together they give the PCI."
+    },
+    "dut": {
+      "name": "Device Under Test",
+      "description": "The device being certified (Aurora in Challenge 2, Meridian in Challenge 3)."
+    },
+    "cdut": {
+      "name": "Comparator DUT",
+      "description": "An already certified reference device tested under the same conditions (Boreal in Challenge 2, Solstice in Challenge 3)."
+    },
+    "kpi": {
+      "name": "Key Performance Indicator",
+      "description": "An indicator used to judge the test (e.g. handover without RLF, or time to report)."
+    },
+    "3gpp-ts": {
+      "name": "3GPP technical specifications",
+      "description": "TS 38.331 (RRC), TS 38.304 (IDLE cell selection), TS 38.133 (RRM requirements), TS 38.533 (RRM conformance tests), TS 24.501 (5G NAS)."
+    },
+    "fisher": {
+      "term": "Fisher's exact test",
+      "name": "Comparing proportions in small samples",
+      "description": "Computes the chance of a result as extreme as 3/3 × 0/3 by chance: p = 0.10 two-sided, which is not significant at 5 %."
+    },
+    "ci": {
+      "term": "95 % CI (Clopper–Pearson)",
+      "name": "Exact confidence interval",
+      "description": "A plausible range for a true rate. With 3 of 3, the DUT's RLF rate could be anywhere from 29 % to 100 %."
+    },
+    "earfcn": {
+      "name": "E-UTRA Absolute Radio Frequency Channel Number",
+      "description": "Number identifying the LTE carrier. In Challenge 4, EARFCN 1575 = 1842.5 MHz in Band 3."
+    },
+    "paging": {
+      "name": "Paging",
+      "description": "Network notice to an idle UE that there is traffic for it. On an MT call the UE answers with RRC Setup (establishmentCause mt-Access)."
+    },
+    "ims": {
+      "name": "IP Multimedia Subsystem",
+      "description": "Core that provides voice and messaging over IP (VoLTE, VoNR) using SIP. The UE must be registered with IMS to make or receive calls."
+    },
+    "cscf": {
+      "name": "Proxy / Serving Call Session Control Function",
+      "description": "IMS SIP servers. The P-CSCF is the UE's first point of contact; the S-CSCF authenticates registration and controls sessions."
+    },
+    "sip": {
+      "name": "Session Initiation Protocol",
+      "description": "IMS signalling protocol (RFC 3261): REGISTER, INVITE, UPDATE, BYE. Responses are numbered: 1xx provisional, 2xx success, 4xx client error."
+    },
+    "sip-register": {
+      "name": "SIP registration",
+      "description": "UE request to register with IMS. The first one carries no credentials; the network answers 401 with a challenge and the UE repeats the REGISTER with an Authorization."
+    },
+    "sip-401": {
+      "name": "Authentication challenge",
+      "description": "Normal response to the first REGISTER: it carries the WWW-Authenticate with the nonce the UE must use on the next attempt. It is not a failure."
+    },
+    "sip-403": {
+      "name": "Registration refused",
+      "description": "The network refuses the credential presented. In Challenge 4 the Warning: 399 header gives the reason: \"nonce does not match latest challenge\"."
+    },
+    "digest": {
+      "name": "Digest authentication (MD5)",
+      "description": "The server sends a nonce (one-time value) in the 401; the UE computes the response from the password and that nonce. Using an old nonce invalidates the response. The Challenge 4 bench uses Digest MD5 instead of IMS-AKA."
+    },
+    "sdp": {
+      "name": "Session Description Protocol",
+      "description": "Body of SIP messages that describes the media: port, codecs and payload types. One side offers, the other answers, as defined in RFC 3264."
+    },
+    "payload-type": {
+      "name": "Codec number in RTP",
+      "description": "Voice codecs use dynamic numbers (96–127) defined in the SDP by a=rtpmap lines (e.g. a=rtpmap:97 AMR/8000). Within a session a number must not change codec (RFC 3264 §8.3.2)."
+    },
+    "evs": {
+      "name": "Enhanced Voice Services",
+      "description": "3GPP voice codec with bandwidth up to super-wideband (SWB), from 5.9 to 128 kbps. Preferred on VoNR."
+    },
+    "amr": {
+      "name": "Adaptive Multi-Rate",
+      "description": "3GPP voice codecs: AMR (narrowband, 8 kHz, up to 12.2 kbps) and AMR-WB (wideband, 16 kHz). An EVS decoder cannot understand AMR, and vice versa."
+    },
+    "telephone-event": {
+      "name": "DTMF over RTP",
+      "description": "Payload type used to carry keypad tones (DTMF) inside the RTP stream (RFC 4733)."
+    },
+    "prack": {
+      "name": "Reliable provisional response",
+      "description": "The 183 Session Progress carries the SDP answer before the call is answered; the PRACK confirms it arrived (RFC 3262)."
+    },
+    "precondition": {
+      "name": "QoS preconditions",
+      "description": "The call only rings once both sides have the voice bearer reserved. The UPDATE with a=curr:qos local sendrecv announces that local QoS is ready (RFC 3312)."
+    },
+    "qci1": {
+      "name": "Conversational voice bearer",
+      "description": "QoS class with guaranteed bit rate (GBR) for voice: QCI 1 dedicated bearer on LTE, 5QI 1 flow on 5G. In Challenge 4, 53 kbps GBR."
+    },
+    "rtp": {
+      "name": "Real-time Transport Protocol",
+      "description": "RTP carries the encoded voice frames; RTCP reports statistics. Normal TX/RX counters show the packets arrive, not that the audio is correct."
+    },
+    "vocoder": {
+      "name": "Voice encoder / decoder",
+      "description": "Component that turns voice into codec frames and back. It must use the codec the SDP binds to the received payload type."
+    },
+    "vonr-volte": {
+      "name": "Voice over NR / Voice over LTE",
+      "description": "Voice calls over IMS in 5G SA and LTE, respectively."
+    },
+    "mo-mt": {
+      "name": "Mobile Originated / Mobile Terminated",
+      "description": "Call placed by the device (MO) or received by it (MT)."
+    },
+    "vds": {
+      "name": "Voice domain selection",
+      "description": "UE logic that decides how voice is carried: IMS (VoNR/VoLTE), EPS fallback or CS. Without IMS registration in 5G SA it may conclude there is no voice."
+    },
+    "toggle-power": {
+      "name": "Partial vs full restart",
+      "description": "An airplane mode toggle restarts the radio and the IMS client but may keep state in memory (such as a nonce cache). A power cycle restarts the whole device and clears that state."
+    }
+  }
+}

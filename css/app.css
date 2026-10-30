@@ -95,7 +95,9 @@ button { font: inherit; }
 .shell { max-width: 1500px; margin: auto; padding: 0 34px 54px; }
 .topbar { height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line); }
 .brand { display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 750; letter-spacing: .06em; }
-.brand-mark { width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid var(--accent-line); border-radius: 9px; color: var(--accent-strong); background: var(--accent-soft); }
+/* The emblem is drawn for light backgrounds, so it sits on a white tile in both themes. */
+.brand-mark { width: 40px; height: 40px; flex: 0 0 auto; display: grid; place-items: center; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--brand-white); }
+.brand-mark img { display: block; width: 25px; height: 34px; }
 .brand small { color: var(--muted); font-weight: 500; letter-spacing: .01em; }
 .top-meta, .eyebrow { color: var(--muted); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
 .top-meta { display: flex; gap: 14px; align-items: center; }
@@ -150,6 +152,8 @@ h1 { margin: 8px 0 8px; font-size: clamp(26px, 3.4vw, 39px); letter-spacing: -.0
 .scene-art { --serving: var(--accent); --target: var(--green); --ue: var(--green); }
 .scene-art.mode-failure { --target: var(--red); --ue: var(--red); }
 .scene-art.mode-reference { --serving: var(--accent); --target: var(--green); }
+/* The defect is in the device, not the network: only the UE is flagged. */
+.scene-art.mode-device-failure { --target: var(--blue); --ue: var(--red); }
 .scene-bg { fill: var(--scene-bg); }
 .scene-grid-line { fill: none; stroke: var(--scene-grid); stroke-width: 1; }
 .scene-ground { fill: color-mix(in srgb, var(--scene-grid) 55%, var(--scene-bg)); }
@@ -181,6 +185,17 @@ h1 { margin: 8px 0 8px; font-size: clamp(26px, 3.4vw, 39px); letter-spacing: -.0
 .tower-wave { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; opacity: 0; animation: wave-out 2.1s ease-out infinite; }
 .tower-wave.w2 { animation-delay: .35s; }
 .tower-wave.w3 { animation-delay: .7s; }
+.backhaul-line { stroke: var(--scene-brace); stroke-width: 2.5; stroke-linecap: round; }
+.backhaul-label { fill: var(--muted); font-size: 9px; letter-spacing: .04em; paint-order: stroke; stroke: var(--scene-bg); stroke-width: 3px; }
+.scene-core { color: var(--target); }
+.scene-core.serving { color: var(--serving); }
+.core-label { fill: var(--muted); font-size: 9px; letter-spacing: .04em; paint-order: stroke; stroke: var(--scene-bg); stroke-width: 3px; }
+.scene-core * { vector-effect: non-scaling-stroke; }
+.core-rack { fill: var(--panel); stroke: var(--scene-metal); stroke-width: 1.6; }
+.core-unit { fill: color-mix(in srgb, currentColor 10%, var(--panel-sunken)); stroke: var(--scene-brace); stroke-width: 1; }
+.core-slot { stroke: var(--scene-brace); stroke-width: 1.5; stroke-linecap: round; }
+.core-led { fill: currentColor; }
+.core-led.blink { animation: led-blink 2.4s steps(1) infinite; }
 .phone-body { fill: var(--panel); stroke: var(--scene-metal); stroke-width: 2; }
 .phone-screen { fill: color-mix(in srgb, var(--ue) 12%, var(--panel-sunken)); stroke: var(--scene-brace); stroke-width: 1; }
 .phone-led { fill: var(--ue); }
@@ -200,12 +215,16 @@ h1 { margin: 8px 0 8px; font-size: clamp(26px, 3.4vw, 39px); letter-spacing: -.0
 .signal-packet.ul { fill: var(--signal-ul); }
 .signal-packet.dl { fill: var(--signal-dl); }
 .scene-caption { position: absolute; z-index: 2; inset: 12px 14px auto; display: flex; justify-content: space-between; color: var(--faint); font-size: 9px; letter-spacing: .11em; text-transform: uppercase; pointer-events: none; }
-.scene-label { position: absolute; z-index: 2; font-size: 10px; color: var(--text); letter-spacing: .02em; pointer-events: none; }
+.scene-label { position: absolute; z-index: 2; font-size: 10px; color: var(--text); letter-spacing: .02em; pointer-events: none; text-shadow: 0 0 3px var(--scene-bg), 0 0 3px var(--scene-bg), 0 0 3px var(--scene-bg); }
 .scene-label small { display: block; color: var(--muted); font-size: 9px; margin-top: 3px; }
 .label-left { left: 8%; bottom: 15px; }
 .label-phone { left: 50%; bottom: 15px; transform: translateX(-50%); text-align: center; }
 .label-right { right: 7%; bottom: 15px; text-align: right; }
-.signal-event-chip { position: absolute; z-index: 2; top: 37px; left: 50%; display: flex; align-items: center; justify-content: center; gap: 7px; width: min(50%, 520px); min-height: 25px; padding: 4px 10px; transform: translateX(-50%); overflow: hidden; border: 1px solid var(--line-strong); border-radius: 7px; background: color-mix(in srgb, var(--panel) 92%, transparent); color: var(--muted); font-size: 9px; white-space: nowrap; }
+/* Core layout (rightKind "core"): UE left, cell centre, core node right. */
+.scene.layout-core .label-phone { left: 8%; transform: none; text-align: left; }
+.scene.layout-core .label-left { left: 50%; transform: translateX(-50%); text-align: center; }
+.scene.layout-core .signal-event-chip { left: auto; right: 14px; transform: none; width: min(44%, 460px); }
+.signal-event-chip { position: absolute; z-index: 2; top: 37px; left: 50%; display: flex; align-items: center; justify-content: center; justify-content: safe center; gap: 7px; width: min(50%, 520px); min-height: 25px; padding: 4px 10px; transform: translateX(-50%); overflow: hidden; border: 1px solid var(--line-strong); border-radius: 7px; background: color-mix(in srgb, var(--panel) 92%, transparent); color: var(--muted); font-size: 9px; white-space: nowrap; }
 .signal-event-chip strong { color: var(--accent-strong); font-size: 9px; letter-spacing: .06em; }
 .signal-event-chip .signal-direction { color: var(--text); font-weight: 650; }
 .signal-event-chip .signal-message { overflow: hidden; text-overflow: ellipsis; }
@@ -610,7 +629,7 @@ h1 { margin: 8px 0 8px; font-size: clamp(26px, 3.4vw, 39px); letter-spacing: -.0
 
 @media (prefers-reduced-motion: reduce) {
   .tower-wave { opacity: .7; }
-  .tower-wave, .tower-beacon, .tower-led, .live-state.running::before, .live-metric-value.changed, .race-ghost { animation: none; }
+  .tower-wave, .tower-beacon, .tower-led, .core-led.blink, .live-state.running::before, .live-metric-value.changed, .race-ghost { animation: none; }
   .race-ring { transition: none; }
   body { transition: none; }
 }
@@ -664,6 +683,12 @@ h1 { margin: 8px 0 8px; font-size: clamp(26px, 3.4vw, 39px); letter-spacing: -.0
   .label-left { left: 4%; }
   .label-right { right: 4%; }
   .label-phone { bottom: 32px; }
+  .backhaul-label, .core-label { display: none; }
+  .scene.layout-core .label-phone { left: 4%; bottom: 15px; }
+  .scene.layout-core .label-phone small { display: none; }
+  .scene.layout-core .label-left { bottom: 32px; }
+  /* Single line, right of the centred mast; the full text stays in the chip's title. */
+  .scene.layout-core .signal-event-chip { right: 8px; width: 38%; justify-content: flex-start; font-size: 8px; }
   .scene-caption { font-size: 8px; }
   .modal { padding: 0; }
   .modal-card { height: 100dvh; border-radius: 0; }

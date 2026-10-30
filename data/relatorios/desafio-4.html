@@ -1,0 +1,48 @@
+<!-- Fragmento do relatório; {{data}} é substituído pela data de geração. -->
+<h1>Relatório de Issue — Teste de Campo</h1>
+<div class="report-meta">Desafio 4 · S04 · NovaLink Telecom / Site Delta · Gerado em {{data}}</div>
+<h2>1. Identificação</h2>
+<p><strong>Título:</strong> Vanguard não conclui o registro IMS após toggle de modo avião (2 × 403, nonce em cache) e não recebe chamadas MT em VoNR; em VoLTE MO, voz ininteligível por mismatch de payload type (PT 97 EVS × AMR).</p>
+<p><strong>Severidade / Prioridade:</strong> Alta — dois defeitos independentes no cliente IMS, ambos em 3/3 repetições: perda total do serviço de voz em 5G SA (chamadas MT não entregues) e chamadas VoLTE completadas sem áudio utilizável.</p>
+<p><strong>Reportado por / Data:</strong> Field test / {{data}}</p>
+<h2>2. Configuração dos aparelhos</h2>
+<table><thead><tr><th>Item</th><th>DUT</th><th>CDUT (referência)</th></tr></thead><tbody>
+  <tr><td>Modelo</td><td>Vanguard (pré-série)</td><td>Solstice (homologado)</td></tr>
+  <tr><td>SW / build / modem</td><td>1.8.0 · VGD-B2410.3 · NR-MOD 17.3.0 · Vanguard-IMS/1.0</td><td>3.1.0 · SOL-B2402.7 · NR-MOD 17.2.5 · Solstice-IMS/2.1</td></tr>
+  <tr><td>SIM / plano</td><td>USIM NovaLink (724/09) · IMSI 724090034551201 · pós-pago com VoLTE/VoNR</td><td>USIM NovaLink (724/09) · IMSI 724090034551310 · mesmo plano</td></tr>
+  <tr><td>Modo / RAT</td><td colspan="2">5G SA · NR (Test Case #1) / LTE (Test Case #2)</td></tr>
+  <tr><td>Ferramenta de log</td><td colspan="2">Log de modem pela porta de diagnóstico, exportado em visualizador HTML</td></tr>
+  <tr><td>Arquivos</td><td>Desafio_S04_Log_Cen1_MT_VoNR_DUT_Vanguard.html<br>Desafio_S04_Log_Cen2_MO_VoLTE_DUT_Vanguard.html</td><td>Desafio_S04_Log_Cen1_MT_VoNR_CDUT_Solstice.html<br>Desafio_S04_Log_Cen2_MO_VoLTE_CDUT_Solstice.html</td></tr>
+</tbody></table>
+<h2>3. Ambiente e cenário de teste</h2>
+<p><strong>Rede / operadora:</strong> NovaLink Telecom (PLMN 724/09), rede comercial. <strong>Site:</strong> Delta. <strong>IMS:</strong> realm ims.novalink.com.br, SIP Digest MD5 (qop=auth), Expires 600 s.</p>
+<p><strong>Serving:</strong> TC#1 n78 · NR-ARFCN 633180 · PCI 88 (RSRP −82 dBm / RSRQ −8 dB). TC#2 Band 3 · EARFCN 1575 · PCI 41 (RSRP −84 dBm / RSRQ −9 dB). <strong>Vizinhas:</strong> nenhuma relevante.</p>
+<p><strong>Rota / condição:</strong> UE estacionário no mesmo ponto do Site Delta; 22/10/2026, DUT a partir de 09h19 e CDUT a partir de 14h05.</p>
+<h2>4. Passos para reproduzir</h2>
+<ol><li>TC#1: em 5G SA, reinicializar o cliente IMS por toggle de modo avião (sem reiniciar o aparelho).</li><li>Aguardar o registro 5G, as sessões PDU e o registro SIP; observar 401, a Authorization enviada e a resposta final.</li><li>Originar uma chamada do terminal remoto (+55 11 97777-6655) para o aparelho e verificar paging, INVITE e alerta.</li><li>TC#2: em LTE, fazer power cycle completo, confirmar o registro IMS e originar uma chamada VoLTE para o terminal remoto.</li><li>Comparar o <code>a=rtpmap</code> de cada payload type no INVITE, no 183, no UPDATE e no 200 OK com o codec do vocoder; avaliar o áudio e os contadores RTP em T+10 s.</li><li>Repetir 3 vezes cada caso, com DUT e CDUT.</li></ol>
+<h2>5. Reprodutibilidade</h2>
+<table><thead><tr><th>Cenário</th><th>Aparelho</th><th>Reproduz?</th><th>Frequência</th></tr></thead><tbody>
+  <tr><td>TC#1 · registro IMS + MT VoNR</td><td>Vanguard · DUT</td><td>Sim · 2 × 403, sem chamada</td><td>3/3</td></tr>
+  <tr><td>TC#1 · registro IMS + MT VoNR</td><td>Solstice · CDUT</td><td>Não · 200 OK na 1ª tentativa</td><td>0/3</td></tr>
+  <tr><td>TC#2 · MO VoLTE</td><td>Vanguard · DUT</td><td>Sim · voz ininteligível</td><td>3/3</td></tr>
+  <tr><td>TC#2 · MO VoLTE</td><td>Solstice · CDUT</td><td>Não · áudio nítido</td><td>0/3</td></tr>
+</tbody></table>
+<h2>6. Sintoma observado</h2>
+<ul><li>TC#1: o DUT responde ao 401 com um nonce em cache (<code>N0-000000-init</code>, depois <code>N1</code> quando o desafio já é <code>N2</code>) e recebe 403 Forbidden com <code>Warning: 399 "nonce does not match latest challenge"</code> em T +0,104–0,116 s e T +0,212–0,231 s. O cliente abandona o registro (max_auth_attempts = 2) e a Voice Domain Selection deixa o UE em 5G SA sem voz: nenhum paging ou INVITE chega.</li><li>TC#2: a rede responde à oferta do DUT com <code>a=rtpmap:97 AMR/8000</code>, enquanto o DUT mantém <code>97 = EVS/16000</code> (reofertado no UPDATE) e sobe o vocoder EVS 24,4 kbps no PT 97. A sinalização termina sem erro e o RTP flui (TX 500 / RX 497–499), mas a voz é ininteligível.</li><li>CDUT: registra na 1ª tentativa (200 OK em 0,098–0,109 s), recebe a chamada MT em VoNR e, em VoLTE, usa AMR-NB no PT 97, coerente com o SDP, com áudio nítido.</li></ul>
+<h2>7. Comparativo (Repetição 01)</h2>
+<table><thead><tr><th>Métrica</th><th>DUT · Vanguard</th><th>CDUT · Solstice</th></tr></thead><tbody>
+  <tr><td>TC#1 · nonce usado na Authorization</td><td>Em cache (N0-init, depois N1)</td><td>Do desafio atual (N1)</td></tr>
+  <tr><td>TC#1 · resposta ao REGISTER autenticado</td><td>403 em +0,110 s e +0,220 s</td><td>200 OK em +0,102 s</td></tr>
+  <tr><td>TC#1 · chamada MT</td><td>Não entregue (sem paging)</td><td>Recebida e atendida · EVS PT 97</td></tr>
+  <tr><td>TC#2 · registro IMS</td><td>200 OK em 0,110 s (1ª tentativa)</td><td>200 OK em 0,101 s (1ª tentativa)</td></tr>
+  <tr><td>TC#2 · PT 97 na oferta do aparelho</td><td>EVS/16000</td><td>AMR/8000</td></tr>
+  <tr><td>TC#2 · PT 97 na resposta da rede</td><td>AMR/8000</td><td>AMR/8000</td></tr>
+  <tr><td>TC#2 · vocoder</td><td>EVS 24,4 kbps (SWB), PT 97</td><td>AMR-NB 12,2 kbps, PT 97</td></tr>
+  <tr><td>TC#2 · RTP em T+10 s</td><td>TX 500 / RX 498 · voz ininteligível</td><td>TX 500 / RX 497 · áudio nítido</td></tr>
+</tbody></table>
+<h2>8. Evidências anexas</h2>
+<ul><li>Os quatro logs listados na seção 2 (repetição 01 de cada cenário).</li><li>TC#1 DUT: 401 (WWW-Authenticate nonce N1/N2), eventos <code>Authorization Build</code> e <code>Nonce Cache Update</code>, 403 com Warning 399, <code>IMS Registration Failure</code> e <code>Voice Domain Selection</code>.</li><li>TC#2 DUT: SDP do INVITE, do 183, do UPDATE e do 200 OK (linhas <code>a=rtpmap:97</code>), <code>Vocoder Started</code> e <code>RTP/RTCP Statistics</code>.</li><li>Mapa/rota/coordenadas GPS: não disponibilizados no material de origem (UE estacionário).</li></ul>
+<h2>9. Comentários do field tester</h2>
+<p>Os dois sintomas têm causas independentes que apenas coexistem no mesmo cliente IMS (Vanguard-IMS/1.0). O defeito de registro só aparece quando o cache de nonce sobrevive (toggle de modo avião); após um power cycle (TC#2) o registro passa de primeira, mas a voz falha mesmo assim. O defeito de mídia só aparece quando o DUT é o ofertante e a resposta associa ao PT 97 um codec diferente; no TC#1 o UE nem chega a negociar mídia.</p>
+<p>Hipóteses descartadas: cobertura (RSRP −82/−84 dBm, UE parado, mesma célula do CDUT); credenciais (o mesmo SIM registra de primeira no TC#2 com o nonce correto); rede/IMS (o CDUT registra e completa as chamadas no mesmo site e realm); transporte/QoS (bearer 5QI/QCI 1 ativo e contadores RTP equivalentes ao CDUT).</p>
+<p class="caution"><strong>Conclusão:</strong> (1) o cliente IMS monta a Authorization a partir do nonce em cache em vez do nonce do 401 mais recente, e o cache não é limpo na reinicialização do IMS por modo avião; (2) o cliente IMS não aplica o <code>a=rtpmap</code> da resposta SDP, mantendo o seu mapa local PT 97 = EVS, o que contraria a regra de que o mapeamento de um payload type dinâmico não muda durante a sessão (RFC 3264 §8.3.2). Para fechar cada causa: repetir o TC#1 alternando toggle e power cycle (≥ 20 vezes cada) e com IMS-AKA; capturar o lado da rede (P-CSCF/S-CSCF e RTP no SBC) para confirmar o payload efetivamente enviado; testar o TC#2 com uma oferta do DUT que já use 97 = AMR, e com um build corrigido do cliente IMS.</p>

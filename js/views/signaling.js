@@ -37,9 +37,20 @@ export function mountSignalingView() {
     const isDownlink = /^DL(?:\b|\s|\()/i.test(direction);
     const isInternal = direction.toUpperCase() === "EVENT" || String(event.channel || "").toLowerCase() === "internal";
     const pci = event.analysis?.pci;
-    const targetsRight = Boolean(pci && cellPcis(scenario.rightCell).includes(pci) && !cellPcis(scenario.leftCell).includes(pci));
-    const nodeType = (targetsRight ? scenario.rightNode : scenario.leftNode).split("·")[0].trim() || t("signal.radio");
-    const target = `${nodeType}${pci ? ` · PCI ${pci}` : ""}`;
+    // `rightProtocols` sends a protocol's messages to the right node (e.g. SIP to the IMS core).
+    const viaRightProtocol = (scenario.rightProtocols || []).includes(event.protocol);
+    const targetsRight = viaRightProtocol || Boolean(pci && cellPcis(scenario.rightCell).includes(pci) && !cellPcis(scenario.leftCell).includes(pci));
+    // A core node on the right is reached through the left cell and the transport network.
+    const viaCore = targetsRight && scenario.rightKind === "core";
+    // `coreNodes` + `coreProtocols`: e.g. NAS ends in the AMF behind the cell that carries it.
+    const side = targetsRight && !viaCore ? "right" : "left";
+    const edgeCore = !viaCore && (scenario.coreProtocols || []).includes(event.protocol) ? scenario.coreNodes?.[side] : "";
+    const nodeName = (node) => node.split("·")[0].trim() || t("signal.radio");
+    const cellNode = side === "right" ? scenario.rightNode : scenario.leftNode;
+    const cellName = `${nodeName(cellNode)}${pci && !(viaRightProtocol && !viaCore) ? ` · PCI ${pci}` : ""}`;
+    const farName = viaCore ? nodeName(scenario.rightNode) : edgeCore ? nodeName(edgeCore) : "";
+    // Hops listed from the UE outwards; the downlink label reverses them.
+    const target = !farName ? cellName : isDownlink ? `${farName} → ${cellName}` : `${cellName} → ${farName}`;
 
     protocolLabel.textContent = [event.protocol, event.channel].filter(Boolean).join(" · ") || t("signal.noProtocol");
     messageLabel.textContent = event.msg || event.summary || t("signal.noDescription");
@@ -55,7 +66,7 @@ export function mountSignalingView() {
     if (isInternal) {
       chip.classList.add("internal");
       directionLabel.textContent = t("signal.internal");
-      const { phone } = sceneGeometry(width, height);
+      const { phone } = sceneGeometry(width, height, scenario.rightKind);
       const top = phone.y - phone.height / 2;
       svg.append(svgEl("path", {
         d: `M ${phone.x - phone.width / 2 - 4} ${top + 6} Q ${phone.x} ${top - 26} ${phone.x + phone.width / 2 + 4} ${top + 6}`,
@@ -70,12 +81,19 @@ export function mountSignalingView() {
     }
 
     // Arrow runs just above the scene's antenna→UE link line.
-    const cell = sceneGeometry(width, height)[targetsRight ? "right" : "left"];
+    const geo = sceneGeometry(width, height, scenario.rightKind);
+    const cell = geo[side];
     const lift = 10;
     const cellEnd = `${cell.antenna.x} ${cell.antenna.y - lift}`;
     const phoneEnd = `${cell.ue.x} ${cell.ue.y - lift}`;
+    // Via a core node: radio hop to the cell, down its mast, then along the transport line.
+    const far = viaCore ? geo.core : edgeCore ? geo.edge[side] : null;
+    const coreLeg = far
+      ? [cellEnd, `${far.site.x} ${far.site.y - 6}`, `${far.entry.x} ${far.entry.y - 6}`]
+      : [cellEnd];
     const directed = isUplink || isDownlink;
-    const route = isUplink ? `M ${phoneEnd} L ${cellEnd}` : `M ${cellEnd} L ${phoneEnd}`;
+    const points = isUplink ? [phoneEnd, ...coreLeg] : [...coreLeg].reverse().concat(phoneEnd);
+    const route = `M ${points.join(" L ")}`;
 
     const path = svgEl("path", { d: route, class: `signal-path ${kind}${directed ? "" : " dashed"}` });
     if (directed) path.setAttribute("marker-end", "url(#signal-arrow)");

@@ -71,6 +71,10 @@ function renderMetrics(scenario) {
 }
 
 function renderTimeline(scenario) {
+  // `timelineLabels` overrides the header when the bars are not ranges over the repetitions.
+  const head = $("#timeline").closest("section");
+  head.querySelector('[data-i18n="timeline.eyebrow"]').textContent = scenario.timelineLabels?.eyebrow || t("timeline.eyebrow");
+  head.querySelector('[data-i18n="timeline.note"]').textContent = scenario.timelineLabels?.note || t("timeline.note");
   const maxTime = scenario.axisMax;
   const percent = (value) => Math.min(100, value / maxTime * 100);
   $("#timeline").replaceChildren(...scenario.rows.map((row) =>
