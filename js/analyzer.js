@@ -13,6 +13,22 @@ const RULES = [
   { when: (m) => /Radio Link Failure Declared/i.test(m.msg), tone: "bad-text",
     label: (m) => t("proc.rlf", { cause: m.summary.match(/cause:\s*(\S+)/i)?.[1] || "RLF" }) },
   { when: (m) => /Re-establishment Procedure Started/i.test(m.msg), tone: "warn-text", label: () => t("proc.reestStarted") },
+  { when: (m) => /RRC Connection Re-establishment Failure/i.test(m.msg), tone: "bad-text", label: () => t("proc.reestFailed") },
+  { when: (m) => /Voice Call Dropped/i.test(m.msg), tone: "bad-text", label: () => t("proc.callDropped") },
+  { when: (m) => /Out-of-Sync Indications/i.test(m.msg), tone: "warn-text", label: () => t("proc.t310Started") },
+  { when: (m) => /^paging$/i.test(m.msg), tone: "accent-text", label: () => t("proc.paging") },
+  // EPS Fallback and SRVCC (voice continuity).
+  { when: (m) => /^RRCRelease$/i.test(m.msg) && /redirectedCarrierInfo.*eutra/i.test(m.summary), tone: "accent-text", label: () => t("proc.epsFallback") },
+  { when: (m) => /^mobilityFromEUTRACommand$/i.test(m.msg), tone: "good-text", label: () => t("proc.srvccCommand") },
+  { when: (m) => /SRVCC Handover to GERAN Started/i.test(m.msg), tone: "accent-text", label: () => t("proc.srvccStarted") },
+  { when: (m) => /^Handover Complete \(RR\)$/i.test(m.msg), tone: "good-text", label: () => t("proc.srvccComplete") },
+  { when: (m) => /^Tracking area update (request|complete)$/i.test(m.msg), tone: "accent-text", label: () => t("proc.tau") },
+  { when: (m) => /^Tracking area update accept$/i.test(m.msg), tone: "good-text", label: () => t("proc.tauAccepted") },
+  { when: (m) => /^Activate dedicated EPS bearer context request$/i.test(m.msg),
+    tone: (m) => /retransmission/i.test(m.summary) ? "warn-text" : "accent-text",
+    label: (m) => t(/retransmission/i.test(m.summary) ? "proc.bearerRetransmission" : "proc.bearerRequest") },
+  { when: (m) => /^Activate dedicated EPS bearer context accept$/i.test(m.msg), tone: "accent-text",
+    label: (m) => t("proc.bearerAccept", { ebi: m.summary.match(/EBI\s*(\d+)/i)?.[1] || "?" }) },
   { when: (m) => /^RRCReestablishmentComplete$/i.test(m.msg), tone: "good-text", label: () => t("proc.restored") },
   { when: (m) => /^RRCReestablishment(Request)?$/i.test(m.msg), tone: "warn-text", label: () => t("proc.reestablishment") },
   { when: (m) => /^Service Restored$/i.test(m.msg), tone: "good-text", label: () => t("proc.serviceRestored") },
@@ -25,7 +41,7 @@ const RULES = [
     tone: "accent-text", label: () => t("proc.measConfig") },
   { when: (m) => /^RRCReconfiguration$/i.test(m.msg), tone: "accent-text", label: () => t("proc.rrcReconfig") },
   { when: (m) => /^RRCReconfigurationComplete$/i.test(m.msg), tone: "accent-text", label: () => t("proc.rrcReconfigComplete") },
-  { when: (m) => /^Measurement Report$/i.test(m.msg), tone: "accent-text",
+  { when: (m) => /^Measurement ?Report$/i.test(m.msg), tone: "accent-text",
     label: (m) => {
       const id = m.summary.match(/measId\s*=\s*(\d+)/i)?.[1];
       return id ? t("proc.measurementId", { id }) : t("proc.measurement");
@@ -54,7 +70,7 @@ const RULES = [
   { when: (m) => /^INVITE$/i.test(m.msg), tone: "accent-text", label: () => t("proc.invite") },
   { when: (m) => /^180 Ringing$|^Incoming Call$/i.test(m.msg), tone: "good-text", label: () => t("proc.ringing") },
   { when: (m) => /^200 OK$/i.test(m.msg) && /call answered/i.test(m.summary), tone: "good-text", label: () => t("proc.answered") },
-  { when: (m) => /^Vocoder Started$/i.test(m.msg), tone: "accent-text", label: (m) => t("proc.vocoder", { codec: m.summary }) },
+  { when: (m) => /^Vocoder Started( \(CS\))?$/i.test(m.msg), tone: "accent-text", label: (m) => t("proc.vocoder", { codec: m.summary }) },
   { when: (m) => /RTP\/RTCP Statistics/i.test(m.msg), tone: "", label: () => t("proc.rtpStats") },
   { when: (m) => /Deregistration request|Detach request/i.test(m.msg), tone: "warn-text", label: () => t("proc.deregistration") },
   { when: (m) => /Registration Accept|Attach Accept/i.test(m.msg), tone: "good-text", label: () => t("proc.accepted") },
@@ -114,9 +130,15 @@ export function analyzeEvents(events) {
   let latestCell = "";
   let measurementSummary = "";
   let currentAttempt = null;
+  let requestedEbi = "";
 
   return events.map((event) => {
     const text = `${event.msg || ""} ${event.summary || ""} ${event.full || ""}`;
+    // A dedicated bearer accept must echo the EBI of the request (TS 24.301 §6.4.2);
+    // an accept with another EBI is not matched by the network, which retransmits on T3485.
+    const ebi = (event.summary || "").match(/EBI\s*(\d+)/i)?.[1] || "";
+    if (/^Activate dedicated EPS bearer context request$/i.test(event.msg || "")) requestedEbi = ebi;
+    const ebiMismatch = /^Activate dedicated EPS bearer context accept$/i.test(event.msg || "") && requestedEbi && ebi && ebi !== requestedEbi;
     // Identity is per registration attempt: don't carry the previous attempt's PLMN/SUCI over.
     if (event.attempt && event.attempt !== currentAttempt) {
       currentAttempt = event.attempt;
@@ -132,6 +154,7 @@ export function analyzeEvents(events) {
       ...event,
       analysis: {
         ...classify(event),
+        ...(ebiMismatch ? { procedure: t("proc.bearerEbiMismatch", { ebi, expected: requestedEbi }), tone: "bad-text" } : {}),
         direction: linkDirection(event),
         attempt: event.attempt ? Number(event.attempt) : 0,
         attemptMax,

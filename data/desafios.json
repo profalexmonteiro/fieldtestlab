@@ -2,7 +2,8 @@
   "challenges": [
     "data/desafio-2.json",
     "data/desafio-3.json",
-    "data/desafio-4.json"
+    "data/desafio-4.json",
+    "data/desafio-5.json"
   ],
   "default": {
     "challenge": "desafio-3",

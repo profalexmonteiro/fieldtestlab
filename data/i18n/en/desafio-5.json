@@ -1,0 +1,478 @@
+{
+  "tab": "Challenge 05 · EPS Fallback and SRVCC",
+  "tag": [
+    "CHALLENGE 5",
+    "CALL SETUP TIME AND SRVCC"
+  ],
+  "title": "Call Setup Time and SRVCC in the far-cell · EPS Fallback",
+  "description": "Investigate the Polaris's two symptoms in the same call: a Call Setup Time ~8 s longer after EPS Fallback, and a drop when crossing the far-cell, where the Equinox moves to 2G via SRVCC. Each symptom has its own cause.",
+  "sideInfo": [
+    {
+      "label": "Evaluated RATs"
+    },
+    {
+      "label": "Network"
+    },
+    {
+      "label": "Voice"
+    }
+  ],
+  "figures": [
+    {
+      "title": "Reference architecture · CSFB, CS, PS, EPC and IMS",
+      "caption": "The GERAN, UTRAN and E-UTRAN accesses and the CS (MSC/VLR), PS (SGSN/GGSN), EPC (MME, S-GW, PDN-GW, HSS, PCRF) and IMS cores. In Challenge 5 the call starts on E-UTRAN + EPC + IMS and, in the far-cell, should move to GERAN + MSC. Note: CSFB (LTE → CS before the call starts) is not the EPS Fallback of this challenge (5G SA → VoLTE)."
+    },
+    {
+      "title": "SRVCC · before",
+      "caption": "Active VoLTE call: voice goes from the UE through the eNodeB to the S/P-GW and IMS (solid line); SIP signalling goes through the P-CSCF and S/I-CSCF (dashed). This is where both the Polaris and the Equinox are when they reach the far-cell."
+    },
+    {
+      "title": "SRVCC · after",
+      "caption": "The MME asks the SRVCC-enhanced MSC Server, over the Sv interface, to prepare the call in the CS domain; voice then goes through the BTS/RNC, MSC and CS-MGW, still anchored in IMS. To build that request the network uses the MS Classmark 2/3 and Supported Codecs the UE sent in the TAU. This is what the Equinox does in the far-cell and the Polaris cannot."
+    }
+  ],
+  "report": {
+    "title": "Issue Report — Challenge 5 · EPS Fallback and SRVCC",
+    "template": "data/i18n/en/relatorios/desafio-5.html"
+  },
+  "scenarios": {
+    "cen1-dut": {
+      "kicker": "SCENARIO 01 · DUT · MO",
+      "title": "Delayed voice bearer and drop in the far-cell",
+      "description": "Polaris · MO call on 5G SA → EPS Fallback → VoLTE, followed along the route to the far-cell · three repetitions",
+      "status": "2 symptoms · 3/3",
+      "state": "VoLTE · far-cell drop (RLF)",
+      "network": "Zenith / marginal coverage route",
+      "timelineLabels": {
+        "eyebrow": "Repetitions 01–03",
+        "note": "Seconds · CST since INVITE (MO) or Paging (MT) · far-cell since the 1st B2 Measurement Report"
+      },
+      "metrics": [
+        {
+          "label": "Call Setup Time",
+          "note": "mean 11.35 s · Δ −234.7 % vs CDUT"
+        },
+        {
+          "label": "QCI 1 bearer accept",
+          "note": "retransmission after 8.0 s (T3485)"
+        },
+        {
+          "label": "Far-cell",
+          "value": "call drops",
+          "note": "3/3 · 21.30–21.48 s after the B2 report"
+        },
+        {
+          "label": "TAU Request",
+          "value": "no Classmark 2/3 or Codecs"
+        }
+      ],
+      "rows": [
+        {
+          "label": "Call Setup Time",
+          "sub": "INVITE → 200 OK · 3 rep.",
+          "final": "11.28–11.41 s"
+        },
+        {
+          "label": "Far-cell drop",
+          "sub": "since the 1st B2 report",
+          "final": "21.30–21.48 s"
+        }
+      ],
+      "evidence": [
+        {
+          "title": "Accept with the wrong EBI",
+          "html": "The request carries <code>EBI 6</code> and <code>Linked EBI 5</code>; the Polaris's first accept answers <code>EPSBearerIdentity: 5</code>. The network only confirms the bearer on the retransmission, 8.0 s later (T3485)."
+        },
+        {
+          "title": "TAU without the SRVCC IEs",
+          "html": "<code>SRVCC_to_GERAN_UTRAN_capability: 1</code>, but without <code>MobileStationClassmark2</code>, <code>MobileStationClassmark3</code> and <code>SupportedCodecs</code>, which the Equinox sends."
+        },
+        {
+          "title": "B2 reports unanswered",
+          "html": "Three <code>measurementReport</code> (measId 1, GERAN ARFCN 62 at −75 dBm) and no <code>mobilityFromEUTRACommand</code>. T310 expires and the call drops with no SIP BYE."
+        },
+        {
+          "title": "Normal EPS Fallback, RACH and radio",
+          "html": "Redirection, RACH on the 1st attempt, TAU accepted and RSRP −90 dBm at the start: identical to the Equinox. The 1st B2 report carries the same values on both devices."
+        }
+      ],
+      "notice": "Log of repetition 01. The times of repetitions 02 and 03 come from the case document. This is a UE log: signalling between network nodes (S1AP, Sv, MSC, HSS) is not visible, so the MME's decision not to prepare SRVCC is inferred from what the UE sends and receives.",
+      "logLabel": "Source: Desafio_S05_Log_DUT_Polaris_Cenario1_vf.html · scenario 1, repetition 01 · 184 events. Original log, unchanged.",
+      "timeReference": {
+        "label": "Time since INVITE"
+      },
+      "guide": [
+        {
+          "title": "INVITE: T 0",
+          "text": "MO call placed on 5G SA (n78, PCI 88), with the IMS PDU session active. The case's Call Setup Time runs from here to the SIP 200 OK."
+        },
+        {
+          "title": "EPS Fallback to LTE",
+          "text": "The NR cell offers no VoNR: RRCRelease redirects the UE to LTE, EARFCN 1444 (B3, PCI 220, same site). The fallback itself is normal and identical to the Equinox's."
+        },
+        {
+          "title": "TAU Request: SRVCC IEs missing",
+          "text": "Compare IE by IE with the Equinox: both declare SRVCC_to_GERAN_UTRAN_capability = 1, but the Polaris omits MobileStationClassmark2, MobileStationClassmark3 and SupportedCodecs. Keep this in mind: it causes the 2nd symptom."
+        },
+        {
+          "title": "Voice bearer request: EBI 6",
+          "text": "Activate dedicated EPS bearer context request: EBI 6 (the new QCI 1 bearer), Linked EBI 5 (the default IMS bearer) and PTI 1."
+        },
+        {
+          "title": "Accept with the wrong EBI",
+          "text": "The Polaris answers with EPSBearerIdentity = 5, the Linked EBI, instead of 6. To the network this accept does not confirm the requested bearer. The Equinox answers EBI 6 at this same point."
+        },
+        {
+          "title": "Retransmission 8.0 s later (T3485)",
+          "text": "With no valid accept, the MME waits for T3485 (8 s) and resends the same request. This wait is the ~8 s Call Setup Time delay."
+        },
+        {
+          "title": "Now the right EBI",
+          "text": "On the retransmission the Polaris answers EBI 6 and the bearer is confirmed. That is why the defect does not drop the call: it only costs one T3485. The likely cause is the UE filling the EBI from the Linked EBI while the dedicated context does not exist yet."
+        },
+        {
+          "title": "200 OK at T +11.35 s",
+          "text": "Call answered over VoLTE. The Equinox takes 3.40 s: Δ ≈ −234 % with the case's formula."
+        },
+        {
+          "title": "GERAN measurement configured (B2)",
+          "text": "measId 1: event B2 with serving < −106 dBm and GERAN ARFCN 62 > −80 dBm. It is the SRVCC trigger in the far-cell."
+        },
+        {
+          "title": "B2 report sent: same as the Equinox",
+          "text": "PCell −108 dBm, GERAN ARFCN 62 at −75 dBm. Same report, same values as the Equinox. The UE measures and reports correctly; from here the decision belongs to the network. It is T 0 of the case's far-cell time."
+        },
+        {
+          "title": "3rd report, no SRVCC command",
+          "text": "Reports every 5.12 s (−108, −111, −114 dBm) and no mobilityFromEUTRACommand. The Equinox got the command 1.8 s after its 1st report. SRVCC is prepared between the MME and the MSC over the Sv interface (dashed line in the scene), which the UE log does not show: without the TAU's MS Classmark 2/3 and Supported Codecs, that request cannot be built."
+        },
+        {
+          "title": "Out of sync: T310 starts",
+          "text": "Serving at ~−116 dBm, SNR −7 dB: N310 indications and T310 (2000 ms) starts."
+        },
+        {
+          "title": "RLF on t310-Expiry",
+          "text": "The LTE link is lost without a handover. Re-establishment finds no suitable E-UTRAN cell."
+        },
+        {
+          "title": "Call drops at T=21.40 s from the report",
+          "text": "Local release, no SIP BYE. 21.40 s after the 1st B2 report, as in the case. The GERAN BTS existed and was measured, but the network never prepared SRVCC. Compare the \"SRVCC before\" and \"SRVCC after\" figures in the Reference material: the Polaris is stuck on the before path."
+        }
+      ]
+    },
+    "cen2-cdut": {
+      "kicker": "SCENARIO 02 · CDUT · MO",
+      "title": "Normal CST and SRVCC to 2G",
+      "description": "Equinox · same MO call, same site and same route as scenario 1 · three repetitions",
+      "status": "Reference passed · 3/3",
+      "state": "VoLTE → CS via SRVCC",
+      "network": "Zenith / marginal coverage route",
+      "timelineLabels": {
+        "eyebrow": "Repetitions 01–03",
+        "note": "Seconds · CST since INVITE (MO) or Paging (MT) · far-cell since the 1st B2 Measurement Report"
+      },
+      "metrics": [
+        {
+          "label": "Call Setup Time",
+          "note": "mean 3.39 s"
+        },
+        {
+          "label": "QCI 1 bearer accept",
+          "note": "1st attempt · no retransmission"
+        },
+        {
+          "label": "Far-cell",
+          "note": "3/3 · 2.05–2.22 s after the B2 report"
+        },
+        {
+          "label": "TAU Request",
+          "note": "SRVCC IEs present"
+        }
+      ],
+      "rows": [
+        {
+          "label": "Call Setup Time",
+          "sub": "INVITE → 200 OK · 3 rep.",
+          "final": "3.25–3.52 s"
+        },
+        {
+          "label": "SRVCC complete",
+          "sub": "since the B2 report",
+          "final": "2.05–2.22 s"
+        }
+      ],
+      "evidence": [
+        {
+          "title": "Bearer on the 1st attempt",
+          "html": "Accept with <code>EBI 6</code> 100 ms after the request; the 200 OK arrives at 3.40 s."
+        },
+        {
+          "title": "TAU with the SRVCC IEs",
+          "html": "<code>MobileStationClassmark2</code>, <code>MobileStationClassmark3</code> and <code>SupportedCodecs</code> present, besides the SRVCC capability."
+        },
+        {
+          "title": "SRVCC in 2.10 s",
+          "html": "B2 report → <code>mobilityFromEUTRACommand</code> (targetRAT geran, ARFCN 62) → RR Handover Complete. The call continues in CS."
+        },
+        {
+          "title": "The contrast does not show the network's inside",
+          "html": "The UE log shows neither the MME's decision nor the Sv/MSC side. What differs between the devices is what each one sends: the accept and the TAU."
+        }
+      ],
+      "notice": "Log of repetition 01. The times of repetitions 02 and 03 come from the case document. The case's \"handover complete at T\" is measured from the B2 Measurement Report to the RR Handover Complete.",
+      "logLabel": "Source: Desafio_S05_Log_CDUT_Equinox_Cenario2_vf.html · scenario 2, repetition 01 · 102 events. Original log, unchanged.",
+      "timeReference": {
+        "label": "Time since INVITE"
+      },
+      "guide": [
+        {
+          "title": "INVITE: T 0",
+          "text": "Same site, same cell and same route as the Polaris."
+        },
+        {
+          "title": "Complete TAU Request",
+          "text": "Besides SRVCC_to_GERAN_UTRAN_capability = 1, the Equinox includes MobileStationClassmark2, MobileStationClassmark3 and SupportedCodecs (GSM FR/HR/EFR/AMR). This is what the network needs to prepare the call in the CS domain."
+        },
+        {
+          "title": "Accept with EBI 6 the first time",
+          "text": "100 ms after the request, the Equinox confirms the QCI 1 bearer with the right EBI. No retransmission, no T3485."
+        },
+        {
+          "title": "200 OK at T +3.40 s",
+          "text": "This is the Call Setup Time reference: 3.25–3.52 s over the three MO repetitions."
+        },
+        {
+          "title": "B2 report: same values",
+          "text": "PCell −108 dBm, GERAN ARFCN 62 at −75 dBm, the same as the Polaris."
+        },
+        {
+          "title": "SRVCC command",
+          "text": "mobilityFromEUTRACommand, purpose handover, targetRAT geran, ARFCN 62. It is the message that never reaches the Polaris. Before it, the MME prepared the call with the MSC over Sv (dashed line in the scene), outside the UE log."
+        },
+        {
+          "title": "Handover to 2G at T=2.10 s",
+          "text": "RR Handover Complete on the BTS, 2.10 s after the B2 report, as in the case. The call continues in CS (FR AMR): this is the path of the \"SRVCC after\" figure in the Reference material."
+        }
+      ]
+    },
+    "cen3-dut": {
+      "kicker": "SCENARIO 03 · DUT · MT",
+      "title": "Delayed voice bearer and drop in the far-cell",
+      "description": "Polaris · MT call on 5G SA → EPS Fallback → VoLTE, followed along the route to the far-cell · three repetitions",
+      "status": "2 symptoms · 3/3",
+      "state": "VoLTE · far-cell drop (RLF)",
+      "network": "Zenith / marginal coverage route",
+      "timelineLabels": {
+        "eyebrow": "Repetitions 01–03",
+        "note": "Seconds · CST since INVITE (MO) or Paging (MT) · far-cell since the 1st B2 Measurement Report"
+      },
+      "metrics": [
+        {
+          "label": "Call Setup Time",
+          "note": "mean 11.55 s · Δ −228.8 % vs CDUT"
+        },
+        {
+          "label": "QCI 1 bearer accept",
+          "note": "retransmission after 8.0 s (T3485)"
+        },
+        {
+          "label": "Far-cell",
+          "value": "call drops",
+          "note": "3/3 · 21.33–21.51 s after the B2 report"
+        },
+        {
+          "label": "TAU Request",
+          "value": "no Classmark 2/3 or Codecs"
+        }
+      ],
+      "rows": [
+        {
+          "label": "Call Setup Time",
+          "sub": "Paging → 200 OK · 3 rep.",
+          "final": "11.49–11.62 s"
+        },
+        {
+          "label": "Far-cell drop",
+          "sub": "since the 1st B2 report",
+          "final": "21.33–21.51 s"
+        }
+      ],
+      "evidence": [
+        {
+          "title": "Accept with the wrong EBI",
+          "html": "The request carries <code>EBI 6</code> and <code>Linked EBI 5</code>; the Polaris's first accept answers <code>EPSBearerIdentity: 5</code>. The network only confirms the bearer on the retransmission, 8.0 s later (T3485)."
+        },
+        {
+          "title": "TAU without the SRVCC IEs",
+          "html": "<code>SRVCC_to_GERAN_UTRAN_capability: 1</code>, but without <code>MobileStationClassmark2</code>, <code>MobileStationClassmark3</code> and <code>SupportedCodecs</code>, which the Equinox sends."
+        },
+        {
+          "title": "B2 reports unanswered",
+          "html": "Three <code>measurementReport</code> (measId 1, GERAN ARFCN 62 at −75 dBm) and no <code>mobilityFromEUTRACommand</code>. T310 expires and the call drops with no SIP BYE."
+        },
+        {
+          "title": "Same pattern on MT",
+          "html": "The call direction changes nothing: same accept with EBI 5, same 8.0 s retransmission and same drop. This rules out causes in the originating SIP or on the remote terminal's side."
+        }
+      ],
+      "notice": "Log of repetition 01. The times of repetitions 02 and 03 come from the case document. This is a UE log: signalling between network nodes (S1AP, Sv, MSC, HSS) is not visible, so the MME's decision not to prepare SRVCC is inferred from what the UE sends and receives.",
+      "logLabel": "Source: Desafio_S05_Log_DUT_Polaris_Cenario3_vf.html · scenario 3, repetition 01 · 192 events. Original log, unchanged.",
+      "timeReference": {
+        "label": "Time since Paging"
+      },
+      "guide": [
+        {
+          "title": "Paging: T 0",
+          "text": "MT call: the network pages the Polaris on 5G SA (n78, PCI 88). The case's Call Setup Time runs from the Paging to the SIP 200 OK."
+        },
+        {
+          "title": "EPS Fallback to LTE",
+          "text": "The NR cell offers no VoNR: RRCRelease redirects the UE to LTE, EARFCN 1444 (B3, PCI 220, same site). The fallback itself is normal and identical to the Equinox's."
+        },
+        {
+          "title": "TAU Request: SRVCC IEs missing",
+          "text": "Compare IE by IE with the Equinox: both declare SRVCC_to_GERAN_UTRAN_capability = 1, but the Polaris omits MobileStationClassmark2, MobileStationClassmark3 and SupportedCodecs. Keep this in mind: it causes the 2nd symptom."
+        },
+        {
+          "title": "Voice bearer request: EBI 6",
+          "text": "Activate dedicated EPS bearer context request: EBI 6 (the new QCI 1 bearer), Linked EBI 5 (the default IMS bearer) and PTI 1."
+        },
+        {
+          "title": "Accept with the wrong EBI",
+          "text": "The Polaris answers with EPSBearerIdentity = 5, the Linked EBI, instead of 6. To the network this accept does not confirm the requested bearer. The Equinox answers EBI 6 at this same point."
+        },
+        {
+          "title": "Retransmission 8.0 s later (T3485)",
+          "text": "With no valid accept, the MME waits for T3485 (8 s) and resends the same request. This wait is the ~8 s Call Setup Time delay."
+        },
+        {
+          "title": "Now the right EBI",
+          "text": "On the retransmission the Polaris answers EBI 6 and the bearer is confirmed. That is why the defect does not drop the call: it only costs one T3485. The likely cause is the UE filling the EBI from the Linked EBI while the dedicated context does not exist yet."
+        },
+        {
+          "title": "200 OK at T +11.55 s",
+          "text": "Call answered over VoLTE. The Equinox takes 3.55 s: Δ ≈ −225 % with the case's formula."
+        },
+        {
+          "title": "GERAN measurement configured (B2)",
+          "text": "measId 1: event B2 with serving < −106 dBm and GERAN ARFCN 62 > −80 dBm. It is the SRVCC trigger in the far-cell."
+        },
+        {
+          "title": "B2 report sent: same as the Equinox",
+          "text": "PCell −108 dBm, GERAN ARFCN 62 at −75 dBm. Same report, same values as the Equinox. The UE measures and reports correctly; from here the decision belongs to the network. It is T 0 of the case's far-cell time."
+        },
+        {
+          "title": "3rd report, no SRVCC command",
+          "text": "Reports every 5.12 s (−108, −111, −114 dBm) and no mobilityFromEUTRACommand. The Equinox got the command 1.8 s after its 1st report. SRVCC is prepared between the MME and the MSC over the Sv interface (dashed line in the scene), which the UE log does not show: without the TAU's MS Classmark 2/3 and Supported Codecs, that request cannot be built."
+        },
+        {
+          "title": "Out of sync: T310 starts",
+          "text": "Serving at ~−116 dBm, SNR −7 dB: N310 indications and T310 (2000 ms) starts."
+        },
+        {
+          "title": "RLF on t310-Expiry",
+          "text": "The LTE link is lost without a handover. Re-establishment finds no suitable E-UTRAN cell."
+        },
+        {
+          "title": "Call drops at T=21.40 s from the report",
+          "text": "Local release, no SIP BYE. 21.40 s after the 1st B2 report, as in the case. The GERAN BTS existed and was measured, but the network never prepared SRVCC. Compare the \"SRVCC before\" and \"SRVCC after\" figures in the Reference material: the Polaris is stuck on the before path."
+        }
+      ]
+    },
+    "cen4-cdut": {
+      "kicker": "SCENARIO 04 · CDUT · MT",
+      "title": "Normal CST and SRVCC to 2G",
+      "description": "Equinox · same MT call, same site and same route as scenario 3 · three repetitions",
+      "status": "Reference passed · 3/3",
+      "state": "VoLTE → CS via SRVCC",
+      "network": "Zenith / marginal coverage route",
+      "timelineLabels": {
+        "eyebrow": "Repetitions 01–03",
+        "note": "Seconds · CST since INVITE (MO) or Paging (MT) · far-cell since the 1st B2 Measurement Report"
+      },
+      "metrics": [
+        {
+          "label": "Call Setup Time",
+          "note": "mean 3.51 s"
+        },
+        {
+          "label": "QCI 1 bearer accept",
+          "note": "1st attempt · no retransmission"
+        },
+        {
+          "label": "Far-cell",
+          "note": "3/3 · 2.05–2.22 s after the B2 report"
+        },
+        {
+          "label": "TAU Request",
+          "note": "SRVCC IEs present"
+        }
+      ],
+      "rows": [
+        {
+          "label": "Call Setup Time",
+          "sub": "Paging → 200 OK · 3 rep.",
+          "final": "3.38–3.61 s"
+        },
+        {
+          "label": "SRVCC complete",
+          "sub": "since the B2 report",
+          "final": "2.05–2.22 s"
+        }
+      ],
+      "evidence": [
+        {
+          "title": "Bearer on the 1st attempt",
+          "html": "Accept with <code>EBI 6</code> 100 ms after the request; the 200 OK arrives at 3.40 s."
+        },
+        {
+          "title": "TAU with the SRVCC IEs",
+          "html": "<code>MobileStationClassmark2</code>, <code>MobileStationClassmark3</code> and <code>SupportedCodecs</code> present, besides the SRVCC capability."
+        },
+        {
+          "title": "SRVCC in 2.10 s",
+          "html": "B2 report → <code>mobilityFromEUTRACommand</code> (targetRAT geran, ARFCN 62) → RR Handover Complete. The call continues in CS."
+        },
+        {
+          "title": "The contrast does not show the network's inside",
+          "html": "The UE log shows neither the MME's decision nor the Sv/MSC side. What differs between the devices is what each one sends: the accept and the TAU."
+        }
+      ],
+      "notice": "Log of repetition 01. The times of repetitions 02 and 03 come from the case document. The case's \"handover complete at T\" is measured from the B2 Measurement Report to the RR Handover Complete.",
+      "logLabel": "Source: Desafio_S05_Log_CDUT_Equinox_Cenario4_vf.html · scenario 4, repetition 01 · 107 events. Original log, unchanged.",
+      "timeReference": {
+        "label": "Time since Paging"
+      },
+      "guide": [
+        {
+          "title": "Paging: T 0",
+          "text": "Same site, same cell and same route as the Polaris."
+        },
+        {
+          "title": "Complete TAU Request",
+          "text": "Besides SRVCC_to_GERAN_UTRAN_capability = 1, the Equinox includes MobileStationClassmark2, MobileStationClassmark3 and SupportedCodecs (GSM FR/HR/EFR/AMR). This is what the network needs to prepare the call in the CS domain."
+        },
+        {
+          "title": "Accept with EBI 6 the first time",
+          "text": "100 ms after the request, the Equinox confirms the QCI 1 bearer with the right EBI. No retransmission, no T3485."
+        },
+        {
+          "title": "200 OK at T +3.55 s",
+          "text": "This is the Call Setup Time reference: 3.38–3.61 s over the three MT repetitions."
+        },
+        {
+          "title": "B2 report: same values",
+          "text": "PCell −108 dBm, GERAN ARFCN 62 at −75 dBm, the same as the Polaris."
+        },
+        {
+          "title": "SRVCC command",
+          "text": "mobilityFromEUTRACommand, purpose handover, targetRAT geran, ARFCN 62. It is the message that never reaches the Polaris. Before it, the MME prepared the call with the MSC over Sv (dashed line in the scene), outside the UE log."
+        },
+        {
+          "title": "Handover to 2G at T=2.10 s",
+          "text": "RR Handover Complete on the BTS, 2.10 s after the B2 report, as in the case. The call continues in CS (FR AMR): this is the path of the \"SRVCC after\" figure in the Reference material."
+        }
+      ]
+    }
+  }
+}

@@ -22,16 +22,7 @@
       "value": "Zenith · 724/078"
     }
   ],
-  "materials": [
-    {
-      "label": "Caso do aluno · Desafio_Semana_2.docx",
-      "href": "Desafios/Desafio 2/Desafio_Semana_2.docx"
-    },
-    {
-      "label": "Referência teórica · Sessão Semana 2.pptx",
-      "href": "Desafios/Desafio 2/Sessão_teórica_Semana_2.pptx"
-    }
-  ],
+  "materials": [],
   "report": {
     "title": "Relatório de Issue — Desafio 2 · Registro / Attach",
     "template": "data/relatorios/desafio-2.html"

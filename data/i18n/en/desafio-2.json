@@ -17,14 +17,6 @@
       "label": "Target PLMN"
     }
   ],
-  "materials": [
-    {
-      "label": "Student case · Desafio_Semana_2.docx"
-    },
-    {
-      "label": "Theory reference · Sessão Semana 2.pptx"
-    }
-  ],
   "report": {
     "title": "Issue Report — Challenge 2 · Registration / Attach",
     "template": "data/i18n/en/relatorios/desafio-2.html"

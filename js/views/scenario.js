@@ -58,7 +58,21 @@ export function mountScenarioView({ onSelectChallenge, onSelectScenario }) {
     renderMetrics(scenario);
     renderTimeline(scenario);
     renderEvidence(scenario);
+    renderFigures(challenge);
   };
+}
+
+// Optional reference figures of the challenge (`figures`: [{ src, title, caption }]).
+// Each opens at full size in a new tab.
+function renderFigures(challenge) {
+  const figures = challenge.figures || [];
+  $("#figures-panel").hidden = !figures.length;
+  $("#figures").replaceChildren(...figures.map(({ src, title, caption }) =>
+    el("figure", { className: "figure-card" },
+      el("a", { href: src, target: "_blank", rel: "noopener", title: t("figures.open") },
+        el("img", { src, alt: title, loading: "lazy" })),
+      el("figcaption", {}, el("strong", {}, title), caption))
+  ));
 }
 
 function renderMetrics(scenario) {

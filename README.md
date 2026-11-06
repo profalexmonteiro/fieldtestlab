@@ -36,10 +36,10 @@ O objetivo é apoiar a análise investigativa dos desafios: comparar DUT × CDUT
   - **Acesso aleatório:** rampa de potência de cada Msg1 contra a potência máxima, pathloss, critério S da célula e a melhor célula que o próprio UE já tinha medido.
   - **Hipóteses e conclusão:** cada hipótese com suas evidências, que levam direto à linha do log; o aluno marca as que descarta, e a conclusão (mecanismo, limiar efetivo aparente e estatística com Fisher exato e IC 95 %) fica atrás do botão *Mostrar conclusão*.
 - **Corrida da mobilidade na cena.** Durante a reprodução, um anel em volta do UE mostra o T310 (ou o T304 no handover), e uma faixa abaixo da cena diz há quanto tempo o A5 está atendido sem report e quanto faltava do T310 quando o report saiu. Depois do RLF, a cena destaca a célula que o UE já tinha medido.
-- **Modo guiado.** Cada log dos Desafios 2, 3 e 4 tem um roteiro de pontos-chave. A reprodução pode pausar em cada um, com uma explicação curta e navegação para o ponto anterior e o seguinte.
+- **Modo guiado.** Cada log dos Desafios 2, 3, 4 e 5 tem um roteiro de pontos-chave. A reprodução pode pausar em cada um, com uma explicação curta e navegação para o ponto anterior e o seguinte.
 - **Resultado consolidado.** Métricas, faixas de tempo das repetições, evidências e avisos sobre os limites de cada fonte.
 - **Relatório de issue.** Segue a estrutura do template *Relatorio_Issue_G2.docx*, com exportação para PDF pela impressão do navegador.
-- **Glossário de siglas e códigos.** O botão **Glossário**, no topo, abre uma tabela com 122 termos (RRC, NAS, medição, RLM, RACH, IMS/SIP/SDP e codecs de voz, códigos 0xB9xx do log do modem, estatística), com busca que ignora acentos, filtro por categoria e opção de mostrar só os termos do desafio atual.
+- **Glossário de siglas e códigos.** O botão **Glossário**, no topo, abre uma tabela com 135 termos (RRC, NAS, medição, RLM, RACH, IMS/SIP/SDP e codecs de voz, EPS Fallback e SRVCC, códigos 0xB9xx do log do modem, estatística), com busca que ignora acentos, filtro por categoria e opção de mostrar só os termos do desafio atual.
 - **Português e inglês**, com troca de idioma sem recarregar a página.
 - **Tema claro e modo noturno**, com a escolha lembrada pelo navegador.
 - **Layout responsivo**, utilizável em celular.
@@ -57,7 +57,7 @@ Rejeições em cascata no registro 5G SA do **Aurora** (DUT) após troca de perf
 | 03 · Controle | Aurora | Vantis → Zenith | LTE | Etapas resumidas do caso |
 | 04 · Referência | Boreal | Vantis → Zenith | 5G SA | Log `Desafio_S02_Log_CDUT_Boreal.html` |
 
-Fontes: `Desafios/Desafio 2/Desafio_Semana_2.docx` e os dois logs da pasta `Desafios/Desafio 2/`.
+Fontes: o caso `Desafio_Semana_2.docx` (fora do projeto) e os dois logs da pasta `Desafios/Desafio 2/`.
 
 ### Desafio 3 — Mobilidade 5G (handover inter-frequência e RLF)
 
@@ -69,7 +69,7 @@ Radio Link Failure do **Meridian** (DUT) no handover inter-frequência n78 → n
 | 02 · DUT | Meridian | Inter-frequência n78 → n41 (PCI 145/160) | Log `Desafio_S03_Log_DUT_Meridian.html` |
 | 03 · Referência | Solstice | Inter-frequência n78 → n41 | Log `Desafio_S03_Log_CDUT_Solstice.html` |
 
-Fontes: `Desafios/Desafio 3/material/Desafio_S03_Caso_Aluno.docx` e os dois logs da pasta `Desafios/Desafio 3/`.
+Fontes: o caso `Desafio_S03_Caso_Aluno.docx` (fora do projeto) e os dois logs da pasta `Desafios/Desafio 3/`.
 
 ### Desafio 4 — Registro IMS e chamada de voz (VoNR e VoLTE)
 
@@ -82,7 +82,20 @@ Dois sintomas do **Vanguard** (DUT), comparados ao **Solstice** (CDUT): no Test 
 | 03 · DUT | Vanguard | Power cycle + chamada MO | LTE (Band 3 · PCI 41) | Log `Desafio_S04_Log_Cen2_MO_VoLTE_DUT_Vanguard.html` |
 | 04 · Referência | Solstice | Power cycle + chamada MO | LTE (Band 3 · PCI 41) | Log `Desafio_S04_Log_Cen2_MO_VoLTE_CDUT_Solstice.html` |
 
-Fontes: `Desafios/Desafio 4/Desafio_S04.docx` e os quatro logs da pasta `Desafios/Desafio 4/`.
+Fontes: o caso `Desafio_S04.docx` (fora do projeto) e os quatro logs da pasta `Desafios/Desafio 4/`.
+
+### Desafio 5 — Call Setup Time e SRVCC no far-cell (EPS Fallback)
+
+Dois sintomas do **Polaris** (DUT) na mesma chamada, comparados ao **Equinox** (CDUT): o Call Setup Time ~8 s maior após o EPS Fallback e a queda da chamada ao atravessar o far-cell, onde o Equinox migra para 2G via SRVCC.
+
+| Cenário | Aparelho | Chamada | RATs | Fonte da reprodução |
+|---|---|---|---|---|
+| 01 · DUT | Polaris | MO | 5G SA → LTE → (GERAN) | Log `Desafio_S05_Log_DUT_Polaris_Cenario1_vf.html` |
+| 02 · Referência | Equinox | MO | 5G SA → LTE → GERAN | Log `Desafio_S05_Log_CDUT_Equinox_Cenario2_vf.html` |
+| 03 · DUT | Polaris | MT | 5G SA → LTE → (GERAN) | Log `Desafio_S05_Log_DUT_Polaris_Cenario3_vf.html` |
+| 04 · Referência | Equinox | MT | 5G SA → LTE → GERAN | Log `Desafio_S05_Log_CDUT_Equinox_Cenario4_vf.html` |
+
+Fontes: o caso `Desafio_S05_vf.docx` (não publicado) e os quatro logs da pasta `Desafios/Desafio 5/`. A seção **Material de apoio** mostra as figuras `CSFB.png` (arquitetura de referência), `SRVCC antes.png` e `SRVCC depois.png`.
 
 ## Como executar
 
@@ -104,7 +117,7 @@ Para os alunos, o projeto também pode ser publicado sem alterações em qualque
 2. Em **Reprodução passo a passo**, clique em **▶ Reproduzir** ou use **Anterior / Próximo** para avançar evento a evento.
 3. Acompanhe a cena e os **KPIs em tempo real**. A página não se move sozinha durante a reprodução; só a lista de eventos acompanha a mensagem atual.
 4. Clique numa linha do log para pausar nela. Use **Ver decodificação completa** para ler todos os IEs da mensagem.
-5. Nos Desafios 2, 3 e 4, ative o **Modo guiado** para a reprodução parar nos pontos-chave. No Desafio 3, use também o painel **Evidência de medição** para comparar o DUT com o CDUT. A conclusão só aparece quando o aluno clica em **Mostrar conclusão**.
+5. Nos Desafios 2, 3, 4 e 5, ative o **Modo guiado** para a reprodução parar nos pontos-chave. No Desafio 3, use também o painel **Evidência de medição** para comparar o DUT com o CDUT. A conclusão só aparece quando o aluno clica em **Mostrar conclusão**.
 6. Compare com o **Resultado consolidado**, as **Faixas de tempo** das repetições e as **Evidências** do cenário.
 7. Em **Fontes e entregáveis**, abra o log original, visualize o relatório de issue ou exporte-o em PDF.
 
@@ -149,13 +162,15 @@ Para os alunos, o projeto também pode ser publicado sem alterações em qualque
 │   ├── desafio-2.json         Conteúdo do Desafio 2 (pt-BR, base)
 │   ├── desafio-3.json         Conteúdo do Desafio 3 (pt-BR, base)
 │   ├── desafio-4.json         Conteúdo do Desafio 4 (pt-BR, base)
+│   ├── desafio-5.json         Conteúdo do Desafio 5 (pt-BR, base)
 │   ├── glossario.json         Glossário: categorias e termos (pt-BR, base)
 │   ├── relatorios/            Relatórios de issue (pt-BR)
 │   └── i18n/en/               Traduções em inglês (somente textos)
 └── Desafios/                  Material original de cada desafio
-    ├── Desafio 2/             Caso, logs e apresentação do Desafio 2
-    ├── Desafio 3/             Caso, logs e apresentação do Desafio 3
-    └── Desafio 4/             Caso, logs, apresentação e template do Desafio 4
+    ├── Desafio 2/             Logs do Desafio 2
+    ├── Desafio 3/             Logs do Desafio 3
+    ├── Desafio 4/             Logs do Desafio 4
+    └── Desafio 5/             Caso, logs, apresentação e figuras do Desafio 5
 ```
 
 ## Arquitetura
@@ -189,7 +204,8 @@ data/*.json ──► data.js ──► store.js ◄── replay.js ◄── a
 |---|---|
 | `id`, `tab`, `tag`, `title`, `description` | Identificação e textos do cabeçalho |
 | `cellPanel` | `"identity"` (mostra PLMN/SUCI) ou `"measurement"` (mostra measId e RSRP/RSRQ) no KPI de célula |
-| `sideInfo`, `materials` | Resumo da barra lateral e links para o material do aluno |
+| `sideInfo`, `materials` | Resumo da barra lateral e links para material do aluno. Os casos (.docx) e as apresentações (.pptx) não são compartilhados: deixe `materials` vazio para eles. |
+| `figures` | Opcional. Figuras de apoio exibidas na seção **Material de apoio**: `[{ "src", "title", "caption" }]`. Clicar abre a imagem em tamanho real. |
 | `report.title`, `report.template` | Título e arquivo do relatório de issue |
 | `scenarios` | Lista de cenários (tabela abaixo) |
 | `insights` | Opcional. Ativa o painel de evidência: camadas `serving`/`target` (`arfcn`, `pci`, `band`), `a5` (`measId`, `threshold1`, `threshold2`, `hysteresis`, `tttMs`, `apparentThreshold2`), `rlm` (`outOfSyncBler`, `t310Ms`), `gap` (`mgrpMs`, `mglMs`) e `pair` = `[id do DUT, id do CDUT]` |
@@ -204,8 +220,9 @@ data/*.json ──► data.js ──► store.js ◄── replay.js ◄── a
 | `device`, `state`, `rat`, `network` | Rótulos da cena |
 | `leftNode`, `leftCell`, `rightNode`, `rightCell` | Células de origem e destino. Os PCIs definem para qual lado a seta aponta. |
 | `rightProtocols` | Opcional. Protocolos cujas mensagens apontam para o nó da direita, qualquer que seja o PCI. Ex.: `["SIP"]` com o nó da direita como `IMS · P-CSCF`. |
+| `rightRats` | Opcional. RATs atendidas só pelo nó da direita, cujas células não têm PCI. Ex.: `["GERAN"]` com o nó da direita como `BTS · GERAN 900`. |
 | `rightKind` | Opcional. `"core"` organiza a cena pelo caminho do sinal: UE à esquerda, a célula (`leftNode`) no centro e o nó da direita como servidor do núcleo (sem antena nem enlace de rádio), ligado à célula por uma linha de transporte. As mensagens de `rightProtocols` vão do UE à célula pelo rádio e daí ao núcleo. |
-| `coreNodes`, `coreProtocols` | Opcional. `coreNodes` (`{ "left": "AMF · Vantis", "right": "AMF · Zenith" }`) desenha o núcleo de cada célula atrás dela; as mensagens dos protocolos em `coreProtocols` (ex.: `["NAS"]`) vão do UE à célula pelo rádio e daí ao núcleo daquele lado. |
+| `coreNodes`, `coreProtocols` | Opcional. `coreNodes` desenha o núcleo de cada célula: `{ "left": "AMF · Vantis", "right": "AMF · Zenith" }` põe um núcleo atrás de cada torre (operadoras diferentes); `{ "left": "5GC · NovaLink", "shared": true }` põe um só núcleo, ligado às duas torres (mesma operadora); `"link": "Sv · MME ↔ MSC"` liga os dois núcleos por uma interface que o log do UE não mostra (tracejada); com `rightKind: "core"`, `left` fica no caminho de transporte entre a célula e o nó da direita (ex.: 5GC antes do IMS). As mensagens dos protocolos ou canais em `coreProtocols` (ex.: `["NAS"]` ou `["NAS-EMM", "NAS-CC"]`) vão do UE à célula pelo rádio e daí ao núcleo. |
 | `timelineLabels` | Opcional. `{ "eyebrow", "note" }` substitui o cabeçalho das faixas de tempo quando as barras não são faixas das três repetições (ex.: 5 trocas de perfil, ou marcos da repetição 01 tirados do log). |
 | `scene` | `"failure"`, `"device-failure"` (só o UE em vermelho: o defeito é do aparelho, não da rede), `"control"` ou `"reference"` (cores da cena) |
 | `metrics`, `rows`, `axisMax`, `evidence`, `notice` | Resultado consolidado, faixas de tempo, evidências e aviso |
@@ -217,7 +234,7 @@ data/*.json ──► data.js ──► store.js ◄── replay.js ◄── a
 
 ### Glossário
 
-`data/glossario.json` tem `categories` (`id`, `label`) e `terms` (`id`, `term`, `category`, `challenges`, `name`, `description`). O campo `challenges` lista os desafios em que o termo aparece (`"desafio-2"`, `"desafio-3"`, `"desafio-4"`) e alimenta o filtro "Só termos do desafio". A tradução em `data/i18n/en/glossario.json` traz apenas os textos, indexados pelo `id`.
+`data/glossario.json` tem `categories` (`id`, `label`) e `terms` (`id`, `term`, `category`, `challenges`, `name`, `description`). O campo `challenges` lista os desafios em que o termo aparece (`"desafio-2"`, `"desafio-3"`, `"desafio-4"`, `"desafio-5"`) e alimenta o filtro "Só termos do desafio". A tradução em `data/i18n/en/glossario.json` traz apenas os textos, indexados pelo `id`.
 
 ### Formato dos logs
 
@@ -259,6 +276,8 @@ Os dados exibidos foram conferidos contra os documentos dos casos e os logs. Pon
 - **Desafio 3:** nos cenários 2 e 3, todos os tempos são medidos a partir da *Measurement Configuration #2* (evento 38 dos logs), como no documento do caso.
 - **Desafio 4:** no Test Case #1, os tempos contam a partir do primeiro REGISTER, o que reproduz os valores do caso (403 em 0,110/0,220 s no DUT; 200 OK em 0,102 s no CDUT). No Test Case #2, contam a partir do INVITE; o caso dá os contadores RTP "em T+10 s", que nos logs correspondem a 10 s após o início do vocoder.
 - **Desafio 4:** os logs cobrem só a repetição 01 de cada cenário. Os tempos e contadores das repetições 02 e 03 vêm do documento do caso.
+- **Desafio 5:** o Call Setup Time conta do INVITE (MO) ou do Paging (MT) até o SIP 200 OK. Os tempos de far-cell do caso ("cai em T=21,40 s", "handover concluído em T=2,10 s") contam a partir do 1º Measurement Report B2; nos logs, a queda e o RR Handover Complete batem com esses valores por essa referência.
+- **Desafio 5:** o documento cita dois arquivos de log (DUT e CDUT), mas o material traz um arquivo por cenário, cada um só com a repetição 01. Os tempos das repetições 02 e 03 vêm do documento.
 
 Essas observações também aparecem nos avisos dos cenários e nos relatórios.
 

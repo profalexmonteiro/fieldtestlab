@@ -39,18 +39,26 @@ export function mountSignalingView() {
     const pci = event.analysis?.pci;
     // `rightProtocols` sends a protocol's messages to the right node (e.g. SIP to the IMS core).
     const viaRightProtocol = (scenario.rightProtocols || []).includes(event.protocol);
-    const targetsRight = viaRightProtocol || Boolean(pci && cellPcis(scenario.rightCell).includes(pci) && !cellPcis(scenario.leftCell).includes(pci));
+    // `rightRats`: a RAT served only by the right node (e.g. GERAN, whose cells have no PCI).
+    const viaRightRat = (scenario.rightRats || []).includes(event.rat);
+    const targetsRight = viaRightProtocol || viaRightRat || Boolean(pci && cellPcis(scenario.rightCell).includes(pci) && !cellPcis(scenario.leftCell).includes(pci));
     // A core node on the right is reached through the left cell and the transport network.
     const viaCore = targetsRight && scenario.rightKind === "core";
-    // `coreNodes` + `coreProtocols`: e.g. NAS ends in the AMF behind the cell that carries it.
+    // `coreNodes` + `coreProtocols` (protocol or channel, e.g. "NAS" or "NAS-CC"):
+    // the message ends in the core node behind the cell that carries it.
     const side = targetsRight && !viaCore ? "right" : "left";
-    const edgeCore = !viaCore && (scenario.coreProtocols || []).includes(event.protocol) ? scenario.coreNodes?.[side] : "";
+    const coreProtocols = scenario.coreProtocols || [];
+    const cores = scenario.coreNodes || {};
+    // With `shared`, both cells reach the single core drawn on the left.
+    const coreSide = cores[side] ? side : cores.shared ? "left" : side;
+    const edgeCore = !viaCore && (coreProtocols.includes(event.protocol) || coreProtocols.includes(event.channel)) ? cores[coreSide] || "" : "";
     const nodeName = (node) => node.split("·")[0].trim() || t("signal.radio");
     const cellNode = side === "right" ? scenario.rightNode : scenario.leftNode;
     const cellName = `${nodeName(cellNode)}${pci && !(viaRightProtocol && !viaCore) ? ` · PCI ${pci}` : ""}`;
-    const farName = viaCore ? nodeName(scenario.rightNode) : edgeCore ? nodeName(edgeCore) : "";
-    // Hops listed from the UE outwards; the downlink label reverses them.
-    const target = !farName ? cellName : isDownlink ? `${farName} → ${cellName}` : `${cellName} → ${farName}`;
+    // Hops after the cell, listed from the UE outwards (a core-layout IMS is reached through the cell's core).
+    const farHops = viaCore ? [cores.left, scenario.rightNode].filter(Boolean).map(nodeName) : edgeCore ? [nodeName(edgeCore)] : [];
+    const hops = [cellName, ...farHops];
+    const target = (isDownlink ? hops.reverse() : hops).join(" → ");
 
     protocolLabel.textContent = [event.protocol, event.channel].filter(Boolean).join(" · ") || t("signal.noProtocol");
     messageLabel.textContent = event.msg || event.summary || t("signal.noDescription");
@@ -87,9 +95,9 @@ export function mountSignalingView() {
     const cellEnd = `${cell.antenna.x} ${cell.antenna.y - lift}`;
     const phoneEnd = `${cell.ue.x} ${cell.ue.y - lift}`;
     // Via a core node: radio hop to the cell, down its mast, then along the transport line.
-    const far = viaCore ? geo.core : edgeCore ? geo.edge[side] : null;
+    const far = viaCore ? geo.core : edgeCore ? geo.edge[coreSide] : null;
     const coreLeg = far
-      ? [cellEnd, `${far.site.x} ${far.site.y - 6}`, `${far.entry.x} ${far.entry.y - 6}`]
+      ? [cellEnd, `${cell.x} ${far.site.y - 6}`, `${far.entry.x} ${far.entry.y - 6}`]
       : [cellEnd];
     const directed = isUplink || isDownlink;
     const points = isUplink ? [phoneEnd, ...coreLeg] : [...coreLeg].reverse().concat(phoneEnd);

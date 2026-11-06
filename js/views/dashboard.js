@@ -93,7 +93,7 @@ function cardItems(event, index, total, challenge, scenario) {
   // The SUCI must carry the Home Network of the PLMN the UE selected; a mismatch is flagged.
   const identityMismatch = identityPanel && a?.selectedPlmn && a?.suciPlmn && a.selectedPlmn !== a.suciPlmn;
   const cellValue = identityMismatch ? t("kpi.identityMismatch", { pci })
-    : pci ? `PCI ${pci}` : identityPanel && plmn ? `PLMN ${plmn}` : "—";
+    : pci ? `PCI ${pci}` : identityPanel && plmn ? `PLMN ${plmn}` : event?.cell || "—";
   const cellDetail = !a ? "" : identityPanel
     ? [plmn ? `PLMN ${a.selectedPlmn || "—"} ${identityMismatch ? "≠" : "·"} SUCI ${a.suciPlmn || "—"}` : "", a.attempt ? t("kpi.attemptLower", { n: a.attempt }) : ""].filter(Boolean).join(" · ")
     : [a.measId ? `measId=${a.measId}` : "", a.signal].filter(Boolean).join(" · ");

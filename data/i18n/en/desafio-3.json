@@ -17,14 +17,6 @@
       "label": "Inter-frequency target"
     }
   ],
-  "materials": [
-    {
-      "label": "Student case · Desafio_S03_Caso_Aluno.docx"
-    },
-    {
-      "label": "Theory reference · Sessão teórica.pptx"
-    }
-  ],
   "report": {
     "title": "Issue Report — Field Test",
     "template": "data/i18n/en/relatorios/desafio-3.html"

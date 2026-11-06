@@ -62,8 +62,13 @@ export function mountSceneView() {
       svgEl("line", { x1: 0, y1: geo.baseY, x2: w, y2: geo.baseY, class: "scene-horizon" }),
       link(geo.left, "serving"),
       ...(rightKind === "core"
-        ? [backhaul(geo), gNodeB(geo, geo.left, "serving"), coreRack(geo.core.x, geo.baseY, geo.s, "target")]
+        // The cell's own core (e.g. 5GC) sits on the transport line, between the cell and the IMS.
+        ? [backhaul(geo), ...(cores.left ? [edgeCore(geo, "left", cores.left)] : []),
+          gNodeB(geo, geo.left, "serving"), coreRack(geo.core.x, geo.baseY, geo.s, "target")]
         : [link(geo.right, "target"),
+          // `shared`: both cells belong to one operator and reach the same core (drawn on the left).
+          ...(cores.shared ? [svgEl("line", { x1: geo.right.x, y1: geo.edge.left.site.y, x2: geo.left.x, y2: geo.edge.left.site.y, class: "backhaul-line" })] : []),
+          ...(cores.link && cores.left && cores.right ? [coreLink(geo, cores.link)] : []),
           ...["left", "right"].filter((side) => cores[side]).map((side) => edgeCore(geo, side, cores[side])),
           gNodeB(geo, geo.left, "serving"), gNodeB(geo, geo.right, "target")]),
       phone(geo)
@@ -94,6 +99,18 @@ function backhaul(geo) {
   // Below the wire, so a signal travelling along it never covers the text.
   const label = svgEl("text", { x: (site.x + entry.x) / 2, y: site.y + 11, "text-anchor": "middle", class: "backhaul-label" });
   label.textContent = t("scene.backhaul");
+  g.append(label);
+  return g;
+}
+
+// `link`: an interface between the two core nodes that the UE log cannot see
+// (e.g. Sv between MME and MSC for SRVCC). Dashed: network signalling only.
+function coreLink(geo, name) {
+  const y = geo.baseY - 4 * geo.s;
+  const g = svgEl("g", { class: "scene-core-link" });
+  g.append(svgEl("line", { x1: geo.edge.left.x, y1: y, x2: geo.edge.right.x, y2: y, class: "core-link-line" }));
+  const label = svgEl("text", { x: (geo.left.x + geo.phone.x) / 2, y: y - 4, "text-anchor": "middle", class: "core-label" });
+  label.textContent = name;
   g.append(label);
   return g;
 }

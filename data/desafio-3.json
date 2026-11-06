@@ -22,16 +22,7 @@
       "value": "n41 · PCI 145 / 160"
     }
   ],
-  "materials": [
-    {
-      "label": "Caso do aluno · Desafio_S03_Caso_Aluno.docx",
-      "href": "Desafios/Desafio 3/material/Desafio_S03_Caso_Aluno.docx"
-    },
-    {
-      "label": "Referência teórica · Sessão teórica.pptx",
-      "href": "Desafios/Desafio 3/material/Sessão teórica.pptx"
-    }
-  ],
+  "materials": [],
   "report": {
     "title": "Relatório de Issue — Teste de Campo",
     "template": "data/relatorios/desafio-3.html"
@@ -55,6 +46,13 @@
       "leftCell": "n78 · NR-ARFCN 633180 · PCI 88",
       "rightNode": "gNodeB · alvo",
       "rightCell": "n78 · NR-ARFCN 633180 · PCI 101",
+      "coreNodes": {
+        "left": "5GC · NovaLink",
+        "shared": true
+      },
+      "coreProtocols": [
+        "NAS"
+      ],
       "axisMax": 4.2,
       "metrics": [
         {
@@ -190,13 +188,20 @@
       "statusClass": "bad",
       "device": "Meridian / DUT",
       "state": "RRC_CONNECTED · RLF t310-Expiry",
-      "scene": "failure",
+      "scene": "device-failure",
       "rat": "NR · SA",
       "network": "NovaLink / Site Delta",
       "leftNode": "gNodeB · serving",
       "leftCell": "n78 · NR-ARFCN 633180 · PCI 88",
       "rightNode": "gNodeB · alvo",
       "rightCell": "n41 · NR-ARFCN 504990 · PCI 145",
+      "coreNodes": {
+        "left": "5GC · NovaLink",
+        "shared": true
+      },
+      "coreProtocols": [
+        "NAS"
+      ],
       "axisMax": 4.2,
       "metrics": [
         {
@@ -395,6 +400,13 @@
       "leftCell": "n78 · NR-ARFCN 633180 · PCI 88",
       "rightNode": "gNodeB · alvo",
       "rightCell": "n41 · NR-ARFCN 504990 · PCI 145",
+      "coreNodes": {
+        "left": "5GC · NovaLink",
+        "shared": true
+      },
+      "coreProtocols": [
+        "NAS"
+      ],
       "axisMax": 4.2,
       "metrics": [
         {

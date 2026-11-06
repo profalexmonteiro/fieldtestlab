@@ -525,6 +525,58 @@
     "toggle-power": {
       "name": "Partial vs full restart",
       "description": "An airplane mode toggle restarts the radio and the IMS client but may keep state in memory (such as a nonce cache). A power cycle restarts the whole device and clears that state."
+    },
+    "eps-fallback": {
+      "name": "Voice fallback from 5G SA to LTE",
+      "description": "When the NR cell offers no VoNR, the network releases the UE with redirectedCarrierInfo to LTE, and the call is completed over VoLTE."
+    },
+    "srvcc": {
+      "name": "Single Radio Voice Call Continuity",
+      "description": "Moves an active VoLTE call to the CS domain (2G/3G) when LTE coverage ends. The network prepares the call in the MSC (Sv interface) and sends the UE the mobilityFromEUTRACommand."
+    },
+    "cst": {
+      "name": "Call setup time",
+      "description": "In Challenge 5: from the SIP INVITE (MO) or the Paging (MT) to the SIP 200 OK."
+    },
+    "far-cell": {
+      "name": "Coverage edge",
+      "description": "The stretch of the route farthest from the sites, where the LTE serving is weakest. In Challenge 5 it is where the call needs SRVCC."
+    },
+    "ebi": {
+      "name": "EPS Bearer Identity",
+      "description": "The EPS bearer number. The dedicated bearer request carries the new EBI and the Linked EBI (the default bearer it is tied to); the accept must echo the new EBI."
+    },
+    "dedicated-bearer": {
+      "name": "Dedicated EPS bearer",
+      "description": "A bearer with its own QoS created on top of a default bearer. For VoLTE voice it is QCI 1 (GBR). Activated by Activate dedicated EPS bearer context request/accept."
+    },
+    "t3485": {
+      "name": "Dedicated bearer timer",
+      "description": "Network timer (8 s) waiting for the dedicated bearer accept. If no valid accept arrives, the network retransmits the request."
+    },
+    "tau": {
+      "name": "Tracking Area Update",
+      "description": "LTE NAS procedure in which the UE updates its registration area. In EPS Fallback it is the first step on LTE, and it is where the UE reports its SRVCC capabilities."
+    },
+    "classmark": {
+      "name": "The device's CS capabilities",
+      "description": "IEs that an SRVCC-capable UE must include in Attach/TAU (TS 24.301). The MSC needs them to prepare the call in 2G/3G. Absent in the Polaris's TAU."
+    },
+    "event-b2": {
+      "name": "Serving below and inter-RAT neighbour above",
+      "description": "Report when the LTE serving falls below threshold 1 and the inter-RAT neighbour rises above threshold 2. In Challenge 5: serving < −106 dBm and GERAN > −80 dBm."
+    },
+    "mobility-from-eutra": {
+      "name": "Command to leave LTE",
+      "description": "RRC message that sends the UE to another RAT. With purpose handover and targetRAT geran, it performs SRVCC."
+    },
+    "geran": {
+      "name": "2G (GSM) radio access network",
+      "description": "The 2G radio network. In Challenge 5 the GERAN 900 BTS (ARFCN 62) is the SRVCC target in the far-cell."
+    },
+    "mme-msc": {
+      "name": "Packet and circuit cores",
+      "description": "The MME controls the UE on LTE; the MSC handles CS calls. In SRVCC the MME asks the MSC, over the Sv interface, to prepare the call in CS."
     }
   }
 }

@@ -22,20 +22,7 @@
       "value": "ims.novalink.com.br · SIP Digest MD5"
     }
   ],
-  "materials": [
-    {
-      "label": "Caso do aluno · Desafio_S04.docx",
-      "href": "Desafios/Desafio 4/Desafio_S04.docx"
-    },
-    {
-      "label": "Referência teórica · Sessão teórica_S04.pptx",
-      "href": "Desafios/Desafio 4/Sessão teórica_S04.pptx"
-    },
-    {
-      "label": "Modelo de relatório · Template_Relatorio_Issue.docx",
-      "href": "Desafios/Desafio 4/Template_Relatorio_Issue.docx"
-    }
-  ],
+  "materials": [],
   "report": {
     "title": "Relatório de Issue — Desafio 4 · Voz sobre IMS",
     "template": "data/relatorios/desafio-4.html"
@@ -52,15 +39,19 @@
       "statusClass": "bad",
       "device": "Vanguard / DUT",
       "state": "NR SA registrado · IMS DEREGISTERED",
-      "scene": "failure",
+      "scene": "device-failure",
       "rat": "NR · 5G SA",
       "network": "NovaLink / Site Delta",
       "leftNode": "gNodeB · NovaLink",
       "leftCell": "n78 · NR-ARFCN 633180 · PCI 88",
       "rightNode": "IMS · P-CSCF",
       "rightCell": "ims.novalink.com.br · SIP",
-      "rightProtocols": ["SIP"],
+      "rightProtocols": [
+        "SIP"
+      ],
       "rightKind": "core",
+      "coreNodes": { "left": "5GC · NovaLink" },
+      "coreProtocols": ["NAS"],
       "axisMax": 0.3,
       "metrics": [
         {
@@ -97,9 +88,18 @@
           "final": "0,104–0,116 s",
           "color": "failure",
           "points": [
-            { "at": 0.104, "kind": "failure" },
-            { "at": 0.11, "kind": "failure" },
-            { "at": 0.116, "kind": "failure" }
+            {
+              "at": 0.104,
+              "kind": "failure"
+            },
+            {
+              "at": 0.11,
+              "kind": "failure"
+            },
+            {
+              "at": 0.116,
+              "kind": "failure"
+            }
           ]
         },
         {
@@ -110,9 +110,18 @@
           "final": "0,212–0,231 s",
           "color": "failure",
           "points": [
-            { "at": 0.212, "kind": "failure" },
-            { "at": 0.22, "kind": "failure" },
-            { "at": 0.231, "kind": "failure" }
+            {
+              "at": 0.212,
+              "kind": "failure"
+            },
+            {
+              "at": 0.22,
+              "kind": "failure"
+            },
+            {
+              "at": 0.231,
+              "kind": "failure"
+            }
           ]
         }
       ],
@@ -226,8 +235,12 @@
       "leftCell": "n78 · NR-ARFCN 633180 · PCI 88",
       "rightNode": "IMS · P-CSCF",
       "rightCell": "ims.novalink.com.br · SIP",
-      "rightProtocols": ["SIP"],
+      "rightProtocols": [
+        "SIP"
+      ],
       "rightKind": "core",
+      "coreNodes": { "left": "5GC · NovaLink" },
+      "coreProtocols": ["NAS"],
       "axisMax": 0.3,
       "metrics": [
         {
@@ -264,9 +277,18 @@
           "final": "0,098–0,109 s",
           "color": "reference",
           "points": [
-            { "at": 0.098, "kind": "reference" },
-            { "at": 0.102, "kind": "reference" },
-            { "at": 0.109, "kind": "reference" }
+            {
+              "at": 0.098,
+              "kind": "reference"
+            },
+            {
+              "at": 0.102,
+              "kind": "reference"
+            },
+            {
+              "at": 0.109,
+              "kind": "reference"
+            }
           ]
         }
       ],
@@ -363,15 +385,19 @@
       "statusClass": "bad",
       "device": "Vanguard / DUT",
       "state": "Chamada VoLTE ativa · codec divergente",
-      "scene": "failure",
+      "scene": "device-failure",
       "rat": "LTE · 4G",
       "network": "NovaLink / Site Delta",
       "leftNode": "eNodeB · NovaLink",
       "leftCell": "Band 3 · EARFCN 1575 · PCI 41",
       "rightNode": "IMS · P-CSCF",
       "rightCell": "ims.novalink.com.br · SIP",
-      "rightProtocols": ["SIP"],
+      "rightProtocols": [
+        "SIP"
+      ],
       "rightKind": "core",
+      "coreNodes": { "left": "EPC · NovaLink" },
+      "coreProtocols": ["NAS"],
       "axisMax": 15,
       "timelineLabels": {
         "eyebrow": "Repetição 01 · log",
@@ -412,9 +438,18 @@
           "final": "2,105 s",
           "color": "success",
           "points": [
-            { "at": 0, "kind": "success" },
-            { "at": 0.4, "kind": "success" },
-            { "at": 2.105, "kind": "success" }
+            {
+              "at": 0,
+              "kind": "success"
+            },
+            {
+              "at": 0.4,
+              "kind": "success"
+            },
+            {
+              "at": 2.105,
+              "kind": "success"
+            }
           ]
         },
         {
@@ -425,9 +460,18 @@
           "final": "voz ininteligível",
           "color": "failure",
           "points": [
-            { "at": 2.16, "kind": "failure" },
-            { "at": 12.16, "kind": "failure" },
-            { "at": 14.605, "kind": "failure" }
+            {
+              "at": 2.16,
+              "kind": "failure"
+            },
+            {
+              "at": 12.16,
+              "kind": "failure"
+            },
+            {
+              "at": 14.605,
+              "kind": "failure"
+            }
           ]
         }
       ],
@@ -536,8 +580,12 @@
       "leftCell": "Band 3 · EARFCN 1575 · PCI 41",
       "rightNode": "IMS · P-CSCF",
       "rightCell": "ims.novalink.com.br · SIP",
-      "rightProtocols": ["SIP"],
+      "rightProtocols": [
+        "SIP"
+      ],
       "rightKind": "core",
+      "coreNodes": { "left": "EPC · NovaLink" },
+      "coreProtocols": ["NAS"],
       "axisMax": 15,
       "timelineLabels": {
         "eyebrow": "Repetição 01 · log",
@@ -578,9 +626,18 @@
           "final": "2,105 s",
           "color": "reference",
           "points": [
-            { "at": 0, "kind": "reference" },
-            { "at": 0.4, "kind": "reference" },
-            { "at": 2.105, "kind": "reference" }
+            {
+              "at": 0,
+              "kind": "reference"
+            },
+            {
+              "at": 0.4,
+              "kind": "reference"
+            },
+            {
+              "at": 2.105,
+              "kind": "reference"
+            }
           ]
         },
         {
@@ -591,9 +648,18 @@
           "final": "áudio nítido",
           "color": "success",
           "points": [
-            { "at": 2.16, "kind": "success" },
-            { "at": 12.16, "kind": "success" },
-            { "at": 14.605, "kind": "success" }
+            {
+              "at": 2.16,
+              "kind": "success"
+            },
+            {
+              "at": 12.16,
+              "kind": "success"
+            },
+            {
+              "at": 14.605,
+              "kind": "success"
+            }
           ]
         }
       ],

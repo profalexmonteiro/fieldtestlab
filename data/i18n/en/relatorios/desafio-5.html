@@ -1,0 +1,47 @@
+<!-- Report fragment; {{data}} is replaced with the generation date. -->
+<h1>Issue Report — Field Test</h1>
+<div class="report-meta">Challenge 5 · S05 · Zenith Telecom / marginal coverage route · Generated on {{data}}</div>
+<h2>1. Identification</h2>
+<p><strong>Title:</strong> Polaris: Call Setup Time ~8 s longer after EPS Fallback (QCI 1 bearer accept with the wrong EBI, recovered by T3485) and call drop in the far-cell with no SRVCC to 2G (TAU without MS Classmark 2/3 and Supported Codecs).</p>
+<p><strong>Severity / Priority:</strong> High — 3/3 repetitions in MO and MT: every VoLTE call via EPS Fallback takes ~3.3× longer to complete, and every call crossing the far-cell drops, while the CDUT keeps it via SRVCC.</p>
+<p><strong>Reported by / Date:</strong> Field test / {{data}}</p>
+<h2>2. Device configuration</h2>
+<table><thead><tr><th>Item</th><th>DUT</th><th>CDUT (reference)</th></tr></thead><tbody>
+  <tr><td>Model</td><td>Polaris (pre-series, no VoNR)</td><td>Equinox (previous generation, certified)</td></tr>
+  <tr><td>SW / build / modem</td><td>Not given in the material</td><td>Not given in the material</td></tr>
+  <tr><td>SIM / plan</td><td>Zenith Telecom (724/078); subscription data not given</td><td>Zenith Telecom (724/078); subscription data not given</td></tr>
+  <tr><td>Mode / RAT</td><td colspan="2">5G SA (n78) → EPS Fallback to LTE (B3) → SRVCC to GERAN 900</td></tr>
+  <tr><td>Logging tool</td><td colspan="2">Modem log through the diagnostic port (RRC, NAS EMM/ESM, SIP and internal events)</td></tr>
+  <tr><td>Files</td><td>Desafio_S05_Log_DUT_Polaris_Cenario1_vf.html<br>Desafio_S05_Log_DUT_Polaris_Cenario3_vf.html</td><td>Desafio_S05_Log_CDUT_Equinox_Cenario2_vf.html<br>Desafio_S05_Log_CDUT_Equinox_Cenario4_vf.html</td></tr>
+</tbody></table>
+<h2>3. Test environment and scenario</h2>
+<p><strong>Network / operator:</strong> Zenith Telecom, PLMN 724/078, commercial network.</p>
+<p><strong>Cells:</strong> origin site with n78 · NR-ARFCN 633120 · PCI 88 (no VoNR) and B3 · EARFCN 1444 · PCI 220, co-located. SRVCC neighbour in the far-cell: GERAN 900 · ARFCN 62 · NCC 3 / BCC 5. No usable UTRAN neighbour on that stretch.</p>
+<p><strong>Route / condition:</strong> mobility route with marginal 5G SA/LTE coverage, the same for DUT and CDUT; the LTE serving drops from −90 dBm to −116 dBm on reaching the far-cell.</p>
+<h2>4. Steps to reproduce</h2>
+<ol><li>With the device on 5G SA (PCI 88) and the IMS PDU session active, place (MO) or receive (MT) a voice call.</li><li>Check the EPS Fallback (RRCRelease with redirectedCarrierInfo → EARFCN 1444), the TAU and the QCI 1 dedicated bearer activation; measure the Call Setup Time from INVITE (MO) or Paging (MT) to the SIP 200 OK.</li><li>Compare the EPSBearerIdentity of the Activate dedicated EPS bearer context accept with the request's.</li><li>With the call active, follow the route to the far-cell and observe event B2 (GERAN ARFCN 62), the mobilityFromEUTRACommand and the outcome.</li><li>Compare the DUT's and CDUT's TAU Request IE by IE. Repeat 3 times per scenario.</li></ol>
+<h2>5. Reproducibility</h2>
+<table><thead><tr><th>Scenario</th><th>Device</th><th>Reproduces?</th><th>Frequency</th></tr></thead><tbody>
+  <tr><td>1 · MO via EPS Fallback</td><td>Polaris · DUT</td><td>Yes · CST 11.28–11.41 s and far-cell drop</td><td>3/3</td></tr>
+  <tr><td>2 · MO via EPS Fallback</td><td>Equinox · CDUT</td><td>No · CST 3.25–3.52 s and SRVCC</td><td>0/3</td></tr>
+  <tr><td>3 · MT via EPS Fallback</td><td>Polaris · DUT</td><td>Yes · CST 11.49–11.62 s and far-cell drop</td><td>3/3</td></tr>
+  <tr><td>4 · MT via EPS Fallback</td><td>Equinox · CDUT</td><td>No · CST 3.38–3.61 s and SRVCC</td><td>0/3</td></tr>
+</tbody></table>
+<h2>6. Observed symptom</h2>
+<ul><li><strong>Symptom 1 (Call Setup Time):</strong> the dedicated bearer request carries EBI 6 / Linked EBI 5; the Polaris's first accept answers EPSBearerIdentity 5. The network only considers the bearer active after retransmitting the request on T3485 (8.0 s later), when the Polaris answers EBI 6. Mean CST: 11.35 s (MO) and 11.55 s (MT), against 3.39 s and 3.51 s on the CDUT (Δ −234.7 % and −228.8 %).</li><li><strong>Symptom 2 (far-cell drop):</strong> the Polaris sends three B2 Measurement Reports (PCell −108/−111/−114 dBm, GERAN ARFCN 62 at −75 dBm) and receives no mobilityFromEUTRACommand; T310 expires, RLF follows, re-establishment fails and the call drops 21.30–21.51 s after the 1st report, with no SIP BYE.</li><li><strong>CDUT:</strong> accept with EBI 6 on the 1st attempt and, with the same B2 report, it receives the SRVCC command; RR Handover Complete 2.05–2.22 s after the report and the call continues in CS (FR AMR).</li></ul>
+<h2>7. Comparison (Repetition 01)</h2>
+<table><thead><tr><th>Metric</th><th>DUT · Polaris</th><th>CDUT · Equinox</th></tr></thead><tbody>
+  <tr><td>CST · MO / MT</td><td>11.35 s / 11.55 s</td><td>3.40 s / 3.55 s</td></tr>
+  <tr><td>EBI in the 1st accept (request EBI 6)</td><td>5 → retransmission after 8.0 s → 6</td><td>6</td></tr>
+  <tr><td>TAU: SRVCC_to_GERAN_UTRAN_capability</td><td>1</td><td>1</td></tr>
+  <tr><td>TAU: MS Classmark 2 / Classmark 3 / Supported Codecs</td><td>absent</td><td>present</td></tr>
+  <tr><td>1st B2 report (PCell / GERAN)</td><td>−108 dBm / −75 dBm</td><td>−108 dBm / −75 dBm</td></tr>
+  <tr><td>Network response to B2</td><td>none (3 reports)</td><td>mobilityFromEUTRACommand in 1.80 s</td></tr>
+  <tr><td>Far-cell outcome</td><td>RLF t310-Expiry · drop at T=21.40 s</td><td>SRVCC complete at T=2.10 s</td></tr>
+</tbody></table>
+<h2>8. Attached evidence</h2>
+<ul><li>The four logs listed in section 2 (repetition 01 of each scenario).</li><li>Symptom 1: Activate dedicated EPS bearer context request/accept (EPSBearerIdentity and LinkedEPSBearerIdentity) and the request retransmission.</li><li>Symptom 2: Tracking area update request (IEs MobileStationClassmark2, MobileStationClassmark3, SupportedCodecs), RRCConnectionReconfiguration with B2 measConfig, measurementReport, mobilityFromEUTRACommand (CDUT), Radio Link Failure and Voice Call Dropped (DUT).</li><li>Map/route/GPS coordinates: not provided in the source material.</li></ul>
+<h2>9. Field tester comments</h2>
+<p>There are two independent causes in the same call. For symptom 1, network, radio and call direction are ruled out: same site and same MME for the CDUT, RACH on the 1st attempt, RSRP −90 dBm, identical pattern in MO and MT. The delay matches T3485, and the only difference is the accept's EPSBearerIdentity. For symptom 2, radio conditions and UE measurement are ruled out: both devices send the same B2 report. The difference is in the TAU: without MS Classmark 2/3 and Supported Codecs, the network lacks what the MSC needs to prepare the call in CS, and SRVCC is never triggered.</p>
+<p><strong>Hypotheses still open:</strong> the UE log shows neither the MME (discarding the accept, the "SRVCC operation possible" indication to the eNB) nor the Sv/MSC interface; nor does it show the DUT SIM's subscription data in the HSS (STN-SR, C-MSISDN), which could prevent SRVCC on its own.</p>
+<p class="caution"><strong>Conclusion:</strong> (1) the Polaris answers the Activate dedicated EPS bearer context request with the Linked EBI instead of the bearer's EBI (TS 24.301 §6.4.2); the network ignores the accept and only confirms the bearer on the T3485 retransmission, adding ~8 s to the Call Setup Time; (2) the Polaris declares SRVCC capability but omits MS Classmark 2, MS Classmark 3 and Supported Codecs in the TAU (TS 24.301 §5.5.3.2.2), preventing SRVCC preparation and dropping the call in the far-cell. To close: MME trace (S1AP and Sv) on the same calls; swap SIMs between DUT and CDUT; a fixed Polaris build; ≥ 20 repetitions per scenario.</p>

@@ -192,6 +192,7 @@ h1 { margin: 8px 0 8px; font-size: clamp(26px, 3.4vw, 39px); letter-spacing: -.0
 .backhaul-label { fill: var(--muted); font-size: 9px; letter-spacing: .04em; paint-order: stroke; stroke: var(--scene-bg); stroke-width: 3px; }
 .scene-core { color: var(--target); }
 .scene-core.serving { color: var(--serving); }
+.core-link-line { stroke: var(--scene-brace); stroke-width: 2; stroke-dasharray: 6 4; stroke-linecap: round; }
 .core-label { fill: var(--muted); font-size: 9px; letter-spacing: .04em; paint-order: stroke; stroke: var(--scene-bg); stroke-width: 3px; }
 .scene-core * { vector-effect: non-scaling-stroke; }
 .core-rack { fill: var(--panel); stroke: var(--scene-metal); stroke-width: 1.6; }
@@ -293,6 +294,13 @@ h1 { margin: 8px 0 8px; font-size: clamp(26px, 3.4vw, 39px); letter-spacing: -.0
 .axis { display: grid; grid-template-columns: 150px minmax(0,1fr) 86px; gap: 14px; margin-top: 5px; }
 .axis-marks { display: flex; justify-content: space-between; color: var(--faint); font: 9px ui-monospace, SFMono-Regular, Consolas, monospace; }
 .evidence-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+.figure-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.figure-card { margin: 0; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 9px; background: var(--panel-sunken); overflow: hidden; }
+/* Diagrams are drawn on white: keep a white mat behind them in both themes. */
+.figure-card a { display: block; padding: 8px; background: #FFFFFF; border-bottom: 1px solid var(--line); cursor: zoom-in; }
+.figure-card img { display: block; width: 100%; height: auto; }
+.figure-card figcaption { padding: 11px 13px 13px; color: var(--muted); font-size: 10px; line-height: 1.55; }
+.figure-card figcaption strong { display: block; margin-bottom: 4px; color: var(--text); font-size: 11px; }
 .evidence { padding: 13px 14px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel-sunken); }
 .evidence-title { display: flex; gap: 8px; align-items: center; font-size: 11px; font-weight: 650; }
 .evidence-mark { width: 17px; height: 17px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 5px; font-size: 10px; }
@@ -692,7 +700,9 @@ h1 { margin: 8px 0 8px; font-size: clamp(26px, 3.4vw, 39px); letter-spacing: -.0
   .scene.layout-core .label-left { bottom: 32px; }
   /* Single line, right of the centred mast; the full text stays in the chip's title. */
   .scene.layout-core .signal-event-chip { right: 8px; width: 38%; justify-content: flex-start; font-size: 8px; }
-  .scene-caption { font-size: 8px; }
+  .scene-caption { font-size: 8px; gap: 8px; }
+  .scene-caption > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .scene-caption > span:last-child { flex: none; }
   .modal { padding: 0; }
   .modal-card { height: 100dvh; border-radius: 0; }
   .report-page { padding: 24px 18px; }
