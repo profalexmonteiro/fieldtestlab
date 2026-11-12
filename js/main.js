@@ -96,7 +96,7 @@ async function main() {
     try {
       const traces = await Promise.all(config.pair.map(async (id) => {
         const scenario = findScenario(challenge, id);
-        return [id, buildTrace(await loadLogFile(scenario.logPath, undefined, scenario.timeReference), config)];
+        return [id, buildTrace(await loadLogFile(scenario.logPath, undefined, scenario.timeReference, scenario.logRange), config)];
       }));
       if (store.get().traces?.challengeId === challenge.id) store.set({ traces: { challengeId: challenge.id, byScenario: Object.fromEntries(traces) } });
     } catch (error) {

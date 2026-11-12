@@ -17,6 +17,37 @@ const RULES = [
   { when: (m) => /Voice Call Dropped/i.test(m.msg), tone: "bad-text", label: () => t("proc.callDropped") },
   { when: (m) => /Out-of-Sync Indications/i.test(m.msg), tone: "warn-text", label: () => t("proc.t310Started") },
   { when: (m) => /^paging$/i.test(m.msg), tone: "accent-text", label: () => t("proc.paging") },
+  // Emergency call (112): network selection, emergency sessions, CSFB to the CS domain.
+  { when: (m) => /^Emergency Dial$/i.test(m.msg), tone: "accent-text", label: () => t("proc.emergencyDial") },
+  { when: (m) => /Emergency Call Established/i.test(m.msg), tone: "good-text",
+    label: (m) => t("proc.emergencyEstablished", {
+      via: m.summary.match(/via\s+([A-Za-z]+)/i)?.[1] || "",
+      plmn: m.summary.match(/PLMN\s*(\d{3}\/\d{2,3})/i)?.[1] || ""
+    }) },
+  { when: (m) => /^DL NAS transport$/i.test(m.msg) && /5GMM cause/i.test(m.summary), tone: "bad-text",
+    label: (m) => m.summary.match(/5GMM cause\s*\d+(?:\s*\([^)]*\))?/i)[0] },
+  { when: (m) => /Network Redirect Check/i.test(m.msg) && /\bno\b/i.test(m.summary), tone: "warn-text", label: () => t("proc.noRedirect") },
+  { when: (m) => /PDU Session Failure Handling/i.test(m.msg), tone: "warn-text",
+    label: (m) => t("proc.pduFailure", { action: m.summary.match(/next action:\s*(.+)$/i)?.[1] || "" }) },
+  { when: (m) => /Band Scan Started/i.test(m.msg), tone: "warn-text", label: () => t("proc.bandScan") },
+  { when: (m) => /Band Scan Result/i.test(m.msg), tone: "", label: () => t("proc.bandScanResult") },
+  { when: (m) => /Cell Selection Decision|^LTE Cell Selection$/i.test(m.msg), tone: "accent-text",
+    label: (m) => t("proc.cellSelected", { plmn: m.summary.match(/PLMN\s*(\d{3}\/\d{2,3})/i)?.[1] || "" }) },
+  { when: (m) => /^Attach request$/i.test(m.msg) && /emergency/i.test(m.summary), tone: "warn-text", label: () => t("proc.emergencyAttach") },
+  { when: (m) => /^PDN connectivity request$/i.test(m.msg) && /emergency/i.test(m.summary), tone: "accent-text", label: () => t("proc.emergencyPdn") },
+  { when: (m) => /^Activate default EPS bearer context (request|accept)$/i.test(m.msg) && /APN sos/i.test(m.summary), tone: "accent-text", label: () => t("proc.sosBearer") },
+  { when: (m) => /^PDU session establishment request$/i.test(m.msg) && /emergency/i.test(m.summary), tone: "accent-text", label: () => t("proc.emergencyPdu") },
+  { when: (m) => /^Service request$/i.test(m.msg), tone: "accent-text",
+    label: (m) => t(/emergency/i.test(m.summary) ? "proc.serviceRequestEmergency" : "proc.serviceRequest") },
+  { when: (m) => /^Service accept$/i.test(m.msg), tone: "good-text", label: () => t("proc.serviceAccept") },
+  { when: (m) => /IMS Emergency Registration Failed/i.test(m.msg), tone: "bad-text", label: () => t("proc.imsEmergencyRefused") },
+  { when: (m) => /^Extended service request$/i.test(m.msg) && /CS fallback/i.test(m.summary), tone: "warn-text", label: () => t("proc.csfbEmergency") },
+  { when: (m) => /^rrcConnectionRelease$/i.test(m.msg) && /redirectedCarrierInfo.*geran/i.test(m.summary), tone: "warn-text", label: () => t("proc.redirectGeran") },
+  { when: (m) => /GERAN Cell Access/i.test(m.msg), tone: "accent-text", label: () => t("proc.geranAccess") },
+  { when: (m) => /^CM Service Request$/i.test(m.msg), tone: "accent-text", label: () => t("proc.cmService") },
+  { when: (m) => /^Emergency Setup$/i.test(m.msg), tone: "accent-text", label: () => t("proc.emergencySetup") },
+  { when: (m) => /^Alerting$/i.test(m.msg), tone: "good-text", label: () => t("proc.ringing") },
+  { when: (m) => /^Connect$/i.test(m.msg), tone: "good-text", label: () => t("proc.csConnect") },
   // EPS Fallback and SRVCC (voice continuity).
   { when: (m) => /^RRCRelease$/i.test(m.msg) && /redirectedCarrierInfo.*eutra/i.test(m.summary), tone: "accent-text", label: () => t("proc.epsFallback") },
   { when: (m) => /^mobilityFromEUTRACommand$/i.test(m.msg), tone: "good-text", label: () => t("proc.srvccCommand") },
@@ -62,14 +93,14 @@ const RULES = [
   { when: (m) => /^[456]\d\d\b/.test(m.msg), tone: "bad-text", label: (m) => t("proc.sipError", { status: m.msg }) },
   { when: (m) => /IMS Registration Failure/i.test(m.msg), tone: "bad-text", label: () => t("proc.imsFailed") },
   { when: (m) => /Voice Domain Selection/i.test(m.msg) && /unavailable/i.test(m.summary), tone: "bad-text", label: () => t("proc.noVoice") },
-  { when: (m) => (/^200 OK$/i.test(m.msg) && /registration complete/i.test(m.summary))
+  { when: (m) => (/^200 OK$/i.test(m.msg) && /registration (complete|accepted)/i.test(m.summary))
       || (/IMS Registration State/i.test(m.msg) && /\bREGISTERED\b/.test(m.summary)),
     tone: "good-text", label: () => t("proc.imsRegistered") },
   { when: (m) => /^REGISTER$/i.test(m.msg), tone: "accent-text", label: () => t("proc.imsRegister") },
   { when: (m) => /Authorization Build/i.test(m.msg) && /CACHED/.test(m.summary), tone: "warn-text", label: () => t("proc.nonceCached") },
   { when: (m) => /^INVITE$/i.test(m.msg), tone: "accent-text", label: () => t("proc.invite") },
   { when: (m) => /^180 Ringing$|^Incoming Call$/i.test(m.msg), tone: "good-text", label: () => t("proc.ringing") },
-  { when: (m) => /^200 OK$/i.test(m.msg) && /call answered/i.test(m.summary), tone: "good-text", label: () => t("proc.answered") },
+  { when: (m) => /^200 OK$/i.test(m.msg) && /call (answered|established)/i.test(m.summary), tone: "good-text", label: () => t("proc.answered") },
   { when: (m) => /^Vocoder Started( \(CS\))?$/i.test(m.msg), tone: "accent-text", label: (m) => t("proc.vocoder", { codec: m.summary }) },
   { when: (m) => /RTP\/RTCP Statistics/i.test(m.msg), tone: "", label: () => t("proc.rtpStats") },
   { when: (m) => /Deregistration request|Detach request/i.test(m.msg), tone: "warn-text", label: () => t("proc.deregistration") },
@@ -131,6 +162,8 @@ export function analyzeEvents(events) {
   let measurementSummary = "";
   let currentAttempt = null;
   let requestedEbi = "";
+  let cellPlmn = "";
+  let homePlmn = "";
 
   return events.map((event) => {
     const text = `${event.msg || ""} ${event.summary || ""} ${event.full || ""}`;
@@ -145,7 +178,19 @@ export function analyzeEvents(events) {
       selectedPlmn = "";
       suciPlmn = "";
     }
-    selectedPlmn = lastMatch(text, /selectedPLMN[=: ]+([0-9/]+)/gi) || selectedPlmn;
+    // "selectedPLMN 1 (724/078)" carries an index into the SIB1 list before the PLMN itself.
+    selectedPlmn = lastMatch(text, /selectedPLMN[=: ]+(?:\d+\s*\()?(\d{3}\/\d{2,3})/gi) || selectedPlmn;
+    // PLMN of the cell in use, and the first one seen (the registered PLMN): a cell
+    // selected in another PLMN while the home one still has cells breaks the
+    // emergency network-selection order (TS 22.101 / TS 23.167).
+    const plmnHere = (event.summary || "").match(/(?:selectedPLMN|PLMN)[=: ]+(?:\d+\s*\()?(\d{3}\/\d{2,3})/i)?.[1] || "";
+    if (plmnHere) {
+      cellPlmn = plmnHere;
+      homePlmn ||= plmnHere;
+    }
+    const otherPlmn = /Cell Selection Decision|^LTE Cell Selection$/i.test(event.msg || "") && plmnHere && plmnHere !== homePlmn;
+    // Completed, but outside the home network: not the preferred path.
+    const establishedAway = /Emergency Call Established/i.test(event.msg || "") && plmnHere && plmnHere !== homePlmn;
     suciPlmn = lastMatch(text, /Home-Network-Id[=: ]+([0-9/]+)/gi) || suciPlmn;
     if (event.cell) latestCell = event.cell;
     if (/MEASUREMENT REPORT/i.test(event.msg || "")) measurementSummary = event.summary || "";
@@ -155,6 +200,10 @@ export function analyzeEvents(events) {
       analysis: {
         ...classify(event),
         ...(ebiMismatch ? { procedure: t("proc.bearerEbiMismatch", { ebi, expected: requestedEbi }), tone: "bad-text" } : {}),
+        ...(otherPlmn ? { procedure: t("proc.otherPlmnSelected", { plmn: plmnHere, home: homePlmn }), tone: "bad-text" } : {}),
+        ...(establishedAway ? { tone: "warn-text" } : {}),
+        cellPlmn,
+        homePlmn,
         direction: linkDirection(event),
         attempt: event.attempt ? Number(event.attempt) : 0,
         attemptMax,

@@ -157,6 +157,8 @@ h1 { margin: 8px 0 8px; font-size: clamp(26px, 3.4vw, 39px); letter-spacing: -.0
 .scene-art.mode-reference { --serving: var(--accent); --target: var(--green); }
 /* The defect is in the device, not the network: only the UE is flagged. */
 .scene-art.mode-device-failure { --target: var(--blue); --ue: var(--red); }
+/* Call completed on the left (home) network only: the right node is just present in the area. */
+.scene-art.mode-home-only { --target: var(--blue); --ue: var(--green); }
 .scene-bg { fill: var(--scene-bg); }
 .scene-grid-line { fill: none; stroke: var(--scene-grid); stroke-width: 1; }
 .scene-ground { fill: color-mix(in srgb, var(--scene-grid) 55%, var(--scene-bg)); }

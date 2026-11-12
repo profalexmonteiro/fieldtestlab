@@ -81,14 +81,21 @@ const abortable = (promise, signal) => !signal ? promise : new Promise((resolve,
   promise.then(resolve, reject);
 });
 
-export async function loadLogFile(path, signal, timeReference) {
-  const data = await abortable(cachedLogEntries(path), signal);
+// `logRange` ({ from, to } log idx, inclusive) keeps one scenario of a file that
+// holds several. `timeReference.idx` may list one event per repetition: each
+// event is then timed from the latest reference before it.
+export async function loadLogFile(path, signal, timeReference, logRange) {
+  const all = await abortable(cachedLogEntries(path), signal);
+  const data = logRange ? all.filter((entry) => Number(entry.idx) >= logRange.from && Number(entry.idx) <= logRange.to) : all;
+  if (!data.length) throw new Error(t("data.emptyLog", { path }));
   const start = parseLogTimestamp(data[0].ts);
-  const referenceEntry = timeReference && data.find((entry) => Number(entry.idx) === timeReference.idx);
-  const reference = referenceEntry ? parseLogTimestamp(referenceEntry.ts) : NaN;
+  const referenceIdx = [].concat(timeReference?.idx ?? []);
+  const references = data.filter((entry) => referenceIdx.includes(Number(entry.idx)))
+    .map((entry) => parseLogTimestamp(entry.ts)).filter(Number.isFinite).sort((a, b) => a - b);
   return data.map((entry, index) => {
     const timestamp = parseLogTimestamp(entry.ts);
     const valid = Number.isFinite(timestamp);
+    const reference = references.filter((ref) => ref <= timestamp).pop() ?? references[0];
     return {
       ...entry,
       replayTimeMs: valid && Number.isFinite(start) ? Math.max(0, timestamp - start) : index * 250,
@@ -117,7 +124,7 @@ function stepsToEvents(scenario) {
 export async function loadScenarioEvents(scenario, signal) {
   if (scenario.playbackSteps) return stepsToEvents(scenario);
   if (!scenario.logPath) throw new Error(t("data.noSource"));
-  return loadLogFile(scenario.logPath, signal, scenario.timeReference);
+  return loadLogFile(scenario.logPath, signal, scenario.timeReference, scenario.logRange);
 }
 
 export async function loadReport(challenge) {

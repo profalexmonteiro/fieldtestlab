@@ -1,0 +1,48 @@
+<!-- Report fragment; {{data}} is replaced with the generation date. -->
+<h1>Issue Report — Field Test</h1>
+<div class="report-meta">Challenge 6 · S06 · Zenith Telecom / 112 emergency call · Generated on {{data}}</div>
+<h2>1. Identification</h2>
+<p><strong>Title:</strong> Polaris: after the emergency PDU session fails on 5G SA (5GMM cause 90, no EPS Fallback), it picks another operator's LTE by signal level although the HPLMN's LTE was available; the 112 call only completes over CS on Aurora's 2G, in ~3.8 s against ~2.0 s on the CDUT.</p>
+<p><strong>Severity / Priority:</strong> High — affects the emergency call in 3/3 repetitions: it breaks the network-selection hierarchy (TS 22.101 / TS 23.167), doubles the setup time and leaves the call outside the HPLMN and IMS.</p>
+<p><strong>Reported by / Date:</strong> Field test / {{data}}</p>
+<h2>2. Device configuration</h2>
+<table><thead><tr><th>Item</th><th>DUT</th><th>CDUT (reference)</th></tr></thead><tbody>
+  <tr><td>Model</td><td>Polaris (pre-series, emergency certification)</td><td>Equinox (previous generation, certified)</td></tr>
+  <tr><td>SW / build / modem</td><td>Not given in the material</td><td>Not given in the material</td></tr>
+  <tr><td>SIM / plan</td><td>Zenith Telecom (HPLMN 724/078)</td><td>Zenith Telecom (HPLMN 724/078)</td></tr>
+  <tr><td>Mode / RAT</td><td colspan="2">5G SA (n78), no VoNR; LTE (B3) control</td></tr>
+  <tr><td>Logging tool</td><td colspan="2">Modem log through the diagnostic port (RRC, NAS 5GMM/5GSM/EMM/ESM, SIP and internal events)</td></tr>
+  <tr><td>Files</td><td>Desafio_S06_Log_DUT_Polaris.html (scenarios 1 and 3)</td><td>Desafio_S06_Log_CDUT_Equinox.html (scenarios 2 and 4)</td></tr>
+</tbody></table>
+<h2>3. Test environment and scenario</h2>
+<p><strong>Network under test:</strong> Zenith Telecom, PLMN 724/078 — n78 · NR-ARFCN 633120 · PCI 88 (RSRP ≈ −90 dBm) and B3 · EARFCN 1444 · PCI 220, on the same site. Registration Accept with EMC (emergency via 5GS), no VoNR.</p>
+<p><strong>Other operator in the area:</strong> Aurora Móvel, PLMN 724/023, unrelated to the test — B3 · EARFCN 1300 · PCI 145 and 2G coverage (ARFCN 62).</p>
+<p><strong>Condition:</strong> stationary UE at the same spot; 6 Oct 2026, DUT from 10:00 and CDUT from 14:00.</p>
+<h2>4. Steps to reproduce</h2>
+<ol><li>With the device on 5G SA (PCI 88) and registered on Zenith, dial 112.</li><li>Observe the Service Request (emergency services), the emergency PDU session and the network's answer.</li><li>After the failure, check which cell and which PLMN the device chooses (cell-selection events, SIB1, selectedPLMN).</li><li>Measure the time from dialling to the SIP 200 OK (IMS) or the Connect (CS).</li><li>Repeat with the device camped directly on LTE (control). Three repetitions per scenario, DUT and CDUT.</li></ol>
+<h2>5. Reproducibility</h2>
+<table><thead><tr><th>Scenario</th><th>Device</th><th>Outcome</th><th>Frequency</th></tr></thead><tbody>
+  <tr><td>1 · 112 from 5G SA</td><td>Polaris · DUT</td><td>Aurora LTE → IMS 403 → CSFB → CS · 3.72–3.95 s</td><td>3/3</td></tr>
+  <tr><td>2 · 112 from 5G SA</td><td>Equinox · CDUT</td><td>Zenith LTE → VoLTE · 1.88–2.05 s</td><td>0/3 deviating</td></tr>
+  <tr><td>3 · 112 from 4G</td><td>Polaris · DUT</td><td>Zenith LTE → VoLTE · 1.62–1.70 s</td><td>0/3 deviating</td></tr>
+  <tr><td>4 · 112 from 4G</td><td>Equinox · CDUT</td><td>Zenith LTE → VoLTE · 1.55–1.60 s</td><td>0/3 deviating</td></tr>
+</tbody></table>
+<h2>6. Observed symptom</h2>
+<ul><li><strong>Common to both devices (network):</strong> the emergency PDU session on 5G gets <code>DL NAS Transport · 5GMM cause 90 (Payload was not forwarded)</code> at T +0.55 s, with no RRCRelease with redirection and no mobilityFromNRCommand: Zenith does not perform the expected EPS Fallback.</li><li><strong>Polaris (deviation 1):</strong> instead of going to its own operator's LTE, it runs an NR + LTE band scan and only decides at T +1.20 s (Equinox: 0.65 s).</li><li><strong>Polaris (deviation 2):</strong> with Zenith LTE PCI 220 (−85 dBm) on the list, it picks Aurora LTE PCI 145 (−80 dBm) by signal level. On Aurora it enters limited service (EPS emergency attach), gets <code>403 · Emergency registration not permitted</code> from the IMS and completes via CSFB on Aurora's 2G (Connect at 3.72–3.95 s).</li><li><strong>Equinox:</strong> goes to Zenith's LTE PCI 220, does a subscriber TAU (mapped GUTI), the emergency PDN (APN sos) and VoLTE to <code>urn:service:sos</code> in 1.88–2.05 s.</li></ul>
+<h2>7. Comparison (Repetition 01)</h2>
+<table><thead><tr><th>Metric</th><th>DUT · Polaris</th><th>CDUT · Equinox</th></tr></thead><tbody>
+  <tr><td>Answer to the emergency PDU session (5G)</td><td>5GMM cause 90 at +0.55 s</td><td>5GMM cause 90 at +0.55 s</td></tr>
+  <tr><td>Network fallback command</td><td>none</td><td>none</td></tr>
+  <tr><td>UE's next action</td><td>NR + LTE band scan</td><td>LTE cell selection</td></tr>
+  <tr><td>Cell chosen (time)</td><td>Aurora LTE PCI 145 · 724/023 (+1.20 s)</td><td>Zenith LTE PCI 220 · 724/078 (+0.65 s)</td></tr>
+  <tr><td>Registration on LTE</td><td>EPS emergency attach (limited service)</td><td>TAU with mapped GUTI (subscriber)</td></tr>
+  <tr><td>Final domain</td><td>CS (2G) on Aurora, after IMS 403</td><td>IMS (VoLTE) on Zenith</td></tr>
+  <tr><td>Total time</td><td>3.80 s</td><td>1.95 s</td></tr>
+  <tr><td>4G control (scenarios 3 × 4)</td><td>1.62 s</td><td>1.58 s</td></tr>
+</tbody></table>
+<h2>8. Attached evidence</h2>
+<ul><li>The two logs listed in section 2, with the three repetitions of each scenario.</li><li>Common: DL NAS Transport with 5GMM cause 90; Network Redirect Check event with no RRCRelease/redirect.</li><li>DUT: PDU Session Failure Handling (next action: band scan), Band Scan Result (candidates PCI 220 and PCI 145), Cell Selection Decision (PLMN 724/023), Attach Request (EPS emergency attach), 403 Forbidden with Warning 399, Extended Service Request (emergency CSFB), CM Service Request, Emergency Setup and Connect.</li><li>CDUT: LTE Cell Selection (PLMN 724/078), TAU, PDN Connectivity Request (emergency), REGISTER, INVITE urn:service:sos and 200 OK.</li></ul>
+<h2>9. Field tester comments</h2>
+<p>The initial failure is the network's and hits both devices alike: Zenith returns cause 90 to the emergency PDU session and does not move the UE to LTE. The difference is in the UE's reaction. The Equinox tries another RAT of its own HPLMN, as the emergency network-selection hierarchy requires; the Polaris runs a wide band scan and picks another operator by signal level, even with the HPLMN's LTE on the list. The 4G control (1.62–1.70 s, equivalent to the CDUT) rules out a VoLTE, IMS, SIM or coverage defect in the Polaris: the problem only shows at the point where the device must choose the next network.</p>
+<p><strong>Open hypotheses:</strong> cause 90 and the missing EPS Fallback depend on interfaces outside the UE log (N11 between AMF and SMF, N2); the Polaris's internal selection criterion (operator configuration, emergency policy) does not appear in the log; with three repetitions per scenario the result is systematic, but the sample is small.</p>
+<p class="caution"><strong>Conclusion:</strong> root cause in the DUT — after the emergency failure on 5G, the Polaris's emergency manager selects the cell by signal level across PLMNs instead of exhausting the HPLMN's RATs before trying another operator. That leads it to limited service on Aurora, to an IMS that refuses the emergency registration and to CS as the last resort, almost doubling the setup time. Recommendations: fix the selection order (HPLMN and its RATs before any other PLMN; signal only decides within the same PLMN); repeat with Aurora off air or with its signal below Zenith's; get Zenith core traces for cause 90; ≥ 20 repetitions per scenario.</p>

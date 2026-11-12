@@ -27,6 +27,10 @@
 !/Desafios/Desafio 5/SRVCC antes.png
 !/Desafios/Desafio 5/SRVCC depois.png
 
+/Desafios/Desafio 6/*
+!/Desafios/Desafio 6/Desafio_S06_Log_DUT_Polaris.html
+!/Desafios/Desafio 6/Desafio_S06_Log_CDUT_Equinox.html
+
 # Arquivos do repositório que não fazem parte do site
 README.md
 # Arte original do logotipo; o site usa os recortes em assets/

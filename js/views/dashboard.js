@@ -94,16 +94,22 @@ function cardItems(event, index, total, challenge, scenario) {
   const identityMismatch = identityPanel && a?.selectedPlmn && a?.suciPlmn && a.selectedPlmn !== a.suciPlmn;
   const cellValue = identityMismatch ? t("kpi.identityMismatch", { pci })
     : pci ? `PCI ${pci}` : identityPanel && plmn ? `PLMN ${plmn}` : event?.cell || "—";
+  // `cellPanel: "plmn"`: the operator of the cell in use, flagged when it is not the registered (home) PLMN.
+  const plmnPanel = challenge.cellPanel === "plmn";
+  const awayFromHome = plmnPanel && a?.cellPlmn && a?.homePlmn && a.cellPlmn !== a.homePlmn;
   const cellDetail = !a ? "" : identityPanel
     ? [plmn ? `PLMN ${a.selectedPlmn || "—"} ${identityMismatch ? "≠" : "·"} SUCI ${a.suciPlmn || "—"}` : "", a.attempt ? t("kpi.attemptLower", { n: a.attempt }) : ""].filter(Boolean).join(" · ")
-    : [a.measId ? `measId=${a.measId}` : "", a.signal].filter(Boolean).join(" · ");
+    : plmnPanel
+      ? (a.cellPlmn ? (awayFromHome ? t("kpi.plmnAway", { plmn: a.cellPlmn, home: a.homePlmn }) : t("kpi.plmnHome", { plmn: a.cellPlmn })) : "")
+      : [a.measId ? `measId=${a.measId}` : "", a.signal].filter(Boolean).join(" · ");
   const cellNote = cellDetail || event?.cell
     || t(isCase ? "kpi.cellNoneCase" : event ? "kpi.cellNoneLog" : "kpi.cellWaiting");
+  const cellTitle = identityPanel ? "kpi.cellIdentity" : plmnPanel ? "kpi.cellPlmn" : "kpi.cellMeasurement";
 
   return [
     [t("kpi.procedure"), procedure, procedureNote, a?.tone || ""],
     [t("kpi.sequence"), sequenceValue, sequenceNote, a?.attempt && a.attemptMax > 1 ? "warn-text" : ""],
-    [t(identityPanel ? "kpi.cellIdentity" : "kpi.cellMeasurement"), cellValue, cellNote, identityMismatch ? "bad-text" : "accent-text"],
+    [t(cellTitle), cellValue, cellNote, identityMismatch || awayFromHome ? "bad-text" : "accent-text"],
     timeItem(event, scenario)
   ];
 }
