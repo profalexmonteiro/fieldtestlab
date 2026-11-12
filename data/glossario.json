@@ -46,7 +46,8 @@
         "desafio-2",
         "desafio-3",
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "5G Standalone",
       "description": "5G com núcleo próprio (5GC), sem depender de uma âncora LTE. É o modo avaliado em todos os desafios."
@@ -59,7 +60,8 @@
         "desafio-2",
         "desafio-3",
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "New Radio",
       "description": "Interface aérea do 5G definida pelo 3GPP."
@@ -71,7 +73,8 @@
       "challenges": [
         "desafio-2",
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Long Term Evolution",
       "description": "Tecnologia de acesso 4G. No Desafio 2 é o cenário de controle."
@@ -84,7 +87,8 @@
         "desafio-2",
         "desafio-3",
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Radio Access Technology",
       "description": "Tecnologia de acesso rádio (por exemplo NR ou LTE)."
@@ -97,7 +101,8 @@
         "desafio-2",
         "desafio-3",
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "User Equipment",
       "description": "O aparelho do usuário: aqui, o smartphone sob teste."
@@ -110,7 +115,8 @@
         "desafio-2",
         "desafio-3",
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Next Generation NodeB",
       "description": "Estação rádio base do 5G NR."
@@ -122,7 +128,8 @@
       "challenges": [
         "desafio-2",
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Evolved NodeB",
       "description": "Estação rádio base do LTE."
@@ -155,7 +162,8 @@
       "challenges": [
         "desafio-2",
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Public Land Mobile Network",
       "description": "A rede de uma operadora, identificada por MCC/MNC (por exemplo 724/085)."
@@ -229,7 +237,8 @@
         "desafio-2",
         "desafio-3",
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Physical Cell Identity",
       "description": "Identificador físico da célula (0 a 1007 no NR). Ex.: PCI 88 (serving) e PCI 145 (vizinha n41)."
@@ -241,7 +250,8 @@
       "challenges": [
         "desafio-3",
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "NR Absolute Radio Frequency Channel Number",
       "description": "Número que identifica a frequência da portadora. 633180 = 3497,7 MHz (n78); 504990 = 2524,95 MHz (n41)."
@@ -262,7 +272,8 @@
       "category": "rede",
       "challenges": [
         "desafio-3",
-        "desafio-4"
+        "desafio-4",
+        "desafio-6"
       ],
       "name": "Protocol Data Unit Session",
       "description": "Sessão de dados entre o UE e uma rede de dados (DNN). É o que mantém o serviço ativo durante a mobilidade."
@@ -273,7 +284,8 @@
       "category": "rede",
       "challenges": [
         "desafio-3",
-        "desafio-4"
+        "desafio-4",
+        "desafio-6"
       ],
       "name": "Data Network Name",
       "description": "Nome da rede de dados da sessão (equivalente ao APN do LTE). Ex.: internet.novalink."
@@ -317,7 +329,8 @@
         "desafio-2",
         "desafio-3",
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Radio Resource Control",
       "description": "Protocolo de controle entre UE e gNB (TS 38.331): conexão, medição, handover e reestabelecimento."
@@ -343,7 +356,8 @@
         "desafio-2",
         "desafio-3",
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Master Information Block",
       "description": "Primeira informação de sistema lida da célula: SFN e se a célula está barrada (cellBarred)."
@@ -356,7 +370,8 @@
         "desafio-2",
         "desafio-3",
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "System Information Block",
       "description": "Blocos de informação de sistema. A SIB1 traz PLMN, TAC, identidade da célula, parâmetros de seleção (q-RxLevMin) e a configuração comum de RACH."
@@ -368,7 +383,8 @@
       "challenges": [
         "desafio-2",
         "desafio-3",
-        "desafio-4"
+        "desafio-4",
+        "desafio-6"
       ],
       "name": "Estabelecimento da conexão RRC",
       "description": "Sequência RRCSetupRequest → RRCSetup → RRCSetupComplete que leva o UE a RRC_CONNECTED. No Desafio 3, o RRCSetup traz N310/T310."
@@ -410,7 +426,8 @@
       "challenges": [
         "desafio-2",
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Liberação da conexão RRC",
       "description": "A rede encerra a conexão e o UE volta a RRC_IDLE. No Desafio 2 vem logo após cada Registration Reject."
@@ -434,7 +451,8 @@
         "desafio-2",
         "desafio-3",
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Non-Access Stratum",
       "description": "Sinalização entre UE e núcleo (AMF): registro, autenticação, segurança e sessão. Viaja dentro do RRC (DL/ULInformationTransfer)."
@@ -444,7 +462,8 @@
       "term": "5GMM",
       "category": "nas",
       "challenges": [
-        "desafio-2"
+        "desafio-2",
+        "desafio-6"
       ],
       "name": "5G Mobility Management",
       "description": "Subcamada NAS de registro e mobilidade. Um Registration Reject traz um 5GMM cause."
@@ -1057,7 +1076,8 @@
         "desafio-2",
         "desafio-3",
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Device Under Test",
       "description": "Aparelho em homologação (Aurora no Desafio 2, Meridian no Desafio 3)."
@@ -1070,7 +1090,8 @@
         "desafio-2",
         "desafio-3",
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Comparator DUT",
       "description": "Aparelho de referência já homologado, testado nas mesmas condições (Boreal no Desafio 2, Solstice no Desafio 3)."
@@ -1083,7 +1104,8 @@
         "desafio-2",
         "desafio-3",
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Key Performance Indicator",
       "description": "Indicador usado para julgar o teste (por exemplo, handover sem RLF ou tempo até o report)."
@@ -1096,7 +1118,8 @@
         "desafio-2",
         "desafio-3",
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Especificações técnicas do 3GPP",
       "description": "TS 38.331 (RRC), TS 38.304 (seleção de célula em IDLE), TS 38.133 (requisitos de RRM), TS 38.533 (testes de conformidade de RRM), TS 24.501 (NAS 5G)."
@@ -1127,7 +1150,8 @@
       "category": "rede",
       "challenges": [
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "E-UTRA Absolute Radio Frequency Channel Number",
       "description": "Número que identifica a portadora LTE. No Desafio 4, EARFCN 1575 = 1842,5 MHz na Band 3."
@@ -1149,7 +1173,8 @@
       "category": "ims",
       "challenges": [
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "IP Multimedia Subsystem",
       "description": "Núcleo que fornece voz e mensagens sobre IP (VoLTE, VoNR) usando SIP. O UE precisa estar registrado no IMS para fazer ou receber chamadas."
@@ -1170,7 +1195,8 @@
       "category": "ims",
       "challenges": [
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Session Initiation Protocol",
       "description": "Protocolo de sinalização do IMS (RFC 3261): REGISTER, INVITE, UPDATE, BYE. Respostas são numeradas: 1xx provisória, 2xx sucesso, 4xx erro do cliente."
@@ -1180,7 +1206,8 @@
       "term": "REGISTER",
       "category": "ims",
       "challenges": [
-        "desafio-4"
+        "desafio-4",
+        "desafio-6"
       ],
       "name": "Registro SIP",
       "description": "Pedido do UE para se registrar no IMS. O primeiro vai sem credenciais; a rede responde 401 com um desafio e o UE repete o REGISTER com a Authorization."
@@ -1200,7 +1227,8 @@
       "term": "403 Forbidden",
       "category": "ims",
       "challenges": [
-        "desafio-4"
+        "desafio-4",
+        "desafio-6"
       ],
       "name": "Registro recusado",
       "description": "A rede recusa a credencial apresentada. No Desafio 4, o cabeçalho Warning: 399 diz o motivo: \"nonce does not match latest challenge\"."
@@ -1295,7 +1323,8 @@
       "category": "ims",
       "challenges": [
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Bearer de voz conversacional",
       "description": "Classe de QoS com taxa garantida (GBR) para a voz: bearer dedicado QCI 1 no LTE, fluxo 5QI 1 no 5G. No Desafio 4, GBR de 53 kbps."
@@ -1327,7 +1356,8 @@
       "category": "ims",
       "challenges": [
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Voice over NR / Voice over LTE",
       "description": "Chamadas de voz sobre IMS em 5G SA e em LTE, respectivamente."
@@ -1338,7 +1368,8 @@
       "category": "ims",
       "challenges": [
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Mobile Originated / Mobile Terminated",
       "description": "Chamada originada pelo aparelho (MO) ou recebida por ele (MT)."
@@ -1369,7 +1400,8 @@
       "term": "EPS Fallback",
       "category": "ims",
       "challenges": [
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Fallback de voz de 5G SA para LTE",
       "description": "Quando a célula NR não oferece VoNR, a rede libera o UE com redirectedCarrierInfo para LTE, e a chamada é completada em VoLTE."
@@ -1409,7 +1441,8 @@
       "term": "EBI / Linked EBI",
       "category": "nas",
       "challenges": [
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "EPS Bearer Identity",
       "description": "Número do bearer EPS. O pedido de bearer dedicado traz o EBI novo e o Linked EBI (o bearer padrão ao qual ele se liga); o accept deve repetir o EBI novo."
@@ -1419,7 +1452,8 @@
       "term": "Bearer dedicado",
       "category": "nas",
       "challenges": [
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Dedicated EPS bearer",
       "description": "Bearer com QoS própria criado sobre um bearer padrão. Para voz VoLTE é QCI 1 (GBR). Ativado por Activate dedicated EPS bearer context request/accept."
@@ -1439,7 +1473,8 @@
       "term": "TAU",
       "category": "nas",
       "challenges": [
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Tracking Area Update",
       "description": "Procedimento NAS do LTE em que o UE atualiza a área de registro. No EPS Fallback é o primeiro passo no LTE, e é nele que o UE informa as capacidades de SRVCC."
@@ -1479,7 +1514,8 @@
       "term": "GERAN / BTS",
       "category": "rede",
       "challenges": [
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Rede de acesso 2G (GSM)",
       "description": "Rede de rádio 2G. No Desafio 5, a BTS GERAN 900 (ARFCN 62) é o destino do SRVCC no far-cell."
@@ -1489,10 +1525,111 @@
       "term": "MME / MSC · Sv",
       "category": "rede",
       "challenges": [
-        "desafio-5"
+        "desafio-5",
+        "desafio-6"
       ],
       "name": "Núcleos de pacotes e de circuitos",
       "description": "O MME controla o UE no LTE; o MSC, as chamadas CS. No SRVCC, o MME pede ao MSC, pela interface Sv, para preparar a chamada em CS."
+    },
+    {
+      "id": "emergency-112",
+      "term": "Chamada de emergência · 112",
+      "category": "ims",
+      "challenges": [
+        "desafio-6"
+      ],
+      "name": "Serviço básico obrigatório",
+      "description": "Deve ser completada mesmo sem SIM, sem crédito ou sem registro válido. No IMS vai para urn:service:sos, e não para o número discado."
+    },
+    {
+      "id": "network-selection-emergency",
+      "term": "Hierarquia de seleção para emergência",
+      "category": "rede",
+      "challenges": [
+        "desafio-6"
+      ],
+      "name": "Ordem das tentativas (TS 22.101 / 23.167)",
+      "description": "Primeiro a PLMN registrada (normalmente a HPLMN) e as suas RATs; outra operadora só quando a própria não tem nenhuma célula capaz de atender. Sinal melhor em outra PLMN, sozinho, não justifica trocar."
+    },
+    {
+      "id": "hplmn",
+      "term": "HPLMN",
+      "category": "rede",
+      "challenges": [
+        "desafio-6"
+      ],
+      "name": "Home PLMN",
+      "description": "A operadora do assinante (do SIM). No Desafio 6, a Zenith 724/078."
+    },
+    {
+      "id": "limited-service",
+      "term": "Serviço limitado · emergency attach",
+      "category": "nas",
+      "challenges": [
+        "desafio-6"
+      ],
+      "name": "Acesso só para emergência",
+      "description": "Sem registro válido na rede (sem SIM, sem acordo), o UE pode fazer EPS emergency attach apenas para emergência. A rede visitada pode aceitar ou recusar o IMS de emergência."
+    },
+    {
+      "id": "emergency-session",
+      "term": "Sessão / PDN de emergência · sos",
+      "category": "nas",
+      "challenges": [
+        "desafio-6"
+      ],
+      "name": "Request type emergency, APN/DNN sos",
+      "description": "A sessão de dados de emergência (PDU Session no 5G, PDN no LTE) é pedida com Request type emergency e segue para o DNN/APN sos, fixo e independente do perfil do assinante."
+    },
+    {
+      "id": "cause-90",
+      "term": "5GMM cause 90",
+      "category": "nas",
+      "challenges": [
+        "desafio-6"
+      ],
+      "name": "Payload was not forwarded",
+      "description": "O AMF não encaminhou a mensagem de sessão ao SMF. Chega em um DL NAS Transport: é causa de transporte, não diz que a rede não tem voz."
+    },
+    {
+      "id": "emc",
+      "term": "EMC / EMF / EMC BS",
+      "category": "nas",
+      "challenges": [
+        "desafio-6"
+      ],
+      "name": "Indicadores de suporte a emergência",
+      "description": "No Registration Accept (5G): EMC = emergência via 5GS; EMF = Emergency Services Fallback. No Attach/TAU Accept (LTE): EMC BS = emergency bearer services."
+    },
+    {
+      "id": "csfb",
+      "term": "CSFB",
+      "category": "ims",
+      "challenges": [
+        "desafio-6"
+      ],
+      "name": "CS Fallback",
+      "description": "Leva a chamada do LTE para o domínio CS (2G/3G). Na emergência: Extended Service Request com \"CS fallback emergency call\", depois CM Service Request e Emergency Setup."
+    },
+    {
+      "id": "emergency-setup",
+      "term": "CM Service Request · Emergency Setup",
+      "category": "nas",
+      "challenges": [
+        "desafio-6"
+      ],
+      "name": "Emergência no domínio CS",
+      "description": "CM Service Request com tipo \"emergency call establishment\" e a mensagem própria EMERGENCY SETUP, sem número discado (usa a categoria de emergência)."
+    },
+    {
+      "id": "n26",
+      "term": "N26",
+      "category": "rede",
+      "challenges": [
+        "desafio-6"
+      ],
+      "name": "Interface AMF–MME",
+      "description": "Liga o 5GC ao EPC e permite transferir o contexto do UE no EPS Fallback: o UE faz TAU com o GUTI mapeado e continua assinante."
     }
   ]
 }

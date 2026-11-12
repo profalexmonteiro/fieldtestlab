@@ -577,6 +577,46 @@
     "mme-msc": {
       "name": "Packet and circuit cores",
       "description": "The MME controls the UE on LTE; the MSC handles CS calls. In SRVCC the MME asks the MSC, over the Sv interface, to prepare the call in CS."
+    },
+    "emergency-112": {
+      "name": "Mandatory basic service",
+      "description": "Must be completed even without a SIM, credit or valid registration. In IMS it goes to urn:service:sos, not to the dialled number."
+    },
+    "network-selection-emergency": {
+      "name": "Order of attempts (TS 22.101 / 23.167)",
+      "description": "First the registered PLMN (usually the HPLMN) and its RATs; another operator only when one's own has no cell able to serve. A better signal on another PLMN does not, on its own, justify switching."
+    },
+    "hplmn": {
+      "name": "Home PLMN",
+      "description": "The subscriber's (SIM's) operator. In Challenge 6, Zenith 724/078."
+    },
+    "limited-service": {
+      "name": "Emergency-only access",
+      "description": "With no valid registration on the network (no SIM, no agreement), the UE may do an EPS emergency attach for emergency only. The visited network may accept or refuse IMS emergency."
+    },
+    "emergency-session": {
+      "name": "Request type emergency, APN/DNN sos",
+      "description": "The emergency data session (PDU Session on 5G, PDN on LTE) is requested with Request type emergency and goes to the sos DNN/APN, fixed and independent of the subscriber profile."
+    },
+    "cause-90": {
+      "name": "Payload was not forwarded",
+      "description": "The AMF did not forward the session message to the SMF. It arrives in a DL NAS Transport: it is a transport cause and does not say the network has no voice."
+    },
+    "emc": {
+      "name": "Emergency support indicators",
+      "description": "In Registration Accept (5G): EMC = emergency via 5GS; EMF = Emergency Services Fallback. In Attach/TAU Accept (LTE): EMC BS = emergency bearer services."
+    },
+    "csfb": {
+      "name": "CS Fallback",
+      "description": "Moves the call from LTE to the CS domain (2G/3G). For emergency: Extended Service Request with \"CS fallback emergency call\", then CM Service Request and Emergency Setup."
+    },
+    "emergency-setup": {
+      "name": "Emergency in the CS domain",
+      "description": "CM Service Request with type \"emergency call establishment\" and the dedicated EMERGENCY SETUP message, with no dialled number (it uses the emergency category)."
+    },
+    "n26": {
+      "name": "AMF–MME interface",
+      "description": "Links the 5GC to the EPC and allows the UE context to move in EPS Fallback: the UE does a TAU with the mapped GUTI and remains a subscriber."
     }
   }
 }
