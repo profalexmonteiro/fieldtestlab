@@ -1,0 +1,456 @@
+{
+  "desafio-2": {
+    "short": "Registro / Attach",
+    "icon": "🪪",
+    "brief": "Os usuários do Aurora relatam que, após trocar o perfil de operadora, o aparelho demora para registrar em 5G. Reproduza, compare e reporte.",
+    "equipment": {
+      "required": [
+        "modemlog",
+        "cdut",
+        "sims"
+      ],
+      "neutral": [
+        "gps"
+      ]
+    },
+    "setup": [
+      {
+        "q": "Qual RAT você configura para reproduzir a falha principal?",
+        "options": [
+          "5G SA · NR",
+          "5G NSA · EN-DC",
+          "3G · WCDMA",
+          "Wi-Fi Calling"
+        ],
+        "explain": "A reclamação é de registro em 5G SA (NR standalone); LTE entra depois como controle."
+      },
+      {
+        "q": "Qual troca de perfil reproduz o problema relatado?",
+        "options": [
+          "Vantis 724/085 → Zenith 724/078",
+          "Zenith 724/078 → Zenith 724/078",
+          "Vantis 724/085 → Vantis 724/085",
+          "Sem troca de perfil, só reboot"
+        ],
+        "explain": "O caso descreve a troca de perfil entre operadoras Vantis → Zenith (e depois Zenith → Nimbus)."
+      },
+      {
+        "q": "Qual controle ajuda a isolar se o problema é do 5G no DUT?",
+        "options": [
+          "Repetir as trocas do Aurora em LTE Band 3",
+          "Trocar o SIM por um de outro país",
+          "Desativar a autenticação na rede",
+          "Testar apenas com Wi-Fi ligado"
+        ],
+        "explain": "O controle LTE do próprio Aurora mostra se o defeito é específico do 5G SA."
+      }
+    ],
+    "report": [
+      {
+        "q": "Qual é a causa raiz mais provável?",
+        "options": [
+          "O Aurora envia SUCI com o Home-Network-Id do perfil antigo (724/085) após a troca e só o atualiza na 3ª tentativa",
+          "Cobertura n78 fraca na célula Zenith PCI 201",
+          "Falha geral do núcleo 5G da Zenith",
+          "Bateria fraca durante a troca de perfil"
+        ],
+        "explain": "Na 2ª tentativa a célula anuncia 724/078, mas o SUCI ainda traz 724/085. Na 3ª o SUCI muda e o registro é aceito."
+      },
+      {
+        "q": "O que descarta um problema de rede ou de cobertura?",
+        "options": [
+          "O Boreal registra de primeira no mesmo PLMN/PCI e o próprio Aurora registra de primeira em LTE",
+          "O Aurora registra na terceira tentativa",
+          "A rejeição usa a causa 5GMM #3",
+          "O teste foi feito em 5 trocas"
+        ],
+        "explain": "O CDUT na mesma célula e o controle LTE afastam rede/site; RSRP de −83 dB afasta cobertura."
+      },
+      {
+        "q": "Qual é a sequência de rejeições NAS observada?",
+        "options": [
+          "#3 Illegal UE → #11 PLMN not allowed → Accept",
+          "#11 → #3 → Accept",
+          "#15 No suitable cells → Accept",
+          "Sem rejeições, apenas atraso de RRC"
+        ],
+        "explain": "Tentativa 1: 5GMM #3; tentativa 2: #11; tentativa 3: Registration Accept."
+      },
+      {
+        "q": "Severidade do issue",
+        "options": [
+          "Alta: 5/5 trocas precisam de 3 tentativas, contra 1 no CDUT",
+          "Baixa: o aparelho acaba registrando",
+          "Média: só afeta uma operadora",
+          "Sem issue: comportamento esperado"
+        ],
+        "explain": "É sistemático (100%), afeta duas operadoras e o tempo de registro sobe de ~1 s para ~4,6 s."
+      }
+    ],
+    "title": "Cascata de rejeições NAS e registro 5G SA só na 3ª tentativa: Aurora após troca de perfil Vantis → Zenith"
+  },
+  "desafio-3": {
+    "short": "Handover inter-frequência",
+    "icon": "📶",
+    "brief": "Clientes do Meridian perdem a conexão ao se deslocar entre as bandas n78 e n41. Monte o teste de mobilidade e descubra onde está o atraso.",
+    "equipment": {
+      "required": [
+        "modemlog",
+        "cdut",
+        "route"
+      ],
+      "neutral": [
+        "gps",
+        "spectrum"
+      ]
+    },
+    "setup": [
+      {
+        "q": "Qual é a célula serving do teste?",
+        "options": [
+          "n78 · PCI 88",
+          "n41 · PCI 145",
+          "Band 3 · PCI 41",
+          "n78 · PCI 201"
+        ],
+        "explain": "O UE começa em n78 PCI 88 (NR-ARFCN 633180)."
+      },
+      {
+        "q": "Qual é o alvo inter-frequência?",
+        "options": [
+          "n41 · PCI 145 / 160",
+          "n78 · PCI 101",
+          "Band 3 · PCI 220",
+          "GERAN 900 · ARFCN 62"
+        ],
+        "explain": "Inter-frequência = outra banda: n41 PCI 145/160. PCI 101 em n78 é intra-frequência."
+      },
+      {
+        "q": "Qual cenário de controle você inclui?",
+        "options": [
+          "Handover intra-frequência n78 PCI 88 → PCI 101",
+          "Teste de velocidade de download parado",
+          "Chamada de voz em 2G",
+          "Reboot do aparelho em loop"
+        ],
+        "explain": "O controle intra-frequência mostra se o DUT falha em qualquer mobilidade ou só na inter-frequência."
+      }
+    ],
+    "report": [
+      {
+        "q": "Qual é a causa raiz mais provável?",
+        "options": [
+          "O Meridian atrasa o Measurement Report A5 (~3,7 s contra ~0,7 s no CDUT) e sofre RLF por t310 antes do handover",
+          "A rede configurou um TTT diferente para o Meridian",
+          "A célula n41 está fora do ar",
+          "O Meridian não suporta a banda n78"
+        ],
+        "explain": "Mesmo TTT de 240 ms; o CDUT reporta em ~0,7 s e completa o HO. O DUT demora ~3,7 s e entra em RLF."
+      },
+      {
+        "q": "O que localiza o defeito no comportamento inter-frequência do DUT?",
+        "options": [
+          "O próprio Meridian conclui o HO intra-frequência e o Solstice conclui o inter-frequência sem RLF",
+          "O RLF acontece por t310-Expiry",
+          "Foram três repetições",
+          "O log é do UE"
+        ],
+        "explain": "O controle intra do DUT e a referência inter do CDUT isolam o caminho inter-frequência do Meridian."
+      },
+      {
+        "q": "O que acontece depois do RLF?",
+        "options": [
+          "6 × Msg1 sem resposta na PCI 88; reestabelece na PCI 145",
+          "Reestabelece de primeira na PCI 88",
+          "O aparelho reinicia",
+          "Cai para 2G"
+        ],
+        "explain": "A PCI 88 é inelegível (critério S reprovado); o UE tenta a PCI 145 e reestabelece em ~4,1 s."
+      },
+      {
+        "q": "Severidade do issue",
+        "options": [
+          "Alta: perda de continuidade em 3/3 repetições",
+          "Baixa: a conexão volta sozinha",
+          "Média: só em uma banda",
+          "Sem issue"
+        ],
+        "explain": "Perda de conexão sistemática na mobilidade, com recuperação lenta."
+      }
+    ],
+    "title": "RLF por atraso no handover inter-frequência e acesso em célula inelegível: Meridian 5G SA"
+  },
+  "desafio-4": {
+    "short": "IMS · VoNR / VoLTE",
+    "icon": "☎️",
+    "brief": "O Vanguard não recebe chamadas em VoNR e, em VoLTE, a voz chega ininteligível. Prepare a bancada de voz e descubra se há uma causa ou duas.",
+    "equipment": {
+      "required": [
+        "modemlog",
+        "cdut",
+        "ims",
+        "remote",
+        "audio"
+      ],
+      "neutral": []
+    },
+    "setup": [
+      {
+        "q": "Como você monta o TC#1 (falha de chamada MT)?",
+        "options": [
+          "5G SA n78 PCI 88 · toggle de modo avião + chamada MT em VoNR",
+          "LTE Band 3 · power cycle + chamada MO",
+          "2G · chamada CS",
+          "5G NSA · teste de dados"
+        ],
+        "explain": "O TC#1 usa toggle de modo avião e chamada MT em VoNR na n78 PCI 88."
+      },
+      {
+        "q": "Como você monta o TC#2 (voz ininteligível)?",
+        "options": [
+          "LTE Band 3 EARFCN 1575 PCI 41 · power cycle + chamada MO em VoLTE",
+          "5G SA · modo avião + chamada MT",
+          "Wi-Fi Calling · chamada MO",
+          "LTE · apenas SMS"
+        ],
+        "explain": "O TC#2 usa power cycle e chamada MO em VoLTE na Band 3 PCI 41."
+      },
+      {
+        "q": "Qual autenticação o núcleo IMS da bancada usa?",
+        "options": [
+          "SIP Digest MD5 · ims.novalink.com.br",
+          "IMS-AKA com IPsec",
+          "Sem autenticação",
+          "OAuth 2.0"
+        ],
+        "explain": "A bancada usa SIP Digest MD5 em vez de IMS-AKA, por isso o nonce do 401 é decisivo."
+      }
+    ],
+    "report": [
+      {
+        "q": "Quantas causas explicam os sintomas?",
+        "options": [
+          "Duas causas independentes no mesmo cliente IMS",
+          "Uma única causa: cobertura",
+          "Uma única causa: SIM com defeito",
+          "Nenhuma, é falha da rede"
+        ],
+        "explain": "O registro falha só com o cache de nonce (modo avião); a voz falha mesmo após power cycle, com registro OK."
+      },
+      {
+        "q": "Por que o registro IMS do TC#1 é rejeitado?",
+        "options": [
+          "O DUT responde ao 401 com um nonce em cache, e recebe 403 'nonce does not match latest challenge'",
+          "A senha SIP está errada",
+          "O P-CSCF está fora do ar",
+          "O RSRP está abaixo de −110 dBm"
+        ],
+        "explain": "Warning 399: o nonce não bate com o desafio mais recente. Após 2 tentativas o cliente abandona o registro."
+      },
+      {
+        "q": "Por que a voz do TC#2 é ininteligível?",
+        "options": [
+          "A rede responde PT 97 = AMR/8000, mas o DUT mantém PT 97 = EVS e codifica em EVS 24,4 kbps",
+          "Perda de pacotes RTP acima de 50%",
+          "Bearer QCI 1 não foi criado",
+          "O terminal remoto estava sem microfone"
+        ],
+        "explain": "O RTP flui (RX 497–499), mas com payload type incompatível: mismatch EVS × AMR."
+      },
+      {
+        "q": "Severidade do issue",
+        "options": [
+          "Alta: dois defeitos em 3/3, sem voz em 5G SA e áudio inutilizável em VoLTE",
+          "Baixa: a chamada MO completa",
+          "Média: afeta só VoLTE",
+          "Sem issue"
+        ],
+        "explain": "Perda total do serviço de voz MT em 5G SA e chamadas VoLTE sem áudio utilizável."
+      }
+    ],
+    "title": "Vanguard: registro IMS rejeitado após modo avião (nonce em cache) e voz VoLTE ininteligível por mismatch de PT 97 (EVS × AMR)"
+  },
+  "desafio-5": {
+    "short": "CST e SRVCC",
+    "icon": "🗼",
+    "brief": "No Polaris, as chamadas via EPS Fallback demoram ~8 s a mais e caem ao chegar no far-cell, onde só há 2G. Duas falhas, uma chamada.",
+    "equipment": {
+      "required": [
+        "modemlog",
+        "cdut",
+        "remote",
+        "route"
+      ],
+      "neutral": [
+        "gps",
+        "ims"
+      ]
+    },
+    "setup": [
+      {
+        "q": "Qual é o fluxo de voz esperado neste teste?",
+        "options": [
+          "5G SA n78 → EPS Fallback → VoLTE B3 → SRVCC para GERAN 900",
+          "VoNR direto até o fim",
+          "CSFB para 3G",
+          "Wi-Fi Calling → VoLTE"
+        ],
+        "explain": "A chamada nasce em 5G SA, cai para LTE (EPSFB) e, no far-cell, deve migrar para 2G via SRVCC."
+      },
+      {
+        "q": "Em qual rede você roda o teste?",
+        "options": [
+          "Zenith Telecom · 724/078",
+          "Vantis · 724/085",
+          "Aurora · 724/023",
+          "Nimbus · 724/091"
+        ],
+        "explain": "Rede Zenith Telecom, PLMN 724/078."
+      },
+      {
+        "q": "Que rota você usa?",
+        "options": [
+          "Rota que sai da cobertura LTE e atravessa o far-cell (só 2G)",
+          "Ficar parado ao lado da antena",
+          "Rota dentro de um túnel sem sinal",
+          "Rota em outra cidade"
+        ],
+        "explain": "É preciso atravessar o far-cell para disparar o report B2 e o SRVCC."
+      }
+    ],
+    "report": [
+      {
+        "q": "Por que o Call Setup Time do Polaris é ~8 s maior?",
+        "options": [
+          "O accept do bearer QCI 1 traz EBI 5 (Linked EBI) em vez de 6; a rede só confirma após a retransmissão do T3485 (8 s)",
+          "O EPS Fallback demora 8 s por falta de cobertura LTE",
+          "O terminal remoto demora para atender",
+          "O IMS rejeita o primeiro INVITE"
+        ],
+        "explain": "O atraso coincide exatamente com o T3485; a única diferença é o EPSBearerIdentity do accept."
+      },
+      {
+        "q": "Por que a chamada cai no far-cell?",
+        "options": [
+          "O TAU do Polaris não traz MS Classmark 2/3 nem Supported Codecs; a rede não prepara o SRVCC",
+          "O Polaris não envia o Measurement Report B2",
+          "A célula 2G está fora do ar",
+          "O Polaris não suporta GERAN 900"
+        ],
+        "explain": "Os dois aparelhos mandam o mesmo report B2; só o Equinox recebe o comando de SRVCC."
+      },
+      {
+        "q": "Quantas causas explicam os sintomas?",
+        "options": [
+          "Duas causas independentes na mesma chamada",
+          "Uma causa única: cobertura",
+          "Uma causa única: a rede Zenith",
+          "Nenhuma: comportamento esperado"
+        ],
+        "explain": "Bearer (EBI errado) e mobilidade (TAU incompleto) são defeitos separados."
+      },
+      {
+        "q": "Severidade do issue",
+        "options": [
+          "Alta: 3/3 em MO e MT, CST ~3,3× maior e queda em toda travessia do far-cell",
+          "Baixa: a chamada completa",
+          "Média: só em MT",
+          "Sem issue"
+        ],
+        "explain": "Toda chamada via EPSFB é lenta e toda chamada que atravessa o far-cell cai."
+      }
+    ],
+    "title": "Polaris: CST ~8 s maior após EPS Fallback (EBI errado no accept) e queda no far-cell sem SRVCC (TAU sem Classmark 2/3)"
+  },
+  "desafio-6": {
+    "short": "Emergência 112",
+    "icon": "🚑",
+    "brief": "O Polaris leva quase o dobro do tempo para completar o 112 a partir de 5G SA. A rede responde igual para todos. Onde está o desvio?",
+    "equipment": {
+      "required": [
+        "modemlog",
+        "cdut",
+        "emerg"
+      ],
+      "neutral": [
+        "sims",
+        "gps"
+      ]
+    },
+    "setup": [
+      {
+        "q": "Qual é a HPLMN do teste?",
+        "options": [
+          "Zenith · 724/078",
+          "Aurora · 724/023",
+          "Vantis · 724/085",
+          "Nimbus · 724/091"
+        ],
+        "explain": "HPLMN Zenith, com n78 PCI 88 e LTE B3 PCI 220 no mesmo site."
+      },
+      {
+        "q": "Quais cenários você roda?",
+        "options": [
+          "112 discado em 5G SA (n78 PCI 88) e controle com 112 discado já em LTE (B3 PCI 220)",
+          "Só 112 em 2G",
+          "Só chamadas comuns",
+          "112 com o aparelho sem SIM"
+        ],
+        "explain": "O controle em 4G mostra se o problema é do VoLTE/IMS ou só do caminho a partir do 5G."
+      },
+      {
+        "q": "Depois de uma falha de emergência em 5G, o que a hierarquia de seleção espera do UE?",
+        "options": [
+          "Tentar outra RAT da própria HPLMN antes de outra operadora",
+          "Escolher a célula mais forte de qualquer operadora",
+          "Desistir da chamada",
+          "Reiniciar o modem"
+        ],
+        "explain": "TS 22.101 / 23.167: outra RAT da HPLMN antes de qualquer outra operadora."
+      }
+    ],
+    "report": [
+      {
+        "q": "Qual é a causa raiz no DUT?",
+        "options": [
+          "Após a causa 90, o Polaris escolhe a LTE da Aurora pelo sinal, ignorando a LTE da HPLMN disponível",
+          "A rede Zenith não suporta chamadas de emergência",
+          "O VoLTE do Polaris não funciona",
+          "Falta cobertura LTE da Zenith"
+        ],
+        "explain": "A Zenith LTE PCI 220 (−85 dBm) estava disponível; o Polaris preferiu a Aurora PCI 145 (−80 dBm)."
+      },
+      {
+        "q": "Qual parte da falha é da rede e afeta os dois aparelhos?",
+        "options": [
+          "5GMM cause 90 na PDU Session de emergência, sem EPS Fallback",
+          "O 403 do IMS da Aurora",
+          "A varredura NR + LTE",
+          "O CSFB para 2G"
+        ],
+        "explain": "Os dois recebem cause 90 em +0,55 s e nenhum comando de fallback. A diferença está na reação do UE."
+      },
+      {
+        "q": "O que descarta defeito de VoLTE, IMS ou SIM no Polaris?",
+        "options": [
+          "O controle em 4G: 112 em 1,62–1,70 s, equivalente ao CDUT",
+          "O Polaris completa a chamada por CS",
+          "A Aurora tem sinal mais forte",
+          "O teste teve três repetições"
+        ],
+        "explain": "Partindo de LTE, o Polaris faz VoLTE de emergência normalmente."
+      },
+      {
+        "q": "Severidade do issue",
+        "options": [
+          "Alta: emergência fora da HPLMN em 3/3, tempo ~2× maior, viola a hierarquia",
+          "Baixa: a chamada completa",
+          "Média: só em 5G",
+          "Sem issue"
+        ],
+        "explain": "Afeta chamada de emergência de forma sistemática e fora da norma."
+      }
+    ],
+    "title": "Polaris: após falha de emergência em 5G SA (cause 90), escolhe outra operadora pelo sinal e completa o 112 por CS em ~3,8 s"
+  }
+}

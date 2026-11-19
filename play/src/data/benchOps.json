@@ -1,0 +1,32 @@
+{
+  "templates": {
+    "lteLock": { "label": "Fixar a rede em LTE nas configurações", "title": "Ajustes · Rede móvel", "lines": ["Modo preferencial: LTE apenas", "Banda 3 · 1,8 GHz", "Registrado em LTE"], "fx": "settings" }
+  },
+  "challenges": {
+    "desafio-2": [
+      { "use": "lteLock", "when": "LTE" },
+      { "match": "(\\w+) → (\\w+)", "label": "Trocar o perfil eSIM {1} → {2} (5 trocas)", "title": "Perfis eSIM", "lines": ["Perfil ativo: {1}", "Ativando {2}…", "Trocas 1/5 … 5/5 concluídas"], "fx": "profile" }
+    ],
+    "desafio-3": [
+      { "label": "Iniciar a sessão de dados (download contínuo)", "title": "Sessão de dados", "lines": ["Download: 312 Mbps", "Serving n78 · PCI 88"], "fx": "data" },
+      { "when": "intra", "label": "Degradar a serving n78 no atenuador (alvo PCI 101)", "title": "Mobilidade", "lines": ["Atenuação 0 → 30 dB", "Aguardando Measurement Report"], "fx": "atten" },
+      { "unless": "intra", "label": "Degradar a serving n78 no atenuador (alvo n41)", "title": "Mobilidade", "lines": ["Atenuação 0 → 30 dB", "Aguardando Measurement Report"], "fx": "atten" }
+    ],
+    "desafio-4": [
+      { "when": "MT", "label": "Alternar o modo avião (liga e desliga)", "title": "Modo avião", "lines": ["✈ Modo avião: ligado", "✈ Modo avião: desligado", "Registro IMS em andamento…"], "fx": "airplane" },
+      { "when": "MT", "label": "Ligar do smartphone remoto para o DUT (chamada MT)", "title": "Chamada recebida", "lines": ["Smartphone remoto chamando…", "VoNR · EVS"], "fx": "remote" },
+      { "unless": "MT", "label": "Reiniciar o aparelho (power cycle)", "title": "Reiniciando", "lines": ["Desligando…", "Ligando…", "Registro IMS em andamento…"], "fx": "reboot" },
+      { "unless": "MT", "label": "Discar do DUT para o smartphone remoto (MO em VoLTE)", "title": "Chamando", "lines": ["Smartphone remoto", "VoLTE · Band 3"], "fx": "dial" },
+      { "unless": "MT", "label": "Ouvir o áudio no headset", "title": "Em chamada", "lines": ["Áudio em análise no headset"], "fx": "headset" }
+    ],
+    "desafio-5": [
+      { "when": "MT", "label": "Ligar do smartphone remoto para o DUT (chamada MT)", "title": "Chamada recebida", "lines": ["EPS Fallback para LTE…", "VoLTE · QCI 1"], "fx": "remote" },
+      { "unless": "MT", "label": "Originar a chamada MO para o smartphone remoto", "title": "Chamando", "lines": ["EPS Fallback para LTE…", "VoLTE · QCI 1"], "fx": "dial" },
+      { "label": "Atenuar a LTE no atenuador até o far-cell", "title": "Mobilidade", "lines": ["RSRP −90 → −114 dBm", "Report B2 · GERAN 900"], "fx": "atten" }
+    ],
+    "desafio-6": [
+      { "use": "lteLock", "when": "4G" },
+      { "label": "Discar 112 (teste autorizado)", "title": "Emergência", "lines": ["Discando 112…", "Chamada de emergência em curso"], "fx": "sos" }
+    ]
+  }
+}

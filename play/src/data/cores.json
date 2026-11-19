@@ -1,0 +1,297 @@
+{
+  "racks": {
+    "gNodeB": {
+      "title": "Rack IMS",
+      "sub": "Núcleo de voz VoNR / VoLTE",
+      "border": "#15724a",
+      "head": "#123d2c",
+      "node": "gNodeB",
+      "link": "fibra 10 GbE · RTT 0,4 ms",
+      "tray": "Backhaul · fibra gNodeB ⇄ IMS (N2/N3 · SIP)",
+      "regLabel": "Registrados em VoNR",
+      "path": "Caminho da voz: UE → RRU → gNodeB (DU/CU) → fibra → UPF → P-CSCF → S-CSCF → TAS.",
+      "units": [
+        [
+          "SBC",
+          "#46566E",
+          "borda e segurança SIP"
+        ],
+        [
+          "UPF",
+          "#2f63c9",
+          "plano de usuário N3/N6"
+        ],
+        [
+          "P-CSCF",
+          "#15724a",
+          "1º contato SIP do UE"
+        ],
+        [
+          "I-CSCF",
+          "#1f8a5b",
+          "consulta o HSS e roteia"
+        ],
+        [
+          "S-CSCF",
+          "#0f6b45",
+          "registro e sessões"
+        ],
+        [
+          "HSS/UDM",
+          "#7a3fd1",
+          "assinantes e chaves AKA"
+        ],
+        [
+          "TAS · MMTel",
+          "#9a6100",
+          "serviços de voz (VoNR)"
+        ]
+      ],
+      "simBtn": "▶ Simular REGISTER SIP",
+      "simSub": "Registro SIP (IMS AKA)",
+      "flow": "sip"
+    },
+    "eNodeB": {
+      "title": "Rack EPC + IMS",
+      "sub": "Núcleo LTE e voz VoLTE",
+      "border": "#2f63c9",
+      "head": "#13294d",
+      "node": "eNodeB",
+      "link": "fibra 10 GbE · S1-MME / S1-U",
+      "tray": "Backhaul · fibra eNodeB ⇄ EPC/IMS (S1 · SIP)",
+      "regLabel": "Registrados em VoLTE",
+      "path": "Caminho da voz: UE → RRU → eNodeB → S1-U → S-GW → P-GW → P-CSCF → S-CSCF → TAS.",
+      "units": [
+        [
+          "MME",
+          "#2f63c9",
+          "sinalização S1-MME e mobilidade"
+        ],
+        [
+          "S-GW",
+          "#1f4fa8",
+          "âncora do plano de usuário"
+        ],
+        [
+          "P-GW",
+          "#163d85",
+          "APN ims · bearer de voz QCI 1"
+        ],
+        [
+          "P-CSCF",
+          "#15724a",
+          "1º contato SIP do UE"
+        ],
+        [
+          "I/S-CSCF",
+          "#0f6b45",
+          "roteamento, registro e sessões"
+        ],
+        [
+          "HSS",
+          "#7a3fd1",
+          "assinantes e chaves AKA"
+        ],
+        [
+          "TAS · MMTel",
+          "#9a6100",
+          "serviços de voz (VoLTE)"
+        ]
+      ],
+      "simBtn": "▶ Simular attach + REGISTER",
+      "simSub": "Attach LTE + registro SIP",
+      "flow": "lte"
+    },
+    "BTS 2G": {
+      "title": "Rack BSC/MSC",
+      "sub": "Voz comutada por circuito (2G)",
+      "border": "#9a6100",
+      "head": "#3d2a0c",
+      "node": "BTS",
+      "link": "Abis IP · interface A",
+      "tray": "Transmissão · Abis ⇄ BSC/MSC (A · Sv com o IMS do Echo)",
+      "regLabel": "Assinantes no VLR",
+      "path": "Caminho da voz: UE → BTS → Abis → BSC → TRAU → A → MSC/MGW. Sem IMS: no SRVCC, o MSC conversa com o MME e o IMS do Site Echo.",
+      "units": [
+        [
+          "BSC",
+          "#9a6100",
+          "controla as BTS e os handovers"
+        ],
+        [
+          "TRAU",
+          "#7a4d00",
+          "transcodifica a voz (AMR/FR)"
+        ],
+        [
+          "MSC Server",
+          "#0A192F",
+          "controle das chamadas CS"
+        ],
+        [
+          "MGW",
+          "#2b3b52",
+          "plano de mídia da voz CS"
+        ],
+        [
+          "VLR",
+          "#46566E",
+          "assinantes visitantes na área"
+        ],
+        [
+          "HLR",
+          "#7a3fd1",
+          "cadastro dos assinantes 2G"
+        ],
+        [
+          "SRVCC IWF",
+          "#c63b3b",
+          "interface Sv com o MME (LTE)"
+        ]
+      ],
+      "simBtn": "▶ Simular SRVCC (VoLTE → 2G)",
+      "simSub": "SRVCC: VoLTE passa para o GSM",
+      "flow": "srvcc"
+    }
+  },
+  "flows": {
+    "sip": [
+      [
+        "UE → P-CSCF",
+        "REGISTER sip:ims.mnc.3gppnetwork.org"
+      ],
+      [
+        "P-CSCF → I-CSCF",
+        "REGISTER"
+      ],
+      [
+        "I-CSCF ⇄ HSS",
+        "Diameter UAR / UAA (Cx)"
+      ],
+      [
+        "I-CSCF → S-CSCF",
+        "REGISTER"
+      ],
+      [
+        "S-CSCF ⇄ HSS",
+        "Diameter MAR / MAA · vetor AKA"
+      ],
+      [
+        "S-CSCF → UE",
+        "401 Unauthorized (nonce)"
+      ],
+      [
+        "UE → S-CSCF",
+        "REGISTER + resposta AKA"
+      ],
+      [
+        "S-CSCF ⇄ HSS",
+        "SAR / SAA · perfil do assinante"
+      ],
+      [
+        "S-CSCF → UE",
+        "200 OK · registrado"
+      ],
+      [
+        "S-CSCF → TAS",
+        "REGISTER de terceiros (MMTel)"
+      ]
+    ],
+    "lte": [
+      [
+        "UE → MME",
+        "Attach Request + PDN de internet"
+      ],
+      [
+        "MME ⇄ HSS",
+        "Autenticação EPS-AKA · Update Location"
+      ],
+      [
+        "MME → S-GW → P-GW",
+        "Create Session · bearer padrão"
+      ],
+      [
+        "UE → MME",
+        "PDN Connectivity · APN ims (QCI 5)"
+      ],
+      [
+        "P-GW → UE",
+        "endereço IP + endereço do P-CSCF"
+      ],
+      [
+        "UE → P-CSCF",
+        "REGISTER (via P-GW)"
+      ],
+      [
+        "I-CSCF ⇄ HSS",
+        "Diameter UAR / UAA (Cx)"
+      ],
+      [
+        "S-CSCF ⇄ HSS",
+        "MAR / MAA · vetor AKA"
+      ],
+      [
+        "S-CSCF → UE",
+        "401 Unauthorized (nonce)"
+      ],
+      [
+        "UE → S-CSCF",
+        "REGISTER + resposta AKA"
+      ],
+      [
+        "S-CSCF → UE",
+        "200 OK · registrado em VoLTE"
+      ],
+      [
+        "S-CSCF → TAS",
+        "REGISTER de terceiros (MMTel)"
+      ]
+    ],
+    "srvcc": [
+      [
+        "UE em VoLTE",
+        "chamada ativa na eNodeB do Site Echo"
+      ],
+      [
+        "UE → eNodeB",
+        "Medição B2: LTE fraco, GSM 900 forte"
+      ],
+      [
+        "eNodeB → MME",
+        "Handover Required (SRVCC)"
+      ],
+      [
+        "MME → SRVCC IWF",
+        "Sv: PS to CS Request"
+      ],
+      [
+        "MSC → BSC",
+        "Handover Request (interface A)"
+      ],
+      [
+        "BSC → BTS",
+        "aloca um canal TCH no GSM 900"
+      ],
+      [
+        "MSC → IMS (Echo)",
+        "INVITE para o STN-SR · transfere a sessão"
+      ],
+      [
+        "IWF → MME",
+        "Sv: PS to CS Response"
+      ],
+      [
+        "MME → UE",
+        "Handover Command: vai para o GSM"
+      ],
+      [
+        "UE → BTS → BSC",
+        "Handover Complete"
+      ],
+      [
+        "MSC",
+        "200 OK · chamada continua em CS"
+      ]
+    ]
+  }
+}

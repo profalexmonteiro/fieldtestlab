@@ -1,0 +1,74 @@
+/* Camada 3D: tela cheia com HUD e painéis sobre o canvas. Componentes vêm de game.css. */
+html, body { height: 100%; }
+body.three { overflow: hidden; display: block; min-height: 0; background: #bcd7ee; }
+#scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+
+.hud3 { position: fixed; top: 0; left: 0; right: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 14px; background: rgb(10 25 47 / 88%); color: #F4F6F9; backdrop-filter: blur(6px); }
+.hud3 a { color: inherit; text-decoration: none; }
+
+.objective { position: fixed; top: 66px; left: 14px; z-index: 4; max-width: min(360px, calc(100vw - 28px)); background: rgb(10 25 47 / 85%); color: #F4F6F9; border-left: 4px solid #FF6B00; border-radius: 10px; padding: 10px 14px; font-size: .9rem; box-shadow: 0 4px 16px rgb(0 0 0 / 20%); }
+.objective small { display: block; font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: #FFC59A; font-weight: 700; }
+.objective .sc { margin-top: 4px; font-size: .8rem; color: #C9D6E8; }
+
+.prompt { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 4; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; max-width: calc(100vw - 32px); }
+.prompt button { font: inherit; font-weight: 700; border: 0; border-radius: 12px; padding: 12px 18px; cursor: pointer; background: #FF6B00; color: #0A192F; box-shadow: 0 6px 18px rgb(0 0 0 / 25%); animation: pulse 1.6s infinite; }
+.prompt button.sec { background: rgb(10 25 47 / 88%); color: #F4F6F9; animation: none; }
+.prompt kbd { display: inline-block; background: rgb(10 25 47 / 20%); border-radius: 5px; padding: 0 6px; margin-right: 6px; font-family: inherit; }
+.prompt button.sec kbd { background: rgb(255 255 255 / 15%); }
+@keyframes pulse { 50% { transform: translateY(-2px); box-shadow: 0 10px 22px rgb(0 0 0 / 30%); } }
+
+.help { position: fixed; left: 14px; bottom: 14px; z-index: 3; font-size: .78rem; color: #0A192F; background: rgb(255 255 255 / 80%); border-radius: 8px; padding: 6px 10px; }
+
+.joy { position: fixed; left: 22px; bottom: 22px; width: 120px; height: 120px; border-radius: 50%; background: rgb(10 25 47 / 30%); border: 2px solid rgb(255 255 255 / 50%); z-index: 4; display: none; touch-action: none; }
+.joy i { position: absolute; left: 50%; top: 50%; width: 50px; height: 50px; margin: -25px 0 0 -25px; border-radius: 50%; background: rgb(255 107 0 / 85%); }
+@media (pointer: coarse) { .joy { display: block; } .help { display: none; } .prompt { left: auto; right: 16px; transform: none; justify-content: flex-end; max-width: calc(100vw - 170px); } }
+
+.panel { position: fixed; inset: 0; z-index: 20; background: rgb(10 25 47 / 55%); display: flex; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 72px 16px 24px; }
+.panel[hidden] { display: none; }
+.panel-inner { width: 100%; max-width: 900px; }
+.panel-inner > .card:last-child { margin-bottom: 0; }
+.panel .close-x { float: right; }
+
+.fade { position: fixed; inset: 0; background: #0A192F; z-index: 30; pointer-events: none; opacity: 0; transition: opacity .35s; }
+.fade.on { opacity: 1; }
+
+.loading { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; background: #0A192F; color: #F4F6F9; font-weight: 600; }
+.loading[hidden] { display: none; }
+
+.toasts { bottom: auto; top: 70px; }
+
+/* Barras inferiores: armário e notebook */
+.dockbar { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 6; width: min(940px, calc(100vw - 24px)); max-height: 46vh; overflow-y: auto;
+  background: rgb(10 25 47 / 94%); color: #F4F6F9; border: 1px solid rgb(255 255 255 / 12%); border-radius: 14px; padding: 12px 14px; box-shadow: 0 10px 30px rgb(0 0 0 / 30%); }
+.dockbar[hidden] { display: none; }
+.cab-head { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; font-size: .9rem; margin-bottom: 8px; }
+.cab-head span { color: #C9D6E8; }
+.cab-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.cab-chip { font: inherit; font-size: .82rem; color: #F4F6F9; background: rgb(255 255 255 / 8%); border: 1px solid rgb(255 255 255 / 18%); border-radius: 99px; padding: 5px 11px; cursor: pointer; }
+.cab-chip:hover:not(:disabled) { border-color: #FF6B00; }
+.cab-chip[aria-pressed="true"] { background: #FF6B00; border-color: #FF6B00; color: #0A192F; font-weight: 700; }
+.cab-chip.epi { border-color: #FFC21A; }
+.cab-chip.ok { background: #15724a; border-color: #4fd194; color: #fff; }
+.cab-chip.miss { border: 2px dashed #ff7b7b; }
+.cab-chip.bad { background: #6b2a2f; border-color: #ff7b7b; color: #fff; }
+.cab-chip.neutral { opacity: .8; }
+.cab-chip:disabled { cursor: default; }
+.cab-foot, .nb-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+.cab-foot .btn.ghost { color: #F4F6F9; border-color: rgb(255 255 255 / 25%); }
+.nb-q small { display: block; color: #FFC59A; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; font-weight: 700; }
+.nb-q b { display: block; margin: 2px 0 8px; }
+.nb-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.nb-opt { font: inherit; font-size: .86rem; text-align: left; color: #F4F6F9; background: rgb(255 255 255 / 7%); border: 1px solid rgb(255 255 255 / 16%); border-radius: 10px; padding: 8px 10px; cursor: pointer; display: flex; gap: 8px; align-items: flex-start; }
+.nb-opt:hover:not(:disabled) { border-color: #FF6B00; }
+.nb-opt kbd { flex: none; font-family: inherit; font-weight: 800; color: #FF6B00; }
+.nb-opt.ok { background: #15724a; border-color: #4fd194; } .nb-opt.ok kbd { color: #fff; }
+.nb-opt.bad { background: #6b2a2f; border-color: #ff7b7b; }
+.nb-opt:disabled { cursor: default; }
+.nb-hint { font-size: .85rem; color: #C9D6E8; flex: 1 1 300px; }
+.nb-hint.good { color: #4fd194; } .nb-hint.bad { color: #ff9a9a; }
+@media (max-width: 640px) { .nb-opts { grid-template-columns: 1fr; } }
+
+/* Etiqueta do renderizador e campo de nome (o texto aparece no balão da NPC) */
+.gpu-badge { font-size: .72rem; font-weight: 800; letter-spacing: .04em; padding: 4px 9px; border-radius: 99px; background: rgb(255 107 0 / 18%); border: 1px solid rgb(255 107 0 / 55%); color: #FFC59A; white-space: nowrap; }
+.ghost-input { position: fixed; left: 50%; bottom: 0; width: 1px; height: 1px; opacity: 0; border: 0; padding: 0; pointer-events: none; }
+body[data-mode]:not([data-mode="free"]) .help { display: none; }

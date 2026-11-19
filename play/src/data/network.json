@@ -1,0 +1,328 @@
+{
+  "operators": [
+    "NovaLink",
+    "Zenith",
+    "Vantis",
+    "Nimbus",
+    "Aurora"
+  ],
+  "opColors": {
+    "NovaLink": "#FF6B00",
+    "Zenith": "#2f63c9",
+    "Vantis": "#7a3fd1",
+    "Nimbus": "#15724a",
+    "Aurora": "#c63b3b"
+  },
+  "bands": {
+    "n78": {
+      "name": "n78 · 3,5 GHz",
+      "rat": "5G NR",
+      "loss": 6
+    },
+    "n41": {
+      "name": "n41 · 2,5 GHz",
+      "rat": "5G NR",
+      "loss": 4
+    },
+    "B3": {
+      "name": "B3 · 1,8 GHz",
+      "rat": "LTE",
+      "loss": 0
+    },
+    "B28": {
+      "name": "B28 · 700 MHz",
+      "rat": "LTE",
+      "loss": -6
+    },
+    "GSM900": {
+      "name": "GSM 900",
+      "rat": "2G",
+      "loss": -5
+    }
+  },
+  "sites": [
+    {
+      "id": "delta",
+      "name": "Site Delta",
+      "kind": "gNodeB",
+      "x": 13,
+      "z": -4,
+      "bands": [
+        "n78",
+        "n41"
+      ],
+      "def": [
+        [
+          "NovaLink",
+          "n78"
+        ],
+        [
+          "NovaLink",
+          "n41"
+        ],
+        [
+          "Zenith",
+          "n78"
+        ]
+      ]
+    },
+    {
+      "id": "echo",
+      "name": "Site Echo",
+      "kind": "eNodeB",
+      "x": -24,
+      "z": -14,
+      "bands": [
+        "B3",
+        "B28"
+      ],
+      "def": [
+        [
+          "NovaLink",
+          "B3"
+        ],
+        [
+          "Zenith",
+          "B3"
+        ],
+        [
+          "Aurora",
+          "B28"
+        ]
+      ]
+    },
+    {
+      "id": "fox",
+      "name": "Site Foxtrot",
+      "kind": "gNodeB",
+      "x": 27,
+      "z": -26,
+      "bands": [
+        "n78",
+        "n41"
+      ],
+      "def": [
+        [
+          "Vantis",
+          "n78"
+        ],
+        [
+          "Nimbus",
+          "n41"
+        ],
+        [
+          "Zenith",
+          "n41"
+        ]
+      ]
+    },
+    {
+      "id": "golf",
+      "name": "Site Golf · far-cell",
+      "kind": "BTS 2G",
+      "x": -28,
+      "z": 24,
+      "bands": [
+        "GSM900"
+      ],
+      "def": [
+        [
+          "Zenith",
+          "GSM900"
+        ],
+        [
+          "Vantis",
+          "GSM900"
+        ],
+        [
+          "Aurora",
+          "GSM900"
+        ]
+      ]
+    }
+  ],
+  "requiredCells": {
+    "desafio-2": [
+      [
+        "Vantis",
+        "n78"
+      ],
+      [
+        "Zenith",
+        "n78"
+      ],
+      [
+        "Nimbus",
+        "n78"
+      ],
+      [
+        "Zenith",
+        "B3"
+      ]
+    ],
+    "desafio-3": [
+      [
+        "NovaLink",
+        "n78"
+      ],
+      [
+        "NovaLink",
+        "n41"
+      ]
+    ],
+    "desafio-4": [
+      [
+        "NovaLink",
+        "n78"
+      ],
+      [
+        "NovaLink",
+        "B3"
+      ]
+    ],
+    "desafio-5": [
+      [
+        "Zenith",
+        "n78"
+      ],
+      [
+        "Zenith",
+        "B3"
+      ],
+      [
+        "Zenith",
+        "GSM900"
+      ]
+    ],
+    "desafio-6": [
+      [
+        "Zenith",
+        "n78"
+      ],
+      [
+        "Zenith",
+        "B3"
+      ],
+      [
+        "Aurora",
+        "B3"
+      ],
+      [
+        "Aurora",
+        "GSM900"
+      ]
+    ]
+  },
+  "ranUnits": {
+    "gNodeB": [
+      [
+        "RIC",
+        "#7a3fd1"
+      ],
+      [
+        "DU",
+        "#2f63c9"
+      ],
+      [
+        "CU",
+        "#15724a"
+      ],
+      [
+        "BBU",
+        "#0A192F"
+      ]
+    ],
+    "eNodeB": [
+      [
+        "PSU",
+        "#46566E"
+      ],
+      [
+        "Transporte",
+        "#2f63c9"
+      ],
+      [
+        "BBU",
+        "#0A192F"
+      ],
+      [
+        "eNodeB",
+        "#15724a"
+      ]
+    ],
+    "BTS 2G": [
+      [
+        "PSU",
+        "#46566E"
+      ],
+      [
+        "Transmissão",
+        "#2f63c9"
+      ],
+      [
+        "TRX",
+        "#9a6100"
+      ],
+      [
+        "BTS",
+        "#0A192F"
+      ]
+    ]
+  },
+  "ranInfo": {
+    "gNodeB": [
+      [
+        "BBU · Baseband Unit",
+        "Na RAN tradicional concentra o processamento L1–L3 da estação."
+      ],
+      [
+        "CU · Central Unit",
+        "PDCP, SDAP e RRC. CU-CP/CU-UP; interfaces NG e F1."
+      ],
+      [
+        "DU · Distributed Unit",
+        "RLC, MAC e PHY-alto (split 7.2); fronthaul eCPRI até a RRU."
+      ],
+      [
+        "RIC · RAN Intelligent Controller",
+        "xApps near-RT (E2) e rApps non-RT (A1) otimizam a RAN."
+      ]
+    ],
+    "eNodeB": [
+      [
+        "eNodeB",
+        "Estação LTE: PHY, MAC, RLC, PDCP e RRC no mesmo nó."
+      ],
+      [
+        "BBU",
+        "Processamento de banda base das portadoras B3/B28."
+      ],
+      [
+        "Transporte",
+        "Interfaces S1 (núcleo EPC) e X2 (outros eNodeBs)."
+      ],
+      [
+        "RRU",
+        "Rádio no topo da torre ligado por CPRI."
+      ]
+    ],
+    "BTS 2G": [
+      [
+        "BTS",
+        "Estação 2G (GSM 900): voz em CS, usada no SRVCC e no CSFB."
+      ],
+      [
+        "TRX",
+        "Transceptores; cada um leva 8 timeslots."
+      ],
+      [
+        "Transmissão",
+        "Interface Abis até a BSC."
+      ],
+      [
+        "PSU",
+        "Fonte e baterias do gabinete."
+      ]
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>FieldTest Quest</title>
+  <meta name="description" content="FieldTest Quest: jogo 3D de Field Test 5G. Caminhe até o laboratório, receba o chamado da supervisora, monte a bancada, capture os logs e escreva o relatório.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230A192F'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23FF6B00' font-family='Arial' font-weight='bold'%3EFT%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/game.css">
+  <link rel="stylesheet" href="css/lab3d.css">
+  <script>
+    // Sem o Vite (arquivo aberto direto do disco ou por um servidor estático) o código-fonte de src/ não carrega.
+    // Nesse caso abre a versão autocontida gerada por "npm run build": dist/index.html (funciona com duplo clique).
+    (function () {
+      if (document.documentElement.hasAttribute("data-standalone")) return;   // já é a versão autocontida
+      var gone = false;
+      function fallback() {
+        if (gone) return; gone = true;
+        location.replace("dist/index.html" + location.search);
+      }
+      if (location.protocol === "file:") return fallback();
+      window.addEventListener("error", function (e) {
+        var t = e.target;
+        if ((t && t.tagName === "SCRIPT" && /src\/main\.js/.test(t.src || "")) || /module specifier/i.test(e.message || "")) fallback();
+      }, true);
+    })();
+  </script>
+</head>
+<body class="three">
+  <canvas id="scene"></canvas>
+  <header id="hud" class="hud3"></header>
+  <div id="objective" class="objective"></div>
+  <div id="prompt" class="prompt"></div>
+  <div class="help">WASD / setas: andar · Shift: correr · Espaço: pular · arraste o mouse: olhar (Q/R girar, Z/X inclinar) · roda: zoom · E: interagir/entrar no carro · T: avançar o período do dia · clique nas telas para responder</div>
+  <div id="joy" class="joy"><i></i></div>
+  <input id="nameInput" class="ghost-input" maxlength="24" autocomplete="off" aria-label="Seu nome de engenheiro">
+  <div id="loading" class="loading">Carregando o laboratório…</div>
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+
+  <!-- Three.js r170 (WebGPURenderer): usa WebGPU quando disponível e cai para WebGL 2 sozinho (?renderer=webgl força o WebGL) -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

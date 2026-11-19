@@ -1,0 +1,21 @@
+{
+  "name": "fieldtest-quest",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "FieldTest Quest: jogo 3D de Field Test 5G baseado nos desafios do FieldTestLab",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "three": "0.170.0"
+  },
+  "devDependencies": {
+    "vite": "6.4.6",
+    "vitest": "4.1.12"
+  }
+}

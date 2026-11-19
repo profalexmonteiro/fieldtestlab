@@ -1,0 +1,67 @@
+{
+  "modemlog": {
+    "icon": "💻",
+    "name": "Captura de log de modem",
+    "desc": "Log do UE pela porta de diagnóstico (RRC/NAS/IMS)."
+  },
+  "cdut": {
+    "icon": "📱",
+    "name": "Aparelho de referência (CDUT)",
+    "desc": "Aparelho de controle para comparar com o DUT."
+  },
+  "sims": {
+    "icon": "💳",
+    "name": "SIMs / perfis multi-operadora",
+    "desc": "Perfis de várias PLMNs para as trocas."
+  },
+  "ims": {
+    "icon": "☎️",
+    "name": "Conta IMS / núcleo de voz",
+    "desc": "Acesso ao núcleo IMS para registro e chamadas."
+  },
+  "remote": {
+    "icon": "📞",
+    "name": "Terminal remoto (smartphone)",
+    "desc": "Segundo smartphone que origina ou recebe a outra ponta da chamada."
+  },
+  "audio": {
+    "icon": "🎧",
+    "name": "Análise de áudio",
+    "desc": "Escuta e avalia a qualidade da voz recebida."
+  },
+  "route": {
+    "icon": "🚗",
+    "name": "Rota de drive test",
+    "desc": "Veículo e rota com degradação de cobertura."
+  },
+  "emerg": {
+    "icon": "🚨",
+    "name": "Autorização de teste de 112",
+    "desc": "Janela combinada com a operadora e o PSAP."
+  },
+  "gps": {
+    "icon": "🛰️",
+    "name": "Receptor GPS",
+    "desc": "Georreferencia as medições na rota."
+  },
+  "spectrum": {
+    "icon": "📈",
+    "name": "Analisador de espectro",
+    "desc": "Mede interferência no espectro."
+  },
+  "thermal": {
+    "icon": "🌡️",
+    "name": "Câmera térmica",
+    "desc": "Mede o aquecimento do aparelho."
+  },
+  "battery": {
+    "icon": "🔋",
+    "name": "Bancada de bateria",
+    "desc": "Mede consumo e autonomia."
+  },
+  "camera": {
+    "icon": "📷",
+    "name": "Lab de câmera",
+    "desc": "Avalia qualidade de foto e vídeo."
+  }
+}
