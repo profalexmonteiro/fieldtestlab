@@ -16,7 +16,10 @@
       var gone = false;
       function fallback() {
         if (gone) return; gone = true;
-        location.replace("dist/index.html" + location.search);
+        // A pasta desta página, com ou sem barra final: a Vercel serve esta página também em "/play",
+        // onde o caminho relativo "dist/index.html" iria parar em "/dist/index.html".
+        var dir = location.pathname.replace(/\/[^\/]*\.[^\/]*$/, "").replace(/\/?$/, "/");
+        location.replace(dir + "dist/index.html" + location.search);
       }
       if (location.protocol === "file:") return fallback();
       window.addEventListener("error", function (e) {
