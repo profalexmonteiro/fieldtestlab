@@ -31,6 +31,17 @@
 !/Desafios/Desafio 6/Desafio_S06_Log_DUT_Polaris.html
 !/Desafios/Desafio 6/Desafio_S06_Log_CDUT_Equinox.html
 
+# Jogo (play/): o site usa a versão autocontida play/dist/index.html, gerada por
+# "npm run build" dentro de play/ e versionada. O play/index.html redireciona para ela.
+# Código-fonte, testes e configuração de build ficam fora do deploy.
+/play/src
+/play/tests
+/play/node_modules
+/play/package.json
+/play/package-lock.json
+/play/vite.config.js
+/play/.gitignore
+
 # Arquivos do repositório que não fazem parte do site
 README.md
 # Arte original do logotipo; o site usa os recortes em assets/
