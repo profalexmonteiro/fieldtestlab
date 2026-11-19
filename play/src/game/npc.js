@@ -119,7 +119,7 @@ function statusTalk() {
   bubbleRender(`Desafio ${pad2(G.run.ch.num)} em andamento`, `Você está no ${G.run.ch.game.short}. Próximo passo: ${next}. Para subir na torre, use o EPI do armário.`, [{ t: "Certo!", fn: endDialog }]);
 }
 function acceptChallenge(c) {
-  G.run = { ch: c, score: { setup: 0, tests: 0, report: 0 }, max: maxScore(c), setupLog: [], eq: null, tests: {}, reportAnswers: [], attached: [], bench: { placed: false, configured: false, idx: 0, sub: 0 } };
+  G.run = { ch: c, score: { setup: 0, tests: 0, report: 0 }, max: maxScore(c), setupLog: [], eq: null, tests: {}, reportAnswers: [], attached: [], fieldSamples: [], bench: { placed: false, configured: false, idx: 0, sub: 0 } };
   setPhase("cabinet"); npc.offering = null; tvRender(false); hud(); emit("run:accepted", { ch: c });
   dialog = { page: "go" };
   bubbleRender("Combinado!", `O briefing do Desafio ${pad2(c.num)} fica na TV. Pegue os materiais no armário, monte tudo na bancada e depois escreva o relatório no desktop.`, [{ t: "Vamos lá", fn: endDialog }]);

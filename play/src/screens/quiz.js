@@ -14,6 +14,12 @@ function quizScreen(scr, q, head, onScore, anim) {
       st.busy = true; o.state = "sel"; paint(scr);
       await anim(); st.busy = false; st.tries++;
       const right = o.i === 0;
+      if (head.deferFeedback) {
+        st.done = true;
+        onScore(right ? 1 : 0, right, o.text);
+        paint(scr);
+        return;
+      }
       if (right || st.tries >= 2) {
         st.done = true;
         const frac = right ? (st.tries === 1 ? 1 : 0.4) : 0;

@@ -330,5 +330,103 @@
         "Fonte e baterias do gabinete."
       ]
     ]
+  },
+  "fieldPlans": {
+    "desafio-3": {
+      "points": [
+        {
+          "label": "Início da rota n78/n41",
+          "x": 13,
+          "z": 3,
+          "radius": 3,
+          "cells": [
+            [
+              "NovaLink",
+              "n78"
+            ],
+            [
+              "NovaLink",
+              "n41"
+            ]
+          ]
+        },
+        {
+          "label": "Trecho de degradação da n78",
+          "x": 26,
+          "z": 16,
+          "radius": 3,
+          "cells": [
+            [
+              "NovaLink",
+              "n78"
+            ],
+            [
+              "NovaLink",
+              "n41"
+            ]
+          ],
+          "minDrop": 6
+        }
+      ]
+    },
+    "desafio-5": {
+      "points": [
+        {
+          "label": "Início da rota LTE",
+          "x": -24,
+          "z": -7,
+          "radius": 4,
+          "cells": [
+            [
+              "Zenith",
+              "B3"
+            ],
+            [
+              "Zenith",
+              "GSM900"
+            ]
+          ],
+          "preferred": "B3"
+        },
+        {
+          "label": "Far-cell com GERAN",
+          "x": -26,
+          "z": 21,
+          "radius": 4,
+          "cells": [
+            [
+              "Zenith",
+              "B3"
+            ],
+            [
+              "Zenith",
+              "GSM900"
+            ]
+          ],
+          "preferred": "GSM900"
+        }
+      ]
+    },
+    "desafio-7": {
+      "points": [
+        {
+          "label": "Ponto Near-Cell · Delta",
+          "x": 13,
+          "z": 6,
+          "radius": 4,
+          "cells": [
+            [
+              "NovaLink",
+              "n78"
+            ]
+          ],
+          "pairedCell": {
+            "site": "delta",
+            "sector": 0
+          },
+          "maxSpeed": 0.25
+        }
+      ]
+    }
   }
 }

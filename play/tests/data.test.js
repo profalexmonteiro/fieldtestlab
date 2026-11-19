@@ -2,6 +2,11 @@
 import { describe, expect, it } from "vitest";
 import { AVATARS, BENCH_OPS, CHALLENGE_DATA, CONTENT, CORES, EQUIPMENT, NETWORK } from "../src/data/index.js";
 import { opsForScenario } from "../src/rules/benchOps.js";
+import { captureLines, campaignPages } from "../src/rules/capture.js";
+import { reportSections } from "../src/rules/report.js";
+import { evaluateTest, PTS } from "../src/rules/score.js";
+import { EVIDENCE, evidenceTasks } from "../src/rules/evidence.js";
+import throughput from "../../data/desafio-7.json";
 
 const FX = ["settings", "profile", "data", "atten", "airplane", "remote", "reboot", "dial", "headset", "sos"];
 
@@ -16,6 +21,54 @@ describe("desafios e conteúdo", () => {
       expect(new Set(q.options).size).toBe(q.options.length);      // opções repetidas confundiriam a correta (a primeira)
     }
     for (const k of [...g.equipment.required, ...g.equipment.neutral]) expect(EQUIPMENT).toHaveProperty(k);
+    const metrics = c.scenarios.flatMap((s) => s.metrics);
+    expect(metrics.every(({ evidence }) => Object.hasOwn(EVIDENCE, evidence))).toBe(true);
+    for (const task of evidenceTasks(metrics)) expect(metrics.some(({ evidence }) => evidence === task)).toBe(true);
+    for (const scenario of c.scenarios) {
+      const lines = captureLines(scenario);
+      expect(lines).toHaveLength(scenario.metrics.length);
+      for (const { t } of lines) {
+        expect(t.length).toBeGreaterThan(0);
+        expect(t).not.toMatch(/\bPASS\b|\bFAIL\b|veredito|causa raiz/i);
+      }
+    }
+  });
+});
+
+describe("captura e revisão", () => {
+  it("mostra os 15 pares na planilha e deixa o veredito para o jogador", () => {
+    const pages = campaignPages(throughput.kpiTest);
+    const rows = pages.flat().map(({ t }) => t).filter((line) => /^\s*\d+\s{4}/.test(line));
+    expect(rows.map((line) => Number(line.trim().split(/\s+/)[0]))).toEqual(throughput.kpiTest.iterations.map(({ it }) => it));
+    expect(rows[6]).toContain("214:45%+217:55%");
+    expect(pages.flat().map(({ t }) => t).join(" ")).not.toMatch(/\bFAIL\b|descartada/i);
+  });
+  it("preserva DL e UL na análise do D7 e gera um campo de impacto", () => {
+    const game = CONTENT["desafio-7"];
+    const answers = game.report.map(({ options }) => ({ answer: options[0], right: true }));
+    const { severity, impact, findings } = reportSections(game, answers);
+    expect(severity).toBeNull();
+    expect(impact).toContain("homologação");
+    expect(findings).toHaveLength(game.report.length);
+    expect(findings.map(({ answer }) => answer).join(" ")).toMatch(/twoLayers.*NEW_TX/);
+  });
+  it("identifica severidade pelo campo explícito em qualquer posição", () => {
+    const game = CONTENT["desafio-6"];
+    const severity = game.report.find(({ field }) => field === "severity");
+    const report = [severity, ...game.report.filter((question) => question !== severity)];
+    const answers = report.map(({ options }) => ({ answer: options[1], right: false }));
+    const review = reportSections({ ...game, report }, answers);
+    expect(review.severity.answer).toBe(severity.options[1]);
+    expect(review.severity.expected).toBe(severity.options[0]);
+    expect(review.findings).toHaveLength(report.length - 1);
+    expect(review.findings[0].answer).toBe(answers[1].answer);
+  });
+  it("avalia veredito e evidência sem aumentar o teto de pontos", () => {
+    const { scenarios } = CHALLENGE_DATA.find(({ id }) => id === "desafio-7");
+    const [cdut, dut] = scenarios;
+    expect(evaluateTest(cdut, { verdict: "pass", evidence: 0 }).points).toBe(PTS.verdict);
+    expect(evaluateTest(dut, { verdict: "fail", evidence: 2 }).points).toBe(PTS.verdict + PTS.evidence);
+    expect(evaluateTest(dut, { verdict: "pass", evidence: 3 })).toMatchObject({ correct: false, points: PTS.evidence / 2 });
   });
 });
 

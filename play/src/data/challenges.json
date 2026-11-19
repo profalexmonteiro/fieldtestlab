@@ -33,25 +33,33 @@
             "label": "Tentativas de registro",
             "value": "1 tentativa",
             "note": "5 de 5 trocas · 100%",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "Trocas com uma tentativa: 5/5",
+            "evidence": "context"
           },
           {
             "label": "Tempo até registro",
             "value": "0,98–1,15 s",
             "note": "5G SA · sem rejeição",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "Tempo até Registration Complete: 0,98–1,15 s",
+            "evidence": "context"
           },
           {
             "label": "Authentication",
             "value": "sucesso",
             "note": "RES* e NIA2/NEA2",
-            "tone": "accent-text"
+            "tone": "accent-text",
+            "observation": "Authentication Response: RES* · segurança NIA2/NEA2",
+            "evidence": "context"
           },
           {
             "label": "Registration Complete",
             "value": "registrado",
             "note": "5GS-Registration-Result",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "Registration Complete em 5/5 trocas",
+            "evidence": "context"
           }
         ],
         "notice": "Log de referência do Boreal: uma tentativa, 19 mensagens. Atenção: o log dura 0,82 s (da detecção PSS/SSS ao Registration Complete), menos que qualquer tempo total do cenário 4 no caso (0,98–1,15 s); o documento não define o instante inicial da medição. O relato de 5/5 trocas é agregado; não há cinco arquivos de log individuais."
@@ -70,25 +78,33 @@
             "label": "Tentativas de registro",
             "value": "3 por troca",
             "note": "5 de 5 trocas · 100%",
-            "tone": "bad-text"
+            "tone": "bad-text",
+            "observation": "Tentativas por troca: 3 (5/5 trocas)",
+            "evidence": "symptom"
           },
           {
             "label": "1ª rejeição NAS",
             "value": "5GMM #3",
             "note": "Illegal UE · PLMN Vantis",
-            "tone": "bad-text"
+            "tone": "bad-text",
+            "observation": "1ª resposta NAS: Registration Reject · 5GMM cause 3",
+            "evidence": "mechanism"
           },
           {
             "label": "2ª rejeição NAS",
             "value": "5GMM #11",
             "note": "PLMN not allowed · SUCI antigo",
-            "tone": "warn-text"
+            "tone": "warn-text",
+            "observation": "2ª resposta NAS: Registration Reject · 5GMM cause 11",
+            "evidence": "mechanism"
           },
           {
             "label": "Registro completo",
             "value": "4,55–4,77 s",
             "note": "na 3ª tentativa · 5/5",
-            "tone": "warn-text"
+            "tone": "warn-text",
+            "observation": "Tempo até Registration Complete: 4,55–4,77 s",
+            "evidence": "symptom"
           }
         ],
         "notice": "O log anexado cobre as 3 tentativas de uma das cinco trocas do cenário 1; o documento não diz qual. A duração do log (4,55 s, da detecção PSS/SSS ao Registration Complete) coincide com o tempo da troca 03. Não há logs individuais das demais trocas. A causalidade interna exata da transição de SUCI não é provada por estes logs: correlacione o estado do perfil e a identidade provisionada."
@@ -107,25 +123,33 @@
             "label": "Tentativas de registro",
             "value": "3 por troca",
             "note": "5 de 5 trocas · 100%",
-            "tone": "bad-text"
+            "tone": "bad-text",
+            "observation": "Tentativas por troca: 3 (5/5 trocas)",
+            "evidence": "symptom"
           },
           {
             "label": "Tempo até registro",
             "value": "4,58–4,75 s",
             "note": "após troca de PLMN",
-            "tone": "warn-text"
+            "tone": "warn-text",
+            "observation": "Tempo até registro: 4,58–4,75 s",
+            "evidence": "symptom"
           },
           {
             "label": "RSRP / RSRQ · Zenith",
             "value": "−83 / −8 dB",
             "note": "n78 · PCI 201",
-            "tone": "accent-text"
+            "tone": "accent-text",
+            "observation": "Zenith · PCI 201 · RSRP −83 dBm · RSRQ −8 dB",
+            "evidence": "context"
           },
           {
             "label": "RSRP / RSRQ · Nimbus",
             "value": "−84 / −8 dB",
             "note": "n78 · PCI 133",
-            "tone": "accent-text"
+            "tone": "accent-text",
+            "observation": "Nimbus · PCI 133 · RSRP −84 dBm · RSRQ −8 dB",
+            "evidence": "context"
           }
         ],
         "notice": "Tempos/faixas vêm do documento do desafio. Não foi fornecido log individual desta transição; não inferimos causas NAS específicas sem a captura correspondente."
@@ -144,25 +168,33 @@
             "label": "Tentativas de attach",
             "value": "1 tentativa",
             "note": "5 de 5 trocas · 100%",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "Trocas com uma tentativa de attach: 5/5",
+            "evidence": "context"
           },
           {
             "label": "Tempo total",
             "value": "0,98–1,15 s",
             "note": "até Attach Complete",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "Tempo até Attach Complete: 0,98–1,15 s",
+            "evidence": "context"
           },
           {
             "label": "RSRP / RSRQ · Vantis",
             "value": "−82 / −8 dB",
             "note": "LTE · PCI 165",
-            "tone": "accent-text"
+            "tone": "accent-text",
+            "observation": "Vantis LTE · PCI 165 · RSRP −82 dBm · RSRQ −8 dB",
+            "evidence": "context"
           },
           {
             "label": "RSRP / RSRQ · Zenith",
             "value": "−85 / −9 dB",
             "note": "LTE · PCI 220",
-            "tone": "accent-text"
+            "tone": "accent-text",
+            "observation": "Zenith LTE · PCI 220 · RSRP −85 dBm · RSRQ −9 dB",
+            "evidence": "context"
           }
         ],
         "notice": "O material descreve LTE como controle adicional, não fornece captura OTA LTE nem detalhes de call flow. A visualização mostra eNodeB/LTE, sem inventar mensagens ausentes."
@@ -203,25 +235,33 @@
             "label": "Measurement Report A5",
             "value": "0,655–0,705 s",
             "note": "TTT configurado: 240 ms",
-            "tone": "accent-text"
+            "tone": "accent-text",
+            "observation": "A5 Measurement Report: T+0,655–0,705 s · TTT: 240 ms",
+            "evidence": "context"
           },
           {
             "label": "Handover concluído",
             "value": "0,815–0,865 s",
             "note": "RRCReconfigurationComplete",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "RRCReconfigurationComplete: T+0,815–0,865 s",
+            "evidence": "context"
           },
           {
             "label": "Radio Link Failure",
             "value": "0 / 3",
             "note": "OOS_FILT_BLER abaixo do limiar",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "Eventos RLF: 0 em 3 repetições",
+            "evidence": "context"
           },
           {
             "label": "Cadeia Report → HO",
             "value": "≈ 160 ms",
             "note": "mesma banda alvo n41",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "Entre Report e HO Complete: cerca de 160 ms · alvo n41",
+            "evidence": "context"
           }
         ],
         "notice": "A comparação com o CDUT é uma evidência de controle, não uma prova de que todos os parâmetros de RF e de rede eram idênticos em cada instante."
@@ -240,25 +280,33 @@
             "label": "Measurement Report A5",
             "value": "3,660–3,730 s",
             "note": "TTT configurado: 240 ms",
-            "tone": "warn-text"
+            "tone": "warn-text",
+            "observation": "A5 Measurement Report: T+3,660–3,730 s · TTT: 240 ms",
+            "evidence": "mechanism"
           },
           {
             "label": "Radio Link Failure",
             "value": "3,830–3,870 s",
             "note": "causa: t310-Expiry",
-            "tone": "bad-text"
+            "tone": "bad-text",
+            "observation": "Indicação de RLF: T+3,830–3,870 s · t310-Expiry",
+            "evidence": "symptom"
           },
           {
             "label": "1ª célula · PCI 88",
             "value": "6 × Msg1",
             "note": "sem resposta · critério S reprovado",
-            "tone": "bad-text"
+            "tone": "bad-text",
+            "observation": "PCI 88: seis envios Msg1 sem resposta",
+            "evidence": "mechanism"
           },
           {
             "label": "Reestabelecimento",
             "value": "4,063–4,103 s",
             "note": "RRCReestablishmentComplete · PCI 145",
-            "tone": "warn-text"
+            "tone": "warn-text",
+            "observation": "RRCReestablishmentComplete: T+4,063–4,103 s · PCI 145",
+            "evidence": "symptom"
           }
         ],
         "notice": "A repetição 01 do log detalhado mostra a sequência completa. O caso não traz coordenadas GPS nem sinalização entre nós (Xn/NGAP); não atribua a causa à rede com base apenas neste log UE."
@@ -277,25 +325,33 @@
             "label": "Medição ativa",
             "value": "A3 · measId=1",
             "note": "mesma frequência",
-            "tone": "accent-text"
+            "tone": "accent-text",
+            "observation": "Evento configurado: A3 · measId 1",
+            "evidence": "context"
           },
           {
             "label": "Measurement Report",
             "value": "1,155–1,210 s",
             "note": "desde o início da degradação",
-            "tone": ""
+            "tone": "",
+            "observation": "Measurement Report: 1,155–1,210 s desde a degradação",
+            "evidence": "context"
           },
           {
             "label": "Conclusão HO",
             "value": "1,312–1,370 s",
             "note": "RRCReconfigurationComplete",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "RRCReconfigurationComplete: 1,312–1,370 s",
+            "evidence": "context"
           },
           {
             "label": "RLF",
             "value": "0 / 3",
             "note": "OOS_FILT_BLER abaixo do limiar",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "Eventos RLF: 0 em 3 repetições",
+            "evidence": "context"
           }
         ],
         "notice": "O caso descreve este cenário como controle de mesma frequência. Não há um arquivo de log detalhado anexado para ele; os valores exibidos vêm da ficha do desafio."
@@ -336,25 +392,33 @@
             "label": "Tentativas autenticadas",
             "value": "1 tentativa",
             "note": "3 de 3 repetições · 100%",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "REGISTER autenticado: uma tentativa em cada repetição",
+            "evidence": "context"
           },
           {
             "label": "200 OK do REGISTER",
             "value": "0,098–0,109 s",
             "note": "desde o REGISTER #1",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "SIP 200 OK: 0,098–0,109 s após o primeiro REGISTER",
+            "evidence": "context"
           },
           {
             "label": "Chamada MT",
             "value": "recebida e atendida",
             "note": "VoNR · EVS 24,4 kbps · PT 97",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "Chamada MT atendida · EVS 24,4 kbps · PT 97",
+            "evidence": "context"
           },
           {
             "label": "RTP em T+10 s",
             "value": "TX 500 / RX 498",
             "note": "repetição 01 · áudio nítido",
-            "tone": "accent-text"
+            "tone": "accent-text",
+            "observation": "RTP após 10 s: TX 500 · RX 498",
+            "evidence": "context"
           }
         ],
         "notice": "Log da repetição 01. Os 200 OK das repetições 02 e 03 (0,098 s e 0,109 s) vêm do documento do caso. A chamada MT chega cerca de 12 s depois do registro, quando o terminal remoto origina a chamada; a reprodução comprime intervalos longos."
@@ -373,25 +437,33 @@
             "label": "Tentativas autenticadas",
             "value": "2 × 403 Forbidden",
             "note": "3 de 3 repetições · 100%",
-            "tone": "bad-text"
+            "tone": "bad-text",
+            "observation": "REGISTER autenticado: duas respostas SIP 403 por repetição",
+            "evidence": "symptom"
           },
           {
             "label": "Motivo da rejeição",
             "value": "Warning 399",
             "note": "nonce does not match latest challenge",
-            "tone": "bad-text"
+            "tone": "bad-text",
+            "observation": "Resposta SIP: Warning 399 · nonce does not match latest challenge",
+            "evidence": "mechanism"
           },
           {
             "label": "Registro IMS",
             "value": "abandonado",
             "note": "max_auth_attempts = 2",
-            "tone": "bad-text"
+            "tone": "bad-text",
+            "observation": "max_auth_attempts = 2 · sem novo REGISTER após o segundo 403",
+            "evidence": "symptom"
           },
           {
             "label": "RSRP / RSRQ · PCI 88",
             "value": "−82 / −8 dB",
             "note": "n78 · UE estacionário",
-            "tone": "accent-text"
+            "tone": "accent-text",
+            "observation": "PCI 88 · RSRP −82 dBm · RSRQ −8 dB",
+            "evidence": "context"
           }
         ],
         "notice": "Log da repetição 01. As repetições 02 e 03 (403 em 0,104/0,212 s e 0,116/0,231 s) vêm do documento do caso. A bancada usa SIP Digest MD5 em vez de IMS-AKA. O log do UE não mostra o lado do P-CSCF/S-CSCF; o motivo do 403 vem do cabeçalho Warning da resposta."
@@ -410,25 +482,33 @@
             "label": "Registro IMS",
             "value": "1ª tentativa",
             "note": "200 OK em 0,101 s",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "REGISTER: SIP 200 OK em 0,101 s",
+            "evidence": "context"
           },
           {
             "label": "SDP da rede · PT 97",
             "value": "AMR/8000",
             "note": "igual ao oferecido pelo CDUT",
-            "tone": "accent-text"
+            "tone": "accent-text",
+            "observation": "SDP recebido: PT 97 = AMR/8000",
+            "evidence": "context"
           },
           {
             "label": "Vocoder do CDUT · PT 97",
             "value": "AMR-NB 12,2 kbps",
             "note": "coerente com o SDP",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "Vocoder: PT 97 = AMR-NB 12,2 kbps",
+            "evidence": "context"
           },
           {
             "label": "RTP em T+10 s",
             "value": "TX 500 / RX 496–498",
             "note": "3/3 áudio nítido",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "RTP após 10 s: TX 500 · RX 496–498",
+            "evidence": "context"
           }
         ],
         "notice": "Log da repetição 01. Os contadores RTP das repetições 02 e 03 (RX 498 e 496) vêm do documento do caso."
@@ -447,25 +527,33 @@
             "label": "Registro IMS",
             "value": "1ª tentativa",
             "note": "200 OK em 0,110 s · após power cycle",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "REGISTER: SIP 200 OK em 0,110 s",
+            "evidence": "context"
           },
           {
             "label": "SDP da rede · PT 97",
             "value": "AMR/8000",
             "note": "183 e 200 OK do UPDATE",
-            "tone": "accent-text"
+            "tone": "accent-text",
+            "observation": "SDP recebido: PT 97 = AMR/8000",
+            "evidence": "mechanism"
           },
           {
             "label": "Vocoder do DUT · PT 97",
             "value": "EVS 24,4 kbps",
             "note": "mismatch de payload type",
-            "tone": "bad-text"
+            "tone": "bad-text",
+            "observation": "Vocoder: PT 97 = EVS 24,4 kbps",
+            "evidence": "mechanism"
           },
           {
             "label": "RTP em T+10 s",
             "value": "TX 500 / RX 497–499",
             "note": "3/3 voz ininteligível",
-            "tone": "warn-text"
+            "tone": "warn-text",
+            "observation": "RTP após 10 s: TX 500 · RX 497–499 · áudio ininteligível",
+            "evidence": "symptom"
           }
         ],
         "notice": "Log da repetição 01. Os contadores RTP das repetições 02 e 03 (RX 497 e 499) vêm do documento do caso. O log é do UE: ele não mostra o payload que a rede efetivamente envia, apenas os SDPs trocados e o vocoder escolhido pelo DUT."
@@ -506,25 +594,33 @@
             "label": "Call Setup Time",
             "value": "3,25–3,52 s",
             "note": "média 3,39 s",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "INVITE até SIP 200 OK: 3,25–3,52 s",
+            "evidence": "context"
           },
           {
             "label": "Accept do bearer QCI 1",
             "value": "EBI 6",
             "note": "1ª tentativa · sem retransmissão",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "Bearer QCI 1: Request EBI 6 · Accept EBI 6",
+            "evidence": "context"
           },
           {
             "label": "Far-cell",
             "value": "SRVCC → GERAN",
             "note": "3/3 · 2,05–2,22 s após o report B2",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "B2 até RR Handover Complete: 2,05–2,22 s · 3/3",
+            "evidence": "context"
           },
           {
             "label": "TAU Request",
             "value": "Classmark 2/3 + Codecs",
             "note": "IEs do SRVCC presentes",
-            "tone": "accent-text"
+            "tone": "accent-text",
+            "observation": "TAU Request: Classmark 2/3 e Supported Codecs presentes",
+            "evidence": "context"
           }
         ],
         "notice": "Log da repetição 01. Os tempos das repetições 02 e 03 vêm do documento do caso. O \"handover concluído em T\" do caso é medido do Measurement Report B2 até o RR Handover Complete."
@@ -543,25 +639,33 @@
             "label": "Call Setup Time",
             "value": "11,28–11,41 s",
             "note": "média 11,35 s · Δ −234,7 % vs CDUT",
-            "tone": "bad-text"
+            "tone": "bad-text",
+            "observation": "INVITE até SIP 200 OK: 11,28–11,41 s",
+            "evidence": "symptom"
           },
           {
             "label": "Accept do bearer QCI 1",
             "value": "EBI 5 ≠ 6",
             "note": "retransmissão após 8,0 s (T3485)",
-            "tone": "bad-text"
+            "tone": "bad-text",
+            "observation": "Bearer QCI 1: Request EBI 6 · Accept EBI 5",
+            "evidence": "mechanism"
           },
           {
             "label": "Far-cell",
             "value": "chamada cai",
             "note": "3/3 · 21,30–21,48 s após o report B2",
-            "tone": "bad-text"
+            "tone": "bad-text",
+            "observation": "B2 até queda da chamada: 21,30–21,48 s · 3/3",
+            "evidence": "symptom"
           },
           {
             "label": "TAU Request",
             "value": "sem Classmark 2/3 e Codecs",
             "note": "SRVCC capability = 1",
-            "tone": "warn-text"
+            "tone": "warn-text",
+            "observation": "TAU Request: Classmark 2/3 e Supported Codecs ausentes",
+            "evidence": "mechanism"
           }
         ],
         "notice": "Log da repetição 01. Os tempos das repetições 02 e 03 vêm do documento do caso. O log é do UE: a sinalização entre nós da rede (S1AP, Sv, MSC, HSS) não aparece, então a decisão do MME de não preparar o SRVCC é inferida a partir do que o UE envia e recebe."
@@ -580,25 +684,33 @@
             "label": "Call Setup Time",
             "value": "3,38–3,61 s",
             "note": "média 3,51 s",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "Paging até SIP 200 OK: 3,38–3,61 s",
+            "evidence": "context"
           },
           {
             "label": "Accept do bearer QCI 1",
             "value": "EBI 6",
             "note": "1ª tentativa · sem retransmissão",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "Bearer QCI 1: Request EBI 6 · Accept EBI 6",
+            "evidence": "context"
           },
           {
             "label": "Far-cell",
             "value": "SRVCC → GERAN",
             "note": "3/3 · 2,05–2,22 s após o report B2",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "B2 até RR Handover Complete: 2,05–2,22 s · 3/3",
+            "evidence": "context"
           },
           {
             "label": "TAU Request",
             "value": "Classmark 2/3 + Codecs",
             "note": "IEs do SRVCC presentes",
-            "tone": "accent-text"
+            "tone": "accent-text",
+            "observation": "TAU Request: Classmark 2/3 e Supported Codecs presentes",
+            "evidence": "context"
           }
         ],
         "notice": "Log da repetição 01. Os tempos das repetições 02 e 03 vêm do documento do caso. O \"handover concluído em T\" do caso é medido do Measurement Report B2 até o RR Handover Complete."
@@ -617,25 +729,33 @@
             "label": "Call Setup Time",
             "value": "11,49–11,62 s",
             "note": "média 11,55 s · Δ −228,8 % vs CDUT",
-            "tone": "bad-text"
+            "tone": "bad-text",
+            "observation": "Paging até SIP 200 OK: 11,49–11,62 s",
+            "evidence": "symptom"
           },
           {
             "label": "Accept do bearer QCI 1",
             "value": "EBI 5 ≠ 6",
             "note": "retransmissão após 8,0 s (T3485)",
-            "tone": "bad-text"
+            "tone": "bad-text",
+            "observation": "Bearer QCI 1: Request EBI 6 · Accept EBI 5",
+            "evidence": "mechanism"
           },
           {
             "label": "Far-cell",
             "value": "chamada cai",
             "note": "3/3 · 21,33–21,51 s após o report B2",
-            "tone": "bad-text"
+            "tone": "bad-text",
+            "observation": "B2 até queda da chamada: 21,33–21,51 s · 3/3",
+            "evidence": "symptom"
           },
           {
             "label": "TAU Request",
             "value": "sem Classmark 2/3 e Codecs",
             "note": "SRVCC capability = 1",
-            "tone": "warn-text"
+            "tone": "warn-text",
+            "observation": "TAU Request: Classmark 2/3 e Supported Codecs ausentes",
+            "evidence": "mechanism"
           }
         ],
         "notice": "Log da repetição 01. Os tempos das repetições 02 e 03 vêm do documento do caso. O log é do UE: a sinalização entre nós da rede (S1AP, Sv, MSC, HSS) não aparece, então a decisão do MME de não preparar o SRVCC é inferida a partir do que o UE envia e recebe."
@@ -676,25 +796,33 @@
             "label": "Tempo de estabelecimento",
             "value": "1,88–2,05 s",
             "note": "3/3 · média 1,96 s",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "Discagem até estabelecimento: 1,88–2,05 s",
+            "evidence": "context"
           },
           {
             "label": "Célula escolhida após a falha",
             "value": "Zenith · 724/078",
             "note": "LTE PCI 220 · mesma operadora, mesmo site",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "LTE selecionada: Zenith 724/078 · PCI 220",
+            "evidence": "context"
           },
           {
             "label": "Domínio final",
             "value": "IMS (VoLTE) · Zenith",
             "note": "urn:service:sos · APN sos",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "Estabelecimento via IMS · VoLTE · APN sos",
+            "evidence": "context"
           },
           {
             "label": "Resposta da rede em 5G",
             "value": "5GMM cause 90",
             "note": "sem EPS Fallback · igual no DUT",
-            "tone": "warn-text"
+            "tone": "warn-text",
+            "observation": "DL NAS Transport: 5GMM cause 90 · sem redirecionamento",
+            "evidence": "context"
           }
         ],
         "notice": "Log com as três repetições do cenário 2. O CDUT mostra o comportamento esperado diante da mesma falha de rede: outra RAT da HPLMN antes de qualquer outra operadora."
@@ -713,25 +841,33 @@
             "label": "Tempo de estabelecimento",
             "value": "3,72–3,95 s",
             "note": "3/3 · média 3,82 s · CDUT 1,96 s",
-            "tone": "bad-text"
+            "tone": "bad-text",
+            "observation": "Discagem até estabelecimento: 3,72–3,95 s",
+            "evidence": "symptom"
           },
           {
             "label": "Célula escolhida após a falha",
             "value": "Aurora · 724/023",
             "note": "PCI 145 −80 dBm · Zenith PCI 220 −85 dBm disponível",
-            "tone": "bad-text"
+            "tone": "bad-text",
+            "observation": "LTE selecionada: Aurora PCI 145 (−80 dBm) · PCI 220 a −85 dBm",
+            "evidence": "mechanism"
           },
           {
             "label": "Domínio final",
             "value": "CS (2G) · Aurora",
             "note": "IMS da Aurora: 403 Emergency registration not permitted",
-            "tone": "warn-text"
+            "tone": "warn-text",
+            "observation": "Estabelecimento via CS · Aurora GERAN",
+            "evidence": "symptom"
           },
           {
             "label": "Resposta da rede em 5G",
             "value": "5GMM cause 90",
             "note": "sem EPS Fallback · igual no CDUT",
-            "tone": "warn-text"
+            "tone": "warn-text",
+            "observation": "DL NAS Transport: 5GMM cause 90 · sem redirecionamento",
+            "evidence": "context"
           }
         ],
         "notice": "Log com as três repetições do cenário 1; os tempos de todas batem com o documento do caso. O log do UE não mostra o core (N11 entre AMF e SMF, N2, interconexão IMS): a causa 90 e a falta de EPS Fallback ficam como hipóteses de rede em aberto. O desvio do Polaris é o que ele decide depois delas."
@@ -750,25 +886,33 @@
             "label": "Tempo de estabelecimento",
             "value": "1,55–1,60 s",
             "note": "3/3 · média 1,58 s",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "Discagem até estabelecimento: 1,55–1,60 s",
+            "evidence": "context"
           },
           {
             "label": "Rede usada",
             "value": "Zenith · 724/078",
             "note": "LTE PCI 220 · sem troca de RAT",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "LTE Zenith 724/078 · PCI 220",
+            "evidence": "context"
           },
           {
             "label": "Domínio final",
             "value": "IMS (VoLTE) · Zenith",
             "note": "urn:service:sos · APN sos",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "Estabelecimento via IMS · VoLTE · APN sos",
+            "evidence": "context"
           },
           {
             "label": "Custo de partir do 5G",
             "value": "+0,38 s",
             "note": "média 5G 1,96 s × 4G 1,58 s",
-            "tone": "accent-text"
+            "tone": "accent-text",
+            "observation": "Média em 5G SA: 1,96 s · média partindo de LTE: 1,58 s",
+            "evidence": "context"
           }
         ],
         "notice": "Log com as três repetições do cenário 4, no mesmo arquivo do cenário 2."
@@ -787,25 +931,33 @@
             "label": "Tempo de estabelecimento",
             "value": "1,62–1,70 s",
             "note": "3/3 · média 1,66 s · CDUT 1,58 s",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "Discagem até estabelecimento: 1,62–1,70 s",
+            "evidence": "context"
           },
           {
             "label": "Rede usada",
             "value": "Zenith · 724/078",
             "note": "LTE PCI 220 · sem troca de RAT",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "LTE Zenith 724/078 · PCI 220",
+            "evidence": "context"
           },
           {
             "label": "Domínio final",
             "value": "IMS (VoLTE) · Zenith",
             "note": "urn:service:sos · APN sos",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "Estabelecimento via IMS · VoLTE · APN sos",
+            "evidence": "context"
           },
           {
             "label": "Diferença para o CDUT",
             "value": "+0,04 a +0,15 s",
             "note": "por repetição · dentro da variação",
-            "tone": "accent-text"
+            "tone": "accent-text",
+            "observation": "Média em LTE: 1,66 s · Equinox: 1,58 s",
+            "evidence": "context"
           }
         ],
         "notice": "Log com as três repetições do cenário 3, no mesmo arquivo do cenário 1."
@@ -845,25 +997,33 @@
             "label": "Referência do teste (válidas)",
             "value": "DL 948,9 · UL 73,7 Mbps",
             "note": "médias das 11 iterações válidas · σ 20,7 / 1,7",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "iperf3 · it. 11: DL 952,4 Mbps · UL 74,0 Mbps",
+            "evidence": "context"
           },
           {
             "label": "DL · camadas MIMO",
             "value": "3,90 (RI 4)",
             "note": "UE Capability fourLayers · ri_Restriction 00001111",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "PDSCH: 3,90 camadas/TB · UE Capability: fourLayers",
+            "evidence": "context"
           },
           {
             "label": "UL · retransmissão MAC",
             "value": "10,1%",
             "note": "10 falhas de HARQ em 60 s · ReTx RLC 0,03%",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "UL MAC: ReTx 10,1% · falhas HARQ: 10 em 60 s",
+            "evidence": "context"
           },
           {
             "label": "Condição de RF (it. 11)",
             "value": "−79,0 dBm · 24,8 dB",
             "note": "Near-Cell · PCI 214 o tempo todo",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "PCI 214 · RSRP −79,0 dBm · SINR 24,8 dB",
+            "evidence": "context"
           }
         ],
         "desc": "Lumen · iperf3 UDP bidirecional de 60 s, lado a lado com o Vertex, na mesma célula Near-Cell · iteração 11 de 15",
@@ -882,25 +1042,33 @@
             "label": "Veredito do teste de KPI",
             "value": "FAIL · DL e UL",
             "note": "11 válidas · DL Δ −39,0% · UL Δ −49,9% e Δσ +262,8%",
-            "tone": "bad-text"
+            "tone": "bad-text",
+            "observation": "iperf3 · it. 11: DL 571,4 Mbps · UL 28,0 Mbps",
+            "evidence": "symptom"
           },
           {
             "label": "DL · camadas MIMO",
             "value": "2,00 (RI 2)",
             "note": "Lumen 3,90 · UE Capability twoLayers",
-            "tone": "bad-text"
+            "tone": "bad-text",
+            "observation": "UE Capability: twoLayers · gNB ri_Restriction: 00000011",
+            "evidence": "dl"
           },
           {
             "label": "UL · retransmissão MAC",
             "value": "51,2%",
             "note": "Lumen 10,1% · 5393 falhas de HARQ · ReTx RLC 45,9%",
-            "tone": "bad-text"
+            "tone": "bad-text",
+            "observation": "HARQ 13: grant RV 1 → PUSCH NEW_TX, RV 0 (#24492/#24494)",
+            "evidence": "ul"
           },
           {
             "label": "Condição de RF (it. 11)",
             "value": "−78,6 dBm · 24,4 dB",
             "note": "Near-Cell · PCI 214 · igual ao Lumen",
-            "tone": "good-text"
+            "tone": "good-text",
+            "observation": "PCI 214 · RSRP −78,6 dBm · SINR 24,4 dB",
+            "evidence": "context"
           }
         ],
         "desc": "Vertex · iperf3 UDP bidirecional de 60 s na célula Near-Cell PCI 214 · iteração 11 de 15, a de pior desempenho frente ao Lumen",

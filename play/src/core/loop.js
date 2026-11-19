@@ -165,7 +165,7 @@ function update(dt) {
   }
 
   // marcador
-  const tg = world.target, showMarker = tg && mode === "free";
+  const tg = world.target, showMarker = tg && (mode === "free" || mode === "drive");
   marker.visible = ring.visible = !!showMarker;
   if (showMarker) {
     marker.position.set(tg.x, 2.2 + Math.sin(G.elapsed * 3) * 0.15, tg.z); marker.rotation.y = G.elapsed * 2;

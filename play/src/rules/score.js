@@ -23,11 +23,22 @@ export function equipmentScore(required, neutral, selected) {
   return { pts: Math.max(0, PTS.equipment - missing.length * 10 - extra.length * 8), missing, extra };
 }
 
-/** Evidência escolhida na análise: métrica ruim vale tudo, de atenção vale metade. */
-export const evidencePoints = (tone) => (tone === "bad-text" ? PTS.evidence : tone === "warn-text" ? PTS.evidence / 2 : 0);
+/** Sintoma e mecanismo sustentam o veredito. Contexto ajuda a avaliar outras hipóteses. */
+export function evidencePoints(role) {
+  if (role === "context") return PTS.evidence / 2;
+  return ["symptom", "mechanism", "dl", "ul"].includes(role) ? PTS.evidence : 0;
+}
 
-/** Anexos do relatório: acertos menos erros, proporcional ao que deveria ser anexado. */
-export const attachPoints = (hit, wrong, expected) => Math.max(0, Math.round(PTS.attach * (hit - wrong) / Math.max(1, expected)));
+/** Avalia a bancada somente na revisão do relatório. */
+export function evaluateTest(scenario, submission) {
+  const truth = scenario.statusClass === "bad" ? "fail" : "pass";
+  const correct = submission.verdict === truth;
+  const points = (correct ? PTS.verdict : 0) + (truth === "fail" ? evidencePoints(scenario.metrics[submission.evidence]?.evidence) : 0);
+  return { ...submission, correct, points };
+}
+
+/** Cada papel solicitado vale a mesma fração da nota dos anexos. */
+export const attachPoints = (reviews) => Math.round(PTS.attach * reviews.filter(({ correct }) => correct).length / Math.max(1, reviews.length));
 
 /** Recompensa ao concluir: estrelas, moedas e o novo registro de progresso do desafio.
  *  1ª conclusão paga o total; repetições pagam a melhora sobre o recorde + 35% do total. */

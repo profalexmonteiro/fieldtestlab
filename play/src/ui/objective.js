@@ -7,6 +7,7 @@ import { stations } from "../world/lab.js";
 import { npc, player } from "../world/characters.js";
 import { setMode } from "../game/modes.js";
 import { mode, phase } from "../game/state.js";
+import { fieldStatus } from "../game/field.js";
 import { modeTypes, stationOf } from "../game/registry.js";
 import { on } from "../core/events.js";
 
@@ -17,7 +18,10 @@ const OBJECTIVES = {
   enter: () => ({ t: "Caminhe até o laboratório e entre pela porta.", target: new THREE.Vector3(0, 0, LAB.maxZ + 1.5) }),
   board: () => ({ t: "Fale com a supervisora Lia para receber um chamado.", target: npc.pos }),
   cabinet: () => ({ t: "Vá ao armário e pegue os materiais do teste.", target: stations.cabinet.pos }),
-  bench: () => ({ t: player.carrying ? "Leve os materiais até a bancada de testes." : "Continue os testes na bancada.", target: stations.bench.pos }),
+  bench: () => {
+    if (G.run.bench.placed && fieldStatus(G.run)?.next) return { t: "Entre no carro e registre os pontos marcados com M antes de capturar na bancada.", target: stations.car.pos };
+    return { t: player.carrying ? "Leve os materiais até a bancada de testes." : "Continue os testes na bancada.", target: stations.bench.pos };
+  },
   return: () => (player.carrying ? { t: "Devolva os materiais ao armário.", target: stations.cabinet.pos } : { t: "Recolha os materiais da bancada na caixa.", target: stations.bench.pos }),
   report: () => ({ t: "Vá ao desktop da estação de relatório e escreva o relatório.", target: stations.desk.pos })
 };
@@ -33,7 +37,7 @@ function refreshObjective() {
   const md = modeTypes[mode];
   const txt = (md && md.objective && md.objective()) || (mode === "rack" && world.rackText) || MODE_TEXT[mode] || o.t;
   $("#objective").innerHTML = `<small>Objetivo</small>${esc(txt)}${extra}`;
-  world.target = o.target;
+  world.target = md?.target ? md.target() : o.target;
 }
 function nearest() {
   let best = null, bd = 1.9;
@@ -56,6 +60,7 @@ function refreshPrompt(force) {
   if (key === lastPromptKey && !force) return;
   lastPromptKey = key; pr.innerHTML = html;
   const act = $("#pAct"), ex = $("#pExit");
+  $("#pMeasure")?.addEventListener("click", () => modeTypes[mode]?.measure?.());
   if (act) act.addEventListener("click", () => { const m = modeTypes[mode]; if (m && m.primary) m.primary(); else interact(nearest()); });
   if (ex) ex.addEventListener("click", () => { if (G.busy) return; const m = modeTypes[mode]; if (m && m.escape) m.escape(); else setMode("free"); });
 }

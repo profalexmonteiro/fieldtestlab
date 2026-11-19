@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { CHALLENGE_DATA, CONTENT } from "../src/data/index.js";
+import { evidenceTasks, reviewAttachments } from "../src/rules/evidence.js";
 import { LEVELS, PTS, attachPoints, equipmentScore, evidencePoints, levelOf, maxScore, runReward, unlocked } from "../src/rules/score.js";
 
 const CHALLENGES = CHALLENGE_DATA.map((c) => ({ ...c, game: CONTENT[c.id] }));
@@ -34,16 +35,23 @@ describe("armário", () => {
 });
 
 describe("análise e anexos", () => {
-  it("evidência: métrica ruim vale tudo, atenção metade, normal nada", () => {
-    expect(evidencePoints("bad-text")).toBe(PTS.evidence);
-    expect(evidencePoints("warn-text")).toBe(PTS.evidence / 2);
-    expect(evidencePoints("")).toBe(0);
+  it("pontua pelo papel técnico, sem usar a cor", () => {
+    expect(evidencePoints("symptom")).toBe(PTS.evidence);
+    expect(evidencePoints("mechanism")).toBe(PTS.evidence);
+    expect(evidencePoints("context")).toBe(PTS.evidence / 2);
+    expect(evidencePoints("bad-text")).toBe(0);
   });
-  it("anexos: acertos menos erros, proporcional ao esperado", () => {
-    expect(attachPoints(4, 0, 4)).toBe(PTS.attach);
-    expect(attachPoints(2, 0, 4)).toBe(PTS.attach / 2);
-    expect(attachPoints(1, 3, 4)).toBe(0);
-    expect(attachPoints(0, 0, 0)).toBe(0);
+  it("aceita RF da referência e exige mecanismos distintos no D7", () => {
+    const { scenarios } = CHALLENGES.find(({ id }) => id === "desafio-7");
+    const items = scenarios.flatMap(({ metrics }) => metrics);
+    const tasks = evidenceTasks(items);
+    expect(tasks).toEqual(["symptom", "context", "dl", "ul"]);
+    const choices = { symptom: 4, context: 3, dl: 5, ul: 6 };
+    const report = reviewAttachments(tasks, items, choices);
+    expect(report.every(({ correct }) => correct)).toBe(true);
+    expect(attachPoints(report)).toBe(PTS.attach);
+    expect(attachPoints(reviewAttachments(tasks, items, { ...choices, ul: 5 }))).toBe(38);
+    expect(attachPoints(reviewAttachments(tasks, items, {}))).toBe(0);
   });
 });
 

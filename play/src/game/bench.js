@@ -16,6 +16,8 @@ import { BENCH_OPS } from "../data/index.js";
 import { opsForScenario } from "../rules/benchOps.js";
 import { mode, phase, setPhase } from "./state.js";
 import { analysis } from "./analysis.js";
+import { captureLines } from "../rules/capture.js";
+import { fieldStatus } from "./field.js";
 import { registerMode, registerStation } from "./registry.js";
 
 // ======================================================================
@@ -36,6 +38,7 @@ function benchAction() {
   const b = G.run.bench;
   if (phase === "return") return b.packed ? null : { label: "Recolher os materiais na caixa", fn: packItems };
   if (!b.placed) return { label: "Colocar os materiais na mesa", fn: placeItems };
+  if (fieldStatus(G.run)?.next) return { label: "Sair para medir os pontos de campo", fn: () => setMode("free") };
   if (!b.configured) return { label: "Configurar o cenário no notebook", fn: configure };
   const s = currentScenario(); if (!s) return null;
   return [{ label: `Ligar o ${devName(s)} e inserir o SIM`, fn: powerOn }, { label: "Abrir o app FT Logger e iniciar a coleta", fn: startApp }, ...opsFor(s), { label: "Conectar o USB e capturar os logs", fn: capture }][b.sub];
@@ -209,10 +212,6 @@ async function plugCable(ph) {
   geo.setDrawRange(0, total); plug.position.copy(curve.getPoint(1));
   far.pose = "relax"; await moveHand(far, handRest(far === L ? "L" : "R"), 380);
 }
-function scenarioLines(s) {
-  return [{ t: `Iniciando captura · ${s.device}`, c: "#8fa3bf" }, { t: `RAT ${s.rat || "—"} · ${s.desc}`, c: "#8fa3bf" },
-    ...s.metrics.map((m) => ({ t: `${m.label}: ${m.value}${m.note ? " · " + m.note : ""}` })), { t: "Captura encerrada. Iniciando análise.", c: "#8fa3bf" }];
-}
 // passos específicos de cada desafio, entre iniciar a coleta e capturar o log (data/benchOps.json)
 function opsFor(s) {
   return opsForScenario(BENCH_OPS, G.run.ch.id, s.label).map((o) => ({ label: o.label, fn: () => phoneOp(o.title, o.lines, o.fx) }));
@@ -287,15 +286,18 @@ async function capture() {
     toast(`Sem cobertura de ${miss.map(cellName).join(", ")}. Configure no monitor do rack de um site (lá fora).`, "bad");
     return;
   }
+  const field = fieldStatus(G.run);
+  if (field?.next) {
+    toast("Registre " + field.next.label + " no carro antes de capturar.", "bad");
+    return;
+  }
   await plugCable(ph);
   nb.title = "FT Log Analyzer · " + devName(s);
   nb.lines = [{ t: `> USB conectado: ${s.device}`, c: "#4fd194" }];
   drawLog(nb, "capturando"); drawPhone(ph, "USB: transmitindo");
   await wait(400);
-  const lines = scenarioLines(s); let t0 = 0;
-  for (const l of lines) {
-    t0 += 0.2 + Math.random() * 0.9;
-    nb.lines.push({ t: `[${t0.toFixed(3).padStart(7, "0")}] ${l.t}`, c: l.c });
+  for (const line of captureLines(s)) {
+    nb.lines.push(line);
     ph.lines += 3 + Math.floor(Math.random() * 9); drawPhone(ph, "USB: transmitindo");
     drawLog(nb, "capturando"); await wait(360);
   }
@@ -304,7 +306,7 @@ async function capture() {
   const key = (h, dx) => wristForTip(h, new THREE.Vector3(nb.g.position.x + dx, world.benchTop + 0.03, nb.g.position.z - 0.01));
   rig.L.pose = rig.R.pose = "type";
   await Promise.all([moveHand(rig.L, key(rig.L, -0.1), 420), moveHand(rig.R, key(rig.R, 0.1), 420)]);
-  await analysis(s, nb);
+  await analysis(s, nb, field?.samples ?? []);
   setBenchView("bench"); await restHands(380);
   const far = sideHand(ph.g.position.x);                     // desconecta com a mão do lado do telefone
   if (bench.plug) { far.pose = "pinch"; await moveHand(far, wristForGrip(far, bench.plug.position), 340, 0.03); }

@@ -84,7 +84,8 @@
           "Média: só afeta uma operadora",
           "Sem issue: comportamento esperado"
         ],
-        "explain": "É sistemático (100%), afeta duas operadoras e o tempo de registro sobe de ~1 s para ~4,6 s."
+        "explain": "É sistemático (100%), afeta duas operadoras e o tempo de registro sobe de ~1 s para ~4,6 s.",
+        "field": "severity"
       }
     ],
     "title": "Cascata de rejeições NAS e registro 5G SA só na 3ª tentativa: Aurora após troca de perfil Vantis → Zenith"
@@ -175,7 +176,8 @@
           "Média: só em uma banda",
           "Sem issue"
         ],
-        "explain": "Perda de conexão sistemática na mobilidade, com recuperação lenta."
+        "explain": "Perda de conexão sistemática na mobilidade, com recuperação lenta.",
+        "field": "severity"
       }
     ],
     "title": "RLF por atraso no handover inter-frequência e acesso em célula inelegível: Meridian 5G SA"
@@ -265,7 +267,8 @@
           "Média: afeta só VoLTE",
           "Sem issue"
         ],
-        "explain": "Perda total do serviço de voz MT em 5G SA e chamadas VoLTE sem áudio utilizável."
+        "explain": "Perda total do serviço de voz MT em 5G SA e chamadas VoLTE sem áudio utilizável.",
+        "field": "severity"
       }
     ],
     "title": "Vanguard: registro IMS rejeitado após modo avião (nonce em cache) e voz VoLTE ininteligível por mismatch de PT 97 (EVS × AMR)"
@@ -357,7 +360,8 @@
           "Média: só em MT",
           "Sem issue"
         ],
-        "explain": "Toda chamada via EPSFB é lenta e toda chamada que atravessa o far-cell cai."
+        "explain": "Toda chamada via EPSFB é lenta e toda chamada que atravessa o far-cell cai.",
+        "field": "severity"
       }
     ],
     "title": "Polaris: CST ~8 s maior após EPS Fallback (EBI errado no accept) e queda no far-cell sem SRVCC (TAU sem Classmark 2/3)"
@@ -448,7 +452,8 @@
           "Média: só em 5G",
           "Sem issue"
         ],
-        "explain": "Afeta chamada de emergência de forma sistemática e fora da norma."
+        "explain": "Afeta chamada de emergência de forma sistemática e fora da norma.",
+        "field": "severity"
       }
     ],
     "title": "Polaris: após falha de emergência em 5G SA (cause 90), escolhe outra operadora pelo sinal e completa o 112 por CS em ~3,8 s"
@@ -541,6 +546,7 @@
         "explain": "Compare o mesmo HARQ ID entre DCI e PUSCH. A confirmação do mecanismo precisa de traces sincronizados do UE e do gNB."
       }
     ],
-    "title": "Vertex reprova em throughput DL e UL · limite de duas camadas em DL e retransmissões HARQ inconsistentes em UL"
+    "title": "Vertex reprova em throughput DL e UL · limite de duas camadas em DL e retransmissões HARQ inconsistentes em UL",
+    "impact": "Bloqueia a homologação de desempenho do Vertex. As sessões permaneceram ativas."
   }
 }

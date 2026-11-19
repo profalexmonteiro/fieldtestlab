@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { NETWORK } from "../src/data/index.js";
+import { measurePoint, validFieldSamples } from "../src/rules/field.js";
+import throughput from "../../data/desafio-7.json";
 import { bestCell, cellName, cellOn, missingCells, pciOf, rsrpAt, siteConfig, validSiteConfig } from "../src/rules/network.js";
 
 const { sites, bands, operators, requiredCells } = NETWORK;
@@ -52,6 +54,52 @@ describe("PCI e RSRP", () => {
   it("drive test perto do Site Delta: melhor célula NovaLink n41, PCI 145, −71 dBm", () => {
     const b = bestCell(sites, {}, bands, 6.4, -2.1);
     expect([b.site.id, b.op, b.band, b.pci, b.rsrp]).toEqual(["delta", "NovaLink", "n41", 145, -71]);
+  });
+});
+
+describe("pontos de campo", () => {
+  const { fieldPlans } = NETWORK;
+  const net = { sites, bands, overrides: {}, criteria: throughput.kpiTest.criteria };
+  const parkedAt = ({ x, z }) => ({ x, z, speed: 0 });
+
+  it("registra as duas leituras da rota do D3 e exige queda do RSRP da n78", () => {
+    const [start, edge] = fieldPlans["desafio-3"].points;
+    const first = measurePoint(start, parkedAt(start), net);
+    expect(first.cells.map(({ band }) => band)).toEqual(["n78", "n41"]);
+    expect(measurePoint(edge, parkedAt(edge), net)).toHaveProperty("error");
+    const second = measurePoint(edge, parkedAt(edge), net, first);
+    expect(first.cells[0].rsrp - second.cells[0].rsrp).toBeGreaterThanOrEqual(edge.minDrop);
+    expect(validFieldSamples(fieldPlans["desafio-3"], [first, second], net)).toBe(2);
+    expect(validFieldSamples(fieldPlans["desafio-3"], [first, second], {
+      ...net, overrides: { delta: [["NovaLink", "n78"], ["Nimbus", "n41"], ["Zenith", "n78"]] }
+    })).toBe(0);
+  });
+
+  it("distingue a região LTE do far-cell do D5 e bloqueia amostragem longe do marcador", () => {
+    const [start, edge] = fieldPlans["desafio-5"].points;
+    const first = measurePoint(start, parkedAt(start), net);
+    const second = measurePoint(edge, parkedAt(edge), net);
+    expect(first.cells[0].rsrp).toBeGreaterThan(first.cells[1].rsrp);
+    expect(second.cells[1].rsrp).toBeGreaterThan(second.cells[0].rsrp);
+    expect(measurePoint(edge, parkedAt(start), net)).toHaveProperty("error");
+    expect(validFieldSamples(fieldPlans["desafio-5"], [first, second], net)).toBe(2);
+  });
+
+  it("D7 exige parada, a RRU esperada e um par no PCI, frequência e RF do procedimento", () => {
+    const plan = fieldPlans["desafio-7"];
+    const [point] = plan.points;
+    const parked = parkedAt(point);
+    const pair = measurePoint(point, parked, net);
+    expect(pair.paired).toBe(true);
+    expect(pair.cells.map(({ pci, arfcn }) => [pci, arfcn])).toEqual([[214, 633312], [214, 633312]]);
+    expect(measurePoint(point, { ...parked, speed: 1 }, net)).toHaveProperty("error");
+    const otherRRU = { ...net, overrides: { delta: [["Zenith", "n78"], ["NovaLink", "n41"], ["NovaLink", "n78"]] } };
+    expect(measurePoint(point, parked, otherRRU).error).toContain("RRU 1");
+    expect(validFieldSamples(plan, [pair], otherRRU)).toBe(0);
+    const threshold = { ...net, criteria: { ...net.criteria, sinrMin: pair.cells[0].sinr } };
+    expect(measurePoint(point, parked, threshold)).toHaveProperty("error");
+    const tolerance = { ...net, criteria: { ...net.criteria, rfDelta: 0 } };
+    expect(measurePoint(point, { ...parked, x: 16, z: 5 }, tolerance).error).toContain("tolerância");
   });
 });
 

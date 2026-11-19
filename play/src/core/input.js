@@ -48,6 +48,7 @@ window.addEventListener("keydown", (e) => {
   keys[e.code] = true;
   if (mode !== "free" && mode !== "climb" && screenKey(e.code)) { e.preventDefault(); return; }
   if (e.code === "KeyE" || e.code === "Enter") { e.preventDefault(); const b = $("#prompt button:not(.sec):not([disabled])"); if (b) b.click(); }
+  if (e.code === "KeyM" && !e.repeat) modeTypes[mode]?.measure?.();
   if (e.code === "Space") { e.preventDefault(); if (!e.repeat) jump(); }
   if (e.code === "KeyT" && !e.repeat && (mode === "free" || mode === "climb" || mode === "drive")) skipTime();
   if (e.code === "Escape") escape();

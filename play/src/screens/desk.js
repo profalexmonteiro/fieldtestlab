@@ -6,11 +6,14 @@ import { world } from "../world/world.js";
 import { npc } from "../world/characters.js";
 import { rig } from "../rig/arms.js";
 import { clearBench } from "../world/benchProps.js";
-import { addScore, maxScore, mouseClick, restHands, setMode } from "../game/modes.js";
+import { maxScore, mouseClick, restHands, setMode } from "../game/modes.js";
 import { idleTV } from "../game/npc.js";
 import { quizScreen } from "./quiz.js";
 import { EQUIPMENT } from "../data/index.js";
-import { attachPoints, runReward } from "../rules/score.js";
+import { attachPoints, evaluateTest, runReward } from "../rules/score.js";
+import { reportSections } from "../rules/report.js";
+import { EVIDENCE, evidenceTasks, reviewAttachments } from "../rules/evidence.js";
+import { fieldLine } from "../rules/field.js";
 import { phase, setPhase } from "../game/state.js";
 import { registerMode, registerStation } from "../game/registry.js";
 import { emit } from "../core/events.js";
@@ -37,61 +40,126 @@ async function openDesk() {
   const g = G.run.ch.game, n = g.report.length + 1;
   for (let i = 0; i < g.report.length; i++) {
     const q = g.report[i];
-    await quizScreen(world.desk, q, { title: `Relatório de issue · Desafio ${pad2(G.run.ch.num)}`, right: `${i + 1}/${n}` },
-      (frac, right) => { addScore("report", Math.round(PTS.report * frac)); G.run.reportAnswers[i] = { q: q.q, answer: q.options[0], right }; }, mouseClick);
+    await quizScreen(world.desk, q, {
+      title: "Relatório de issue · Desafio " + pad2(G.run.ch.num), right: (i + 1) + "/" + n, deferFeedback: true
+    }, (_frac, right, answer) => { G.run.reportAnswers[i] = { answer, right }; }, mouseClick);
   }
-  await attachScreen(n);
+  const attachmentScore = await attachScreen(n);
+  G.run.score.report = G.run.reportAnswers.filter(({ right }) => right).length * PTS.report + attachmentScore;
   finalize();
 }
 function attachScreen(n) {
   return new Promise((resolve) => {
-    const proofs = [], decoys = [];
-    G.run.ch.scenarios.forEach((s) => s.metrics.forEach((m) => { const it = { ...m, where: s.label }; if (s.statusClass === "bad" && m.tone === "bad-text") proofs.push(it); else if (m.tone === "good-text" || m.tone === "accent-text") decoys.push(it); }));
-    const pick = shuffle(proofs).slice(0, 4), dec = shuffle(decoys).slice(0, 4);
-    const items = shuffle([...pick.map((m) => ({ ...m, proof: true })), ...dec.map((m) => ({ ...m, proof: false }))]);
-    const sel = new Set(); let done = false, msg = "";
-    const confirm = async () => {
-      if (done) return resolve();
-      await mouseClick(); done = true; let hit = 0, wrong = 0;
-      items.forEach((m, i) => { if (sel.has(i)) m.proof ? hit++ : wrong++; });
-      const pts = attachPoints(hit, wrong, pick.length);
-      G.run.attached = items.filter((m, i) => sel.has(i)); addScore("report", pts);
-      msg = `${hit}/${pick.length} provas anexadas${wrong ? ` · ${wrong} anexo(s) que não comprovam o defeito` : ""} · +${pts} pontos`;
-      paint(world.desk);
+    const items = shuffle(G.run.ch.scenarios.flatMap((scenario) => scenario.metrics.map(({ evidence, observation }) => ({
+      evidence, observation, where: scenario.label
+    }))));
+    const tasks = evidenceTasks(items);
+    const choices = {};
+    const pageSize = 6;
+    const pageCount = Math.ceil(items.length / pageSize);
+    let task = 0, page = 0, submitting = false;
+
+    const moveTask = async () => {
+      if (submitting) return;
+      if (task < tasks.length - 1) {
+        task++;
+        page = 0;
+        paint(world.desk);
+        return;
+      }
+      submitting = true;
+      await mouseClick();
+      G.run.attached = reviewAttachments(tasks, items, choices);
+      resolve(attachPoints(G.run.attached));
     };
+    const turnPage = (next) => { page = next; paint(world.desk); };
+
     setScreen(world.desk, (s) => {
-      const k = s.k, W = s.W;
-      UI.bg(s); UI.header(s, `Relatório de issue · Desafio ${pad2(G.run.ch.num)}`, `${n}/${n}`);
-      UI.text(s, "Anexe as medições que comprovam o defeito do DUT (métricas de contexto ou da referência não comprovam a falha).", 24 * k, 70 * k, { size: 21, weight: "bold", maxW: W - 48 * k, maxLines: 2 });
-      const bw = (W - 62 * k) / 2, bh = 96 * k;
-      items.forEach((m, i) => {
-        const bx = 24 * k + (i % 2) * (bw + 14 * k), by = 128 * k + Math.floor(i / 2) * (bh + 9 * k);
-        const kind = done ? (m.proof ? (sel.has(i) ? "ok" : "bad") : sel.has(i) ? "bad" : "dim") : sel.has(i) ? "sel" : "opt";
-        UI.btn(s, bx, by, bw, bh, `${m.where} · ${m.label}: ${m.value} (${m.note})`, () => { if (done) return; sel.has(i) ? sel.delete(i) : sel.add(i); mouseClick(); paint(world.desk); }, { kind, key: "Digit" + (i + 1), size: 18, maxLines: 3, disabled: done });
+      const { k, W, H } = s;
+      const role = tasks[task], prompt = EVIDENCE[role];
+      const selected = choices[role];
+      const start = page * pageSize;
+      UI.bg(s);
+      UI.header(s, "Evidências do relatório · " + prompt.label, n + "/" + n);
+      UI.text(s, prompt.question, 24 * k, 68 * k, { size: 23, weight: "bold", maxW: W - 48 * k });
+      UI.text(s, selected === undefined ? "Escolha uma observação ou prossiga para deixar este papel em aberto." :
+        "Selecionada: " + items[selected].where + " · " + items[selected].observation, 24 * k, 101 * k,
+        { size: 16, maxW: W - 48 * k, maxLines: 1, color: "#46566E" });
+      const bw = (W - 62 * k) / 2;
+      items.slice(start, start + pageSize).forEach((item, i) => {
+        const index = start + i;
+        const bx = 24 * k + (i % 2) * (bw + 14 * k), by = (139 + Math.floor(i / 2) * 88) * k;
+        UI.btn(s, bx, by, bw, 81 * k, item.where + " · " + item.observation, () => {
+          if (submitting) return;
+          if (choices[role] === index) delete choices[role];
+          else choices[role] = index;
+          paint(world.desk);
+        }, { kind: selected === index ? "sel" : "opt", key: "Digit" + (i + 1), size: 18, maxLines: 3 });
       });
-      if (msg) UI.text(s, msg, 24 * k, s.H - 70 * k, { size: 22, weight: "bold", color: "#15724a", maxW: W - 360 * k, maxLines: 2 });
-      else UI.text(s, `${sel.size} anexo(s) · clique para marcar ou teclas 1–8`, 24 * k, s.H - 64 * k, { size: 20, color: "#5F6E85" });
-      UI.btn(s, W - 320 * k, s.H - 86 * k, 296 * k, 66 * k, done ? "Gerar relatório →" : "Anexar evidências", confirm, { kind: "primary", center: true, size: 22 });
+
+      const pageY = H - 144 * k;
+      if (page > 0) UI.btn(s, 24 * k, pageY, 185 * k, 46 * k, "← Observações", () => turnPage(page - 1), { key: "ArrowLeft", size: 18 });
+      UI.text(s, "Página " + (page + 1) + "/" + pageCount, W / 2, pageY + 7 * k, { size: 18, align: "center" });
+      if (page + 1 < pageCount) UI.btn(s, W - 209 * k, pageY, 185 * k, 46 * k, "Observações →", () => turnPage(page + 1), { key: "ArrowRight", size: 18 });
+      if (task > 0) UI.btn(s, 24 * k, H - 81 * k, 202 * k, 60 * k, "← Papel anterior", () => {
+        if (submitting) return;
+        task--;
+        page = 0;
+        paint(world.desk);
+      }, { size: 19 });
+      UI.text(s, "Papel " + (task + 1) + "/" + tasks.length, W / 2, H - 63 * k, { size: 18, align: "center" });
+      UI.btn(s, W - 282 * k, H - 81 * k, 258 * k, 60 * k,
+        task === tasks.length - 1 ? "Entregar relatório →" : "Próximo papel →", moveTask, { kind: "primary", center: true, size: 21 });
     });
   });
 }
 
 function reportLines(c, date, lvTitle) {
   const g = c.game, L = [];
+  const { severity, impact, findings } = reportSections(g, G.run.reportAnswers);
   const H2 = (t) => L.push({ t, size: 25, weight: "bold", color: "#B54800", gap: 12 }), P = (t, o) => L.push({ t, size: 21, ...(o || {}) });
   L.push({ t: "Relatório de Issue · Teste de Campo", size: 32, weight: "bold" });
   P(`Desafio ${pad2(c.num)} · NovaLink Telecom / Site Delta · ${date}`, { color: "#46566E" });
-  H2("1. Identificação"); P("Título: " + g.title + "."); P("Severidade: " + g.report[g.report.length - 1].options[0] + "."); P(`Reportado por: ${save.name} · ${lvTitle}`);
+  H2("1. Identificação");
+  P("Título: " + g.title + ".");
+  if (severity) {
+    P("Severidade: " + severity.answer);
+    if (!severity.right) P("Severidade de referência: " + severity.expected);
+  }
+  if (impact) P("Impacto: " + impact);
+  P("Reportado por: " + save.name + " · " + lvTitle);
   H2("2. Aparelhos e bancada");
   P("DUT: " + [...new Set(c.scenarios.filter((s) => !isRef(s)).map(devName))].join(", ") + " · CDUT: " + [...new Set(c.scenarios.filter(isRef).map(devName))].join(", "));
   P("Materiais: " + G.run.eq.selected.map((k) => EQUIPMENT[k].name).join(", "));
   H2("3. Ambiente e cenário"); c.sideInfo.forEach((s) => P(`${s.label}: ${s.value}`)); G.run.setupLog.forEach((s) => P("• " + s));
+  if (G.run.fieldSamples.length) P("Medições de campo no mapa 3D usam estimativas de RF da simulação.");
   H2("4. Reprodutibilidade");
-  c.scenarios.forEach((s) => { const t = G.run.tests[s.id]; P(`${s.label} — caso: ${s.status} — seu veredito: ${t.verdict === "pass" ? "Aprovado" : "Falha"} ${t.correct ? "✔" : "✗"}`, { color: t.correct ? "#15724a" : "#c63b3b" }); });
-  H2("5. Análise"); G.run.reportAnswers.slice(0, -1).forEach((a) => { P(a.q, { weight: "bold" }); P(a.answer + (a.right ? "" : " (corrigido pelo revisor)")); });
+  c.scenarios.forEach((scenario) => {
+    const review = G.run.tests[scenario.id];
+    P(scenario.label + " · Referência: " + scenario.status + " · Seu veredito: " +
+      (review.verdict === "pass" ? "Aprovado" : "Falha") + (review.correct ? " ✔" : " ✗"),
+    { color: review.correct ? "#15724a" : "#c63b3b" });
+    const metric = scenario.metrics[review.evidence];
+    P("Observação escolhida (" + EVIDENCE[metric.evidence].label + "): " + metric.observation);
+    review.fieldSamples.forEach((sample) => P("Campo 3D · " + fieldLine(sample), { color: "#46566E" }));
+    if (scenario.notice) P(scenario.notice, { color: "#46566E" });
+  });
+  H2("5. Análise");
+  findings.forEach((answer) => {
+    P(answer.question, { weight: "bold" });
+    P("Sua resposta: " + answer.answer);
+    if (!answer.right) P("Resposta de referência: " + answer.expected);
+    P(answer.explanation, { color: "#46566E" });
+  });
   H2("6. Evidências anexas");
-  if (G.run.attached.length) G.run.attached.forEach((m) => P(`${m.where} · ${m.label}: ${m.value} (${m.note})${m.proof ? "" : " · não comprova o defeito"}`, { color: m.proof ? "#0A192F" : "#5F6E85" }));
-  else P("Nenhuma evidência anexada.", { color: "#c63b3b" });
+  for (const { role, item, correct } of G.run.attached) {
+    P(EVIDENCE[role].label, { weight: "bold" });
+    if (!item) P("Sem observação anexada.", { color: "#46566E" });
+    else {
+      P(item.where + " · " + item.observation);
+      if (!correct) P("Papel dessa observação: " + EVIDENCE[item.evidence].label, { color: "#B54800" });
+    }
+  }
   return L;
 }
 function reportHtml(lines) {
@@ -100,6 +168,11 @@ function reportHtml(lines) {
 }
 function finalize() {
   const c = G.run.ch;
+  for (const scenario of c.scenarios) {
+    const review = evaluateTest(scenario, G.run.tests[scenario.id]);
+    G.run.tests[scenario.id] = review;
+    G.run.score.tests += review.points;
+  }
   const total = G.run.score.setup + G.run.score.tests + G.run.score.report;
   const p = save.progress[c.id], first = !(p && p.completed);
   const { stars, coins, progress } = runReward(total, G.run.max, p);
