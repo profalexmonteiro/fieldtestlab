@@ -36,10 +36,11 @@ O objetivo é apoiar a análise investigativa dos desafios: comparar DUT × CDUT
   - **Acesso aleatório:** rampa de potência de cada Msg1 contra a potência máxima, pathloss, critério S da célula e a melhor célula que o próprio UE já tinha medido.
   - **Hipóteses e conclusão:** cada hipótese com suas evidências, que levam direto à linha do log; o aluno marca as que descarta, e a conclusão (mecanismo, limiar efetivo aparente e estatística com Fisher exato e IC 95 %) fica atrás do botão *Mostrar conclusão*.
 - **Corrida da mobilidade na cena.** Durante a reprodução, um anel em volta do UE mostra o T310 (ou o T304 no handover), e uma faixa abaixo da cena diz há quanto tempo o A5 está atendido sem report e quanto faltava do T310 quando o report saiu. Depois do RLF, a cena destaca a célula que o UE já tinha medido.
-- **Modo guiado.** Cada log dos Desafios 2 a 6 tem um roteiro de pontos-chave. A reprodução pode pausar em cada um, com uma explicação curta e navegação para o ponto anterior e o seguinte.
+- **Modo guiado.** Cada log dos Desafios 2 a 7 tem um roteiro de pontos-chave. A reprodução pode pausar em cada um, com uma explicação curta e navegação para o ponto anterior e o seguinte.
+- **Teste de KPI (Desafio 7).** Veredito calculado sobre as iterações válidas, simulação com todas as iterações e comparação DL/UL dos dois aparelhos. Os gráficos por segundo acompanham a reprodução dos logs.
 - **Resultado consolidado.** Métricas, faixas de tempo das repetições, evidências e avisos sobre os limites de cada fonte.
 - **Relatório de issue.** Segue a estrutura do template *Relatorio_Issue_G2.docx*, com exportação para PDF pela impressão do navegador.
-- **Glossário de siglas e códigos.** O botão **Glossário**, no topo, abre uma tabela com 145 termos (RRC, NAS, medição, RLM, RACH, IMS/SIP/SDP e codecs de voz, EPS Fallback, SRVCC e chamada de emergência, códigos 0xB9xx do log do modem, estatística), com busca que ignora acentos, filtro por categoria e opção de mostrar só os termos do desafio atual.
+- **Glossário de siglas e códigos.** O botão **Glossário**, no topo, abre uma tabela com termos (RRC, NAS, medição, RLM, RACH, IMS/SIP/SDP e codecs de voz, EPS Fallback, SRVCC e chamada de emergência, códigos do log do modem, estatística e throughput), com busca que ignora acentos, filtro por categoria e opção de mostrar só os termos do desafio atual.
 - **Português e inglês**, com troca de idioma sem recarregar a página.
 - **Tema claro e modo noturno**, com a escolha lembrada pelo navegador.
 - **Layout responsivo**, utilizável em celular.
@@ -111,6 +112,19 @@ O **Polaris** (DUT) leva quase o dobro do tempo do **Equinox** (CDUT) para compl
 
 Fontes: o caso e a apresentação da sessão 6 (não publicados) e os dois logs da pasta `Desafios/Desafio 6/`. Cada log traz dois cenários; o campo `logRange` recorta o cenário certo.
 
+### Desafio 7 — Throughput UDP bidirecional em 5G SA
+
+O **Vertex** (DUT) é comparado ao **Lumen** (CDUT) em Near-Cell, na n78 (PCI 214, NR-ARFCN 633312), com uma portadora de 100 MHz. Cada aparelho executa 15 iterações de 60 s com carga oferecida de 1.500 Mbps em DL e 300 Mbps em UL.
+
+| Cenário | Aparelho | Replay |
+|---|---|---|
+| 02 · Referência | Lumen | `Desafio_S07_Log_CDUT_Lumen.html` |
+| 01 · DUT | Vertex | `Desafio_S07_Log_DUT_Vertex.html` |
+
+O painel **Teste de KPI** valida os pares, calcula a média e o desvio padrão amostral e mostra a cadeia de KPIs para cada sentido. As iterações 3, 7, 9 e 12 são descartadas. Nas 11 válidas, o Vertex fica abaixo da referência em DL (−38,98%) e UL (−49,90%). O critério de estabilidade passa em DL e falha em UL.
+
+O FieldTest Quest em `play/` inclui o chamado do Desafio 7, com preparação da rede, etapas de bancada, avaliação dos dois aparelhos e exercício de diagnóstico.
+
 ## Como executar
 
 O simulador é um site estático, sem etapa de build e sem dependências. Ele usa módulos JavaScript e carrega os dados com `fetch`, por isso **precisa ser servido por HTTP**. Ao abrir o `index.html` com duplo clique (`file://`), o navegador bloqueia o carregamento dos dados; a página avisa quando isso acontece.
@@ -131,7 +145,7 @@ Para os alunos, o projeto também pode ser publicado sem alterações em qualque
 2. Em **Reprodução passo a passo**, clique em **▶ Reproduzir** ou use **Anterior / Próximo** para avançar evento a evento.
 3. Acompanhe a cena e os **KPIs em tempo real**. A página não se move sozinha durante a reprodução; só a lista de eventos acompanha a mensagem atual.
 4. Clique numa linha do log para pausar nela. Use **Ver decodificação completa** para ler todos os IEs da mensagem.
-5. Nos Desafios 2 a 6, ative o **Modo guiado** para a reprodução parar nos pontos-chave. No Desafio 3, use também o painel **Evidência de medição** para comparar o DUT com o CDUT. A conclusão só aparece quando o aluno clica em **Mostrar conclusão**.
+5. Nos Desafios 2 a 7, ative o **Modo guiado** para a reprodução parar nos pontos-chave. No Desafio 3, use também o painel **Evidência de medição** para comparar o DUT com o CDUT. A conclusão só aparece quando o aluno clica em **Mostrar conclusão**.
 6. Compare com o **Resultado consolidado**, as **Faixas de tempo** das repetições e as **Evidências** do cenário.
 7. Em **Fontes e entregáveis**, abra o log original, visualize o relatório de issue ou exporte-o em PDF.
 
@@ -169,6 +183,7 @@ Para os alunos, o projeto também pode ser publicado sem alterações em qualque
 │       ├── compare.js         Aba DUT × CDUT
 │       ├── rach.js            Aba de acesso aleatório
 │       ├── hypotheses.js      Aba de hipóteses, conclusão e estatística
+│       ├── kpitest.js         Veredito, comparação e gráficos do teste de throughput
 │       ├── modals.js          Log original e relatório de issue
 │       └── glossary.js        Glossário de siglas e códigos
 ├── data/
@@ -178,6 +193,7 @@ Para os alunos, o projeto também pode ser publicado sem alterações em qualque
 │   ├── desafio-4.json         Conteúdo do Desafio 4 (pt-BR, base)
 │   ├── desafio-5.json         Conteúdo do Desafio 5 (pt-BR, base)
 │   ├── desafio-6.json         Conteúdo do Desafio 6 (pt-BR, base)
+│   ├── desafio-7.json         Conteúdo do Desafio 7 (pt-BR, base)
 │   ├── glossario.json         Glossário: categorias e termos (pt-BR, base)
 │   ├── relatorios/            Relatórios de issue (pt-BR)
 │   └── i18n/en/               Traduções em inglês (somente textos)
@@ -186,7 +202,8 @@ Para os alunos, o projeto também pode ser publicado sem alterações em qualque
     ├── Desafio 3/             Logs do Desafio 3
     ├── Desafio 4/             Logs do Desafio 4
     ├── Desafio 5/             Logs e figuras do Desafio 5
-    └── Desafio 6/             Logs do Desafio 6
+    ├── Desafio 6/             Logs do Desafio 6
+    └── Desafio 7/             Logs do Desafio 7
 ```
 
 ## Arquitetura
@@ -225,6 +242,7 @@ data/*.json ──► data.js ──► store.js ◄── replay.js ◄── a
 | `report.title`, `report.template` | Título e arquivo do relatório de issue |
 | `scenarios` | Lista de cenários (tabela abaixo) |
 | `insights` | Opcional. Ativa o painel de evidência: camadas `serving`/`target` (`arfcn`, `pci`, `band`), `a5` (`measId`, `threshold1`, `threshold2`, `hysteresis`, `tttMs`, `apparentThreshold2`), `rlm` (`outOfSyncBler`, `t310Ms`), `gap` (`mgrpMs`, `mglMs`) e `pair` = `[id do DUT, id do CDUT]` |
+| `kpiTest` | Opcional. Identifica o DUT e o CDUT, a iteração analisada, os critérios e os resultados de aplicação e RF da campanha. Vetores das iterações seguem a ordem DUT/CDUT. |
 | `comparison` | Linhas da tabela DUT × CDUT do caso e `counts` de RLF (`{ "dut": [3, 3], "cdut": [0, 3] }`) para o teste de Fisher |
 | `hypotheses`, `conclusion` | Hipóteses com evidências (`links` para `{ scenario, idx }`), vereditos e a conclusão mostrada sob demanda |
 
@@ -263,6 +281,8 @@ Os logs são os arquivos HTML interativos do material. O simulador lê o bloco e
 
 Campos usados: `idx`, `ts`, `attempt` (opcional), `rat`, `protocol`, `channel`, `direction`, `msg`, `summary`, `cell` e `full`.
 
+Os logs do Desafio 7 também trazem `#kpi-data`, com `{ meta, rows }` e 60 linhas de contadores da iteração 11 por aparelho. A lista de 15 iterações vem da planilha do enunciado.
+
 ## Idiomas
 
 - **Interface:** os textos ficam em `js/i18n.js`, um bloco por idioma.
@@ -297,7 +317,13 @@ Os dados exibidos foram conferidos contra os documentos dos casos e os logs. Pon
 - **Desafio 5:** o documento cita dois arquivos de log (DUT e CDUT), mas o material traz um arquivo por cenário, cada um só com a repetição 01. Os tempos das repetições 02 e 03 vêm do documento.
 - **Desafio 6:** os tempos contam do evento "Emergency Dial" de cada repetição até o SIP 200 OK (IMS) ou o Connect (CS); as 12 repetições dos logs batem com o documento. O documento cita os logs com o sufixo "vf", mas os arquivos do material não o têm.
 
+- **Desafio 7:** os logs cobrem somente a iteração 11, além do registro na rede. O replay usa o início do iperf3 como T 0. A aplicação mede 60 s, e o evento final está em T +60,60 s. As quatro janelas de trace são amostras da sessão. Os gráficos e KPIs agregados usam os contadores por segundo do log.
+
 Essas observações também aparecem nos avisos dos cenários e nos relatórios.
+
+## Verificação local
+
+Com Node.js 22 ou superior, execute `node --test tests/desafio-7.test.mjs` na raiz. Para testar o jogo, execute `npm test` dentro de `play/`.
 
 ## Compatibilidade
 

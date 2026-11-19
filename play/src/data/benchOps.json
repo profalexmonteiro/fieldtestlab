@@ -27,6 +27,10 @@
     "desafio-6": [
       { "use": "lteLock", "when": "4G" },
       { "label": "Discar 112 (teste autorizado)", "title": "Emergência", "lines": ["Discando 112…", "Chamada de emergência em curso"], "fx": "sos" }
+    ],
+    "desafio-7": [
+      {"label": "Conferir célula e RF de teste", "title": "5G SA · Near-Cell", "lines": ["NovaLink n78 · PCI 214 · 100 MHz", "SS-RSRP > −85 dBm · SS-SINR > 10 dB"], "fx": "settings"},
+      {"label": "Iniciar iperf3 UDP bidirecional (iteração 11)", "title": "iperf3 · 60 s", "lines": ["DL oferecido: 1.500 Mbps", "UL oferecido: 300 Mbps", "Captura do modem em andamento"], "fx": "data"}
     ]
   }
 }

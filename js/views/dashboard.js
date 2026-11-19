@@ -105,11 +105,18 @@ function cardItems(event, index, total, challenge, scenario) {
   const cellNote = cellDetail || event?.cell
     || t(isCase ? "kpi.cellNoneCase" : event ? "kpi.cellNoneLog" : "kpi.cellWaiting");
   const cellTitle = identityPanel ? "kpi.cellIdentity" : plmnPanel ? "kpi.cellPlmn" : "kpi.cellMeasurement";
+  // `cellPanel: "throughput"`: the latest iperf3 sample, with the radio snapshot as note.
+  const cellCard = challenge.cellPanel === "throughput"
+    ? [t("kpi.cellThroughput"),
+      a?.throughput ? t("kpi.throughputValue", a.throughput) : "—",
+      a?.radio ? t("kpi.radioNote", a.radio) : t(event ? "kpi.throughputWaiting" : "kpi.cellWaiting"),
+      "accent-text"]
+    : [t(cellTitle), cellValue, cellNote, identityMismatch || awayFromHome ? "bad-text" : "accent-text"];
 
   return [
     [t("kpi.procedure"), procedure, procedureNote, a?.tone || ""],
     [t("kpi.sequence"), sequenceValue, sequenceNote, a?.attempt && a.attemptMax > 1 ? "warn-text" : ""],
-    [t(cellTitle), cellValue, cellNote, identityMismatch || awayFromHome ? "bad-text" : "accent-text"],
+    cellCard,
     timeItem(event, scenario)
   ];
 }

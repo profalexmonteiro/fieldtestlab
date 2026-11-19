@@ -1,0 +1,66 @@
+<!-- Fragmento do relatório. {{data}} é substituído pela data de geração. -->
+<h1>Relatório de Issue — Teste de Campo</h1>
+<div class="report-meta">Desafio 7 · S07 · Throughput UDP em 5G SA · Gerado em {{data}}</div>
+
+<h2>1. Identificação</h2>
+<p><strong>Título.</strong> Vertex reprova no teste de throughput de portadora única em downlink e uplink. As médias ficaram 38,98% e 49,90% abaixo da referência, respectivamente.</p>
+<p><strong>Impacto.</strong> Bloqueia a homologação de desempenho da unidade de pré-série. O uplink também reprova em estabilidade. As sessões permaneceram ativas.</p>
+
+<h2>2. Configuração dos aparelhos</h2>
+<p>Vertex (DUT, pré-série) e Lumen (CDUT, homologado). As versões de software e modem não foram informadas. A captura é da porta de diagnóstico dos aparelhos e reúne RRC, NAS, L1/MAC e eventos da aplicação.</p>
+
+<h2>3. Ambiente e cenário de teste</h2>
+<p>NovaLink Telecom (PLMN 724/088), 5G SA n78, PCI 214, NR-ARFCN 633312, 100 MHz, SCS 30 kHz e TDD DDDSUUDDDD. Portadora única, sem CA ou NR-DC. Ambos usam uma camada no UL. O ponto de teste é Near-Cell, com visada e aparelhos parados. A célula vizinha PCI 217 opera na mesma frequência.</p>
+
+<h2>4. Passos para reproduzir</h2>
+<ol>
+  <li>No mesmo ponto e usando o mesmo servidor da operadora, executar 15 iterações de 60 s por aparelho. Alternar a ordem a cada par, começando pelo Lumen nas iterações ímpares.</li>
+  <li>Oferecer simultaneamente 1.500 Mbps em DL e 300 Mbps em UL via iperf3 UDP, com datagramas de 1.400 B.</li>
+  <li>Reter apenas pares na célula de teste durante toda a sessão, com SS-RSRP &gt; −85 dBm, SS-SINR &gt; 10 dB, diferenças de até 3 dB nas duas medições e sem handover, RLF ou queda. São necessários pelo menos 10 pares válidos.</li>
+  <li>Calcular a média e o desvio padrão amostral por aparelho e direção. Usar o CDUT como denominador dos deltas. Os módulos dos deltas devem ficar abaixo de 10% para a média e de 20% para o desvio padrão, em ambos os sentidos.</li>
+</ol>
+
+<h2>5. Validação, reprodutibilidade e veredito</h2>
+<table><thead><tr><th>Iteração descartada</th><th>Evidência</th></tr></thead><tbody>
+  <tr><td>3</td><td>Vertex na PCI 217 e Lumen na 214. Diferenças de 7,2 dB em RSRP e 6,0 dB em SINR.</td></tr>
+  <tr><td>7</td><td>Lumen mudou de célula e passou 55% do tempo na PCI 217.</td></tr>
+  <tr><td>9</td><td>Vertex a −97,3 dBm. Diferenças de 17,3 dB em RSRP e 14,0 dB em SINR.</td></tr>
+  <tr><td>12</td><td>Lumen a −96,2 dBm. Diferenças de 17,2 dB em RSRP e 13,4 dB em SINR.</td></tr>
+</tbody></table>
+<p>Retidas as iterações 1, 2, 4, 5, 6, 8, 10, 11, 13, 14 e 15. O Vertex ficou abaixo do Lumen nas 11 válidas, nos dois sentidos. O caso registra ausência de RLF e de queda de sessão ao longo da campanha.</p>
+<table><thead><tr><th>Métrica (11 pares válidos)</th><th>Downlink</th><th>Uplink</th></tr></thead><tbody>
+  <tr><th scope="row">Média DUT / CDUT (Mbps)</th><td>579,05 / 948,94</td><td>36,93 / 73,71</td></tr>
+  <tr><th scope="row">Δ média · critério (a)</th><td>−38,98% · FAIL</td><td>−49,90% · FAIL</td></tr>
+  <tr><th scope="row">Desvio padrão DUT / CDUT (Mbps)</th><td>17,20 / 20,68</td><td>6,20 / 1,71</td></tr>
+  <tr><th scope="row">Δ desvio padrão · critério (b)</th><td>−16,84% · PASS</td><td>+262,79% · FAIL</td></tr>
+  <tr><th scope="row">Veredito por sentido</th><td>FAIL</td><td>FAIL</td></tr>
+</tbody></table>
+<p><strong>Veredito geral.</strong> FAIL. Com as 15 iterações, os deltas de média seriam −37,37% (DL) e −47,27% (UL). O critério de estabilidade inverteria nos dois sentidos: DL cairia para FAIL (−48,22%) e UL apareceria como PASS (−18,98%).</p>
+
+<h2>6. Sintoma observado na iteração 11</h2>
+<p>Os dois aparelhos ficaram na PCI 214, sob RF comparável (Vertex −78,6 dBm e 24,4 dB, Lumen −79,0 dBm e 24,8 dB). O Vertex entregou 571,4 / 28,0 Mbps em DL / UL, ante 952,4 / 74,0 Mbps do Lumen. A carga oferecida excedia a capacidade medida. A perda UDP deve ser interpretada junto com a taxa entregue.</p>
+
+<h2>7. Comparativo de KPIs da iteração 11</h2>
+<table><thead><tr><th>Métrica</th><th>Vertex (DUT)</th><th>Lumen (CDUT)</th></tr></thead><tbody>
+  <tr><th scope="row">DL · escalonamento / PRBs / MCS</th><td>98,6% / 272 / 21,23</td><td>98,7% / 272 / 20,08</td></tr>
+  <tr><th scope="row">DL · camadas / TBS inicial / BLER inicial</th><td>2,00 / 51.642 B / 7,60%</td><td>3,90 / 87.142 B / 8,76%</td></tr>
+  <tr><th scope="row">DL · taxa reconhecida no MAC</th><td>598,3 Mbps</td><td>997,3 Mbps</td></tr>
+  <tr><th scope="row">UL · escalonamento / PRBs / MCS</th><td>98,2% / 250 / 18,95</td><td>96,6% / 250 / 19,68</td></tr>
+  <tr><th scope="row">UL · TBS novo / grants com dados novos</th><td>18.632 B / 48,8%</td><td>18.595 B / 89,9%</td></tr>
+  <tr><th scope="row">UL · ReTx MAC / falhas HARQ em 60 s</th><td>51,20% / 5.393</td><td>10,09% / 10</td></tr>
+  <tr><th scope="row">UL · taxa reconhecida no MAC</th><td>29,4 Mbps</td><td>77,5 Mbps</td></tr>
+</tbody></table>
+<p><strong>DL.</strong> As taxas de TBs iniciais e as frações de bytes reconhecidos são quase iguais. A razão de camadas (0,51×) domina a diferença. O TBS por camada (1,16×) recupera parte da perda, resultando em 0,60× da taxa MAC do Lumen.</p>
+<p><strong>UL.</strong> A taxa de grants é ligeiramente maior no Vertex e o TBS novo é comparável. As razões de grants com dado novo (0,54×) e de bytes reconhecidos por byte novo (0,69×) reduzem a taxa MAC a 0,38× da referência.</p>
+
+<h2>8. Evidências e origem dos campos</h2>
+<ul>
+  <li><strong>DL.</strong> Em <code>ueCapabilityInformation</code> (Vertex #21168, Lumen #21226), o UE anuncia <code>maxNumberMIMO-LayersPDSCH</code> como <code>twoLayers</code> ou <code>fourLayers</code>. O gNB configura, em <code>rrcReconfiguration</code> (#21181 / #21237), <code>typeI-SinglePanel-ri-Restriction</code> como <code>00000011</code> ou <code>00001111</code>. Compare o RI em <code>0xB8A7</code> (#24488 / #24976, índice = rank − 1) e <code>Layers</code> em <code>0xB887</code> (#24484 / #24972).</li>
+  <li><strong>UL.</strong> Compare grants <code>DCI 0_1</code> em <code>0xB885</code> (Vertex #24492, Lumen #25044) e transmissões em <code>0xB883</code> (#24494 / #25048). Correlacione o mesmo processo HARQ, a ordem dos slots e <code>NDI</code>/<code>RV</code> do grant com <code>tx_type</code>, <code>l2_new_tb</code> e <code>rv_index</code> do PUSCH. No Vertex há grants de retransmissão seguidos de <code>NEW_TX</code> com RV 0. O gNB concede o grant e o UE seleciona o TB que transmite.</li>
+  <li><strong>Controles e fontes.</strong> Os registros <code>0xB872</code> e <code>0xB884</code> do Vertex (#24526 / #24570) permitem conferir buffer e potência. Os totais de MAC/RLC constam em #29934 / #30479. Os arquivos <code>Desafio_S07_Log_DUT_Vertex.html</code> e <code>Desafio_S07_Log_CDUT_Lumen.html</code> registram apenas a iteração 11. A planilha do enunciado cobre a campanha inteira.</li>
+</ul>
+
+<h2>9. Diagnóstico e confirmação</h2>
+<p><strong>DL.</strong> A evidência aponta para o limite de duas camadas anunciado pelo Vertex. RF, recursos e BLER enfraquecem a hipótese de uma limitação de cobertura ou de escalonamento. O log não distingue a origem do limite entre perfil de capacidades, software e disponibilidade de cadeias RX. Conferir o perfil habilitado e as cadeias RX da unidade, repetir sob RF controlado e verificar se a configuração anuncia e usa quatro camadas, quando suportadas pelo hardware.</p>
+<p><strong>UL.</strong> A evidência aponta para tratamento inconsistente de retransmissões na entidade HARQ do Vertex. Recursos, MCS, buffer e potência observados enfraquecem as hipóteses de falta de grants, dados ou potência. Em ambiente controlado, sincronizar traces do UE e do gNB por slot e HARQ ID, verificar os estados de NDI/RV e a combinação dos TBs no receptor, e repetir com a correção de modem. Sem os registros do gNB, a contribuição do receptor e o gatilho interno exato permanecem em aberto.</p>
+<p class="caution"><strong>Por que a sessão continua.</strong> O DL mantém a recepção e opera com duas camadas. No UL, o problema atinge parte dos TBs de dados e reduz a entrega útil. Os logs mostram o enlace de controle e a sessão ainda ativos, sem declaração de RLF.</p>

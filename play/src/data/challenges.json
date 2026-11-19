@@ -811,5 +811,101 @@
         "notice": "Log com as três repetições do cenário 3, no mesmo arquivo do cenário 1."
       }
     ]
+  },
+  {
+    "id": "desafio-7",
+    "title": "Teste de KPI de throughput UDP em 5G SA (portadora única)",
+    "description": "Valide as 15 iterações do teste de KPI, calcule média, desvio padrão e deltas e emita o veredito do Vertex em DL e em UL. Depois, use os KPIs e os traces L1/MAC da iteração 11 para explicar por que os dois sentidos reprovam, cada um por uma causa diferente.",
+    "sideInfo": [
+      {
+        "label": "Rede",
+        "value": "NovaLink · 724/088 · n78 PCI 214 · NR-ARFCN 633312"
+      },
+      {
+        "label": "Portadora",
+        "value": "100 MHz · SCS 30 kHz · TDD DDDSUUDDDD · sem CA/NR-DC"
+      },
+      {
+        "label": "Teste",
+        "value": "iperf3 UDP · DL 1500 + UL 300 Mbps · 15 × 60 s"
+      }
+    ],
+    "num": 7,
+    "scenarios": [
+      {
+        "id": "cdut-lumen",
+        "label": "Lumen · iteração 11",
+        "title": "Referência: rank 4 no DL e HARQ de UL saudável",
+        "status": "Referência · DL 952,4 · UL 74,0 Mbps",
+        "statusClass": "good",
+        "device": "Lumen / CDUT",
+        "rat": "NR SA · n78 · portadora única",
+        "metrics": [
+          {
+            "label": "Referência do teste (válidas)",
+            "value": "DL 948,9 · UL 73,7 Mbps",
+            "note": "médias das 11 iterações válidas · σ 20,7 / 1,7",
+            "tone": "good-text"
+          },
+          {
+            "label": "DL · camadas MIMO",
+            "value": "3,90 (RI 4)",
+            "note": "UE Capability fourLayers · ri_Restriction 00001111",
+            "tone": "good-text"
+          },
+          {
+            "label": "UL · retransmissão MAC",
+            "value": "10,1%",
+            "note": "10 falhas de HARQ em 60 s · ReTx RLC 0,03%",
+            "tone": "good-text"
+          },
+          {
+            "label": "Condição de RF (it. 11)",
+            "value": "−79,0 dBm · 24,8 dB",
+            "note": "Near-Cell · PCI 214 o tempo todo",
+            "tone": "good-text"
+          }
+        ],
+        "desc": "Lumen · iperf3 UDP bidirecional de 60 s, lado a lado com o Vertex, na mesma célula Near-Cell · iteração 11 de 15",
+        "notice": "Leitura da iteração 11. Use o simulador web para conferir os valores da campanha e os traces dos dois aparelhos."
+      },
+      {
+        "id": "dut-vertex",
+        "label": "Vertex · iteração 11",
+        "title": "FAIL em DL e UL, por duas causas diferentes",
+        "status": "FAIL · DL −39,0% · UL −49,9%",
+        "statusClass": "bad",
+        "device": "Vertex / DUT",
+        "rat": "NR SA · n78 · portadora única",
+        "metrics": [
+          {
+            "label": "Veredito do teste de KPI",
+            "value": "FAIL · DL e UL",
+            "note": "11 válidas · DL Δ −39,0% · UL Δ −49,9% e Δσ +262,8%",
+            "tone": "bad-text"
+          },
+          {
+            "label": "DL · camadas MIMO",
+            "value": "2,00 (RI 2)",
+            "note": "Lumen 3,90 · UE Capability twoLayers",
+            "tone": "bad-text"
+          },
+          {
+            "label": "UL · retransmissão MAC",
+            "value": "51,2%",
+            "note": "Lumen 10,1% · 5393 falhas de HARQ · ReTx RLC 45,9%",
+            "tone": "bad-text"
+          },
+          {
+            "label": "Condição de RF (it. 11)",
+            "value": "−78,6 dBm · 24,4 dB",
+            "note": "Near-Cell · PCI 214 · igual ao Lumen",
+            "tone": "good-text"
+          }
+        ],
+        "desc": "Vertex · iperf3 UDP bidirecional de 60 s na célula Near-Cell PCI 214 · iteração 11 de 15, a de pior desempenho frente ao Lumen",
+        "notice": "Leitura da iteração 11. Use o simulador web para conferir os valores da campanha e os traces dos dois aparelhos."
+      }
+    ]
   }
 ]

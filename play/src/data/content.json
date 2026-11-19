@@ -452,5 +452,95 @@
       }
     ],
     "title": "Polaris: após falha de emergência em 5G SA (cause 90), escolhe outra operadora pelo sinal e completa o 112 por CS em ~3,8 s"
+  },
+  "desafio-7": {
+    "short": "Throughput 5G SA",
+    "icon": "📶",
+    "brief": "Homologue o Vertex comparando 15 pares de iterações com o Lumen. Valide a amostra e investigue as taxas de DL e UL.",
+    "equipment": {
+      "required": [
+        "modemlog",
+        "cdut"
+      ],
+      "neutral": [
+        "gps",
+        "spectrum"
+      ]
+    },
+    "setup": [
+      {
+        "q": "Qual é a configuração do teste?",
+        "options": [
+          "NovaLink n78 · PCI 214 · 100 MHz · portadora única",
+          "NovaLink n41 com agregação",
+          "Zenith LTE B3 · PCI 220",
+          "NovaLink n78 com NR-DC"
+        ],
+        "explain": "A campanha usa n78 em 5G SA, NR-ARFCN 633312, sem CA nem NR-DC."
+      },
+      {
+        "q": "Como executar as 15 iterações por aparelho?",
+        "options": [
+          "60 s de UDP em DL e UL simultâneos, alternando a ordem",
+          "60 s de TCP só em DL, sempre com o DUT primeiro",
+          "Uma sessão de 15 min em cada aparelho",
+          "15 s de UDP só em UL, sempre com o CDUT primeiro"
+        ],
+        "explain": "Cada par usa o mesmo servidor e ponto de teste, com 1.500 Mbps de carga em DL e 300 Mbps em UL."
+      },
+      {
+        "q": "Quando um par entra no cálculo?",
+        "options": [
+          "Mesma célula de teste, RF Near-Cell similar e sessão contínua",
+          "Quando o DUT tem maior RSRP",
+          "Quando os aparelhos estão em células vizinhas",
+          "Quando o par fica acima da média de throughput"
+        ],
+        "explain": "Exija SS-RSRP > −85 dBm, SS-SINR > 10 dB e diferenças de até 3 dB. São necessários 10 pares válidos."
+      }
+    ],
+    "report": [
+      {
+        "q": "Quais iterações devem sair do cálculo?",
+        "options": [
+          "3, 7, 9 e 12",
+          "Apenas 7 e 11",
+          "1, 6, 10 e 15",
+          "Nenhuma"
+        ],
+        "explain": "As iterações 3 e 7 têm divergência de célula. Nas iterações 9 e 12 um aparelho fica abaixo do limite de RSRP."
+      },
+      {
+        "q": "Qual é o veredito sobre os 11 pares válidos?",
+        "options": [
+          "DL e UL falham na média. O UL também falha na estabilidade.",
+          "Apenas o DL falha na média.",
+          "Apenas o UL falha na estabilidade.",
+          "Os dois sentidos passam."
+        ],
+        "explain": "As médias caem 38,98% em DL e 49,90% em UL. O desvio padrão do UL cresce 262,79%."
+      },
+      {
+        "q": "Que evidência explica o DL baixo do Vertex?",
+        "options": [
+          "O UE anuncia twoLayers e a rede limita o rank a 2.",
+          "A rede oferece menos largura de banda ao Vertex.",
+          "O UE mede um SINR muito menor.",
+          "O Vertex recebe menos PRBs por slot."
+        ],
+        "explain": "UE Capability, a restrição de rank do gNB, os relatórios CSI e as camadas do PDSCH sustentam a limitação."
+      },
+      {
+        "q": "Qual desvio aparece na transmissão de UL?",
+        "options": [
+          "O UE envia NEW_TX após grants que pedem retransmissão.",
+          "O gNB deixa de emitir grants de UL.",
+          "O buffer do Vertex fica vazio durante toda a iteração.",
+          "O Vertex troca para NR-DC."
+        ],
+        "explain": "Compare o mesmo HARQ ID entre DCI e PUSCH. A confirmação do mecanismo precisa de traces sincronizados do UE e do gNB."
+      }
+    ],
+    "title": "Vertex reprova em throughput DL e UL · limite de duas camadas em DL e retransmissões HARQ inconsistentes em UL"
   }
 }

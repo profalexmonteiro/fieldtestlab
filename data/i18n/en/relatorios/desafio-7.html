@@ -1,0 +1,66 @@
+<!-- Report fragment. {{data}} is replaced with the generation date. -->
+<h1>Issue Report — Field Test</h1>
+<div class="report-meta">Challenge 7 · S07 · 5G SA UDP throughput · Generated on {{data}}</div>
+
+<h2>1. Identification</h2>
+<p><strong>Title.</strong> Vertex fails the single-carrier throughput test in downlink and uplink. Its means are 38.98% and 49.90% below the reference, respectively.</p>
+<p><strong>Impact.</strong> This blocks performance approval for the pre-production unit. Uplink also fails the stability criterion. Sessions remained active.</p>
+
+<h2>2. Device configuration</h2>
+<p>Vertex (DUT, pre-production) and Lumen (CDUT, approved). Software and modem versions are unspecified. The devices' diagnostic ports capture RRC, NAS, L1/MAC and application events.</p>
+
+<h2>3. Test environment and scenario</h2>
+<p>NovaLink Telecom (PLMN 724/088), 5G SA n78, PCI 214, NR-ARFCN 633312, 100 MHz, 30 kHz SCS and TDD DDDSUUDDDD. Single carrier with no CA or NR-DC. Both devices use single-layer uplink. Devices are stationary and in line of sight at a near-cell test point. Neighbor PCI 217 is on the same frequency.</p>
+
+<h2>4. Steps to reproduce</h2>
+<ol>
+  <li>Use the same test point and operator server for 15 runs of 60 s per device. Alternate device order for each pair, running Lumen first on odd iterations.</li>
+  <li>Offer 1,500 Mbps DL and 300 Mbps UL concurrently over iperf3 UDP using 1,400-byte datagrams.</li>
+  <li>Retain pairs that stayed on the test cell for the whole run, with SS-RSRP &gt; −85 dBm, SS-SINR &gt; 10 dB, device differences of at most 3 dB for both measurements, and no handover, RLF or session drop. At least 10 valid pairs are required.</li>
+  <li>Compute the mean and sample standard deviation for each device and direction, using the CDUT as the denominator for deltas. The absolute deltas must be below 10% for the mean and below 20% for standard deviation in both directions.</li>
+</ol>
+
+<h2>5. Validation, reproducibility and verdict</h2>
+<table><thead><tr><th>Discarded iteration</th><th>Evidence</th></tr></thead><tbody>
+  <tr><td>3</td><td>Vertex on PCI 217 and Lumen on PCI 214. RSRP and SINR differ by 7.2 and 6.0 dB.</td></tr>
+  <tr><td>7</td><td>Lumen changed cell and spent 55% of the run on PCI 217.</td></tr>
+  <tr><td>9</td><td>Vertex at −97.3 dBm. RSRP and SINR differ by 17.3 and 14.0 dB.</td></tr>
+  <tr><td>12</td><td>Lumen at −96.2 dBm. RSRP and SINR differ by 17.2 and 13.4 dB.</td></tr>
+</tbody></table>
+<p>Iterations 1, 2, 4, 5, 6, 8, 10, 11, 13, 14 and 15 were retained. Vertex was below Lumen in both directions across all 11 valid pairs. The case reports no RLF or session drop during the campaign.</p>
+<table><thead><tr><th>Metric (11 valid pairs)</th><th>Downlink</th><th>Uplink</th></tr></thead><tbody>
+  <tr><th scope="row">DUT / CDUT mean (Mbps)</th><td>579.05 / 948.94</td><td>36.93 / 73.71</td></tr>
+  <tr><th scope="row">Mean delta · criterion (a)</th><td>−38.98% · FAIL</td><td>−49.90% · FAIL</td></tr>
+  <tr><th scope="row">DUT / CDUT standard deviation (Mbps)</th><td>17.20 / 20.68</td><td>6.20 / 1.71</td></tr>
+  <tr><th scope="row">Standard deviation delta · criterion (b)</th><td>−16.84% · PASS</td><td>+262.79% · FAIL</td></tr>
+  <tr><th scope="row">Verdict by direction</th><td>FAIL</td><td>FAIL</td></tr>
+</tbody></table>
+<p><strong>Overall verdict.</strong> FAIL. Across all 15 iterations, mean deltas would be −37.37% (DL) and −47.27% (UL). Stability results would flip in both directions: DL would fail (−48.22%) and UL would appear to pass (−18.98%).</p>
+
+<h2>6. Symptoms in iteration 11</h2>
+<p>Both devices stayed on PCI 214 under comparable RF conditions (Vertex −78.6 dBm and 24.4 dB, Lumen −79.0 dBm and 24.8 dB). Vertex delivered 571.4 / 28.0 Mbps in DL / UL versus Lumen's 952.4 / 74.0 Mbps. The offered load exceeded measured capacity. Interpret UDP loss alongside delivered throughput.</p>
+
+<h2>7. KPI comparison for iteration 11</h2>
+<table><thead><tr><th>Metric</th><th>Vertex (DUT)</th><th>Lumen (CDUT)</th></tr></thead><tbody>
+  <tr><th scope="row">DL · scheduling / PRBs / MCS</th><td>98.6% / 272 / 21.23</td><td>98.7% / 272 / 20.08</td></tr>
+  <tr><th scope="row">DL · layers / initial TBS / first-pass BLER</th><td>2.00 / 51,642 B / 7.60%</td><td>3.90 / 87,142 B / 8.76%</td></tr>
+  <tr><th scope="row">DL · MAC acknowledged throughput</th><td>598.3 Mbps</td><td>997.3 Mbps</td></tr>
+  <tr><th scope="row">UL · scheduling / PRBs / MCS</th><td>98.2% / 250 / 18.95</td><td>96.6% / 250 / 19.68</td></tr>
+  <tr><th scope="row">UL · new-data TBS / grants carrying new data</th><td>18,632 B / 48.8%</td><td>18,595 B / 89.9%</td></tr>
+  <tr><th scope="row">UL · MAC ReTx / HARQ failures over 60 s</th><td>51.20% / 5,393</td><td>10.09% / 10</td></tr>
+  <tr><th scope="row">UL · MAC acknowledged throughput</th><td>29.4 Mbps</td><td>77.5 Mbps</td></tr>
+</tbody></table>
+<p><strong>DL.</strong> Initial TB rates and fractions of acknowledged bytes are nearly equal. The layer-count ratio (0.51×) dominates the gap. TBS per layer (1.16×) offsets part of the loss, yielding 0.60× Lumen's MAC throughput.</p>
+<p><strong>UL.</strong> Vertex has a slightly higher grant rate and comparable new-data TBS. The ratios for grants carrying new data (0.54×) and for acknowledged bytes per new byte (0.69×) reduce MAC throughput to 0.38× the reference.</p>
+
+<h2>8. Evidence and field ownership</h2>
+<ul>
+  <li><strong>DL.</strong> In <code>ueCapabilityInformation</code> (Vertex #21168, Lumen #21226), the UE advertises <code>maxNumberMIMO-LayersPDSCH</code> as <code>twoLayers</code> or <code>fourLayers</code>. In <code>rrcReconfiguration</code> (#21181 / #21237), the gNB sets <code>typeI-SinglePanel-ri-Restriction</code> to <code>00000011</code> or <code>00001111</code>. Compare RI in <code>0xB8A7</code> (#24488 / #24976, index = rank − 1) and <code>Layers</code> in <code>0xB887</code> (#24484 / #24972).</li>
+  <li><strong>UL.</strong> Compare <code>DCI 0_1</code> grants in <code>0xB885</code> (Vertex #24492, Lumen #25044) with transmissions in <code>0xB883</code> (#24494 / #25048). Match the HARQ process and slot order and compare grant <code>NDI</code>/<code>RV</code> with PUSCH <code>tx_type</code>, <code>l2_new_tb</code> and <code>rv_index</code>. Vertex shows retransmission grants followed by <code>NEW_TX</code> with RV 0. The gNB issues the grant and the UE selects the TB to transmit.</li>
+  <li><strong>Controls and sources.</strong> Vertex records <code>0xB872</code> and <code>0xB884</code> (#24526 / #24570) show buffer and power. MAC/RLC totals are in #29934 / #30479. <code>Desafio_S07_Log_DUT_Vertex.html</code> and <code>Desafio_S07_Log_CDUT_Lumen.html</code> cover iteration 11 only. The case worksheet covers the full campaign.</li>
+</ul>
+
+<h2>9. Diagnosis and confirmation</h2>
+<p><strong>DL.</strong> The evidence points to the two-layer limit advertised by Vertex. RF, resource allocation and BLER make coverage or scheduling limits unlikely. The UE log cannot distinguish capability-profile, software and RX-chain causes. Inspect the enabled profile and RX chains, repeat under controlled RF, and verify that the unit advertises and uses four layers where the hardware supports them.</p>
+<p><strong>UL.</strong> The evidence points to inconsistent retransmission handling by Vertex's HARQ entity. Observed grants, MCS, buffer and power make starvation of radio resources, data or power unlikely. In a controlled environment, synchronize UE and gNB traces by slot and HARQ ID, verify NDI/RV state and TB combining at the receiver, and rerun with the modem fix. The gNB receiver's contribution and the exact internal trigger remain open without gNB records.</p>
+<p class="caution"><strong>Why the session stays up.</strong> DL reception continues with two layers. The uplink issue affects a portion of data TBs and reduces useful delivery. The traces show the control link and session still active without an RLF declaration.</p>

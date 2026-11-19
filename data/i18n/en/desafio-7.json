@@ -1,0 +1,268 @@
+{
+  "tab": "Challenge 07 · Throughput KPI",
+  "tag": [
+    "CHALLENGE 7",
+    "KPI TEST · THROUGHPUT"
+  ],
+  "title": "UDP throughput KPI test on 5G SA (single carrier)",
+  "description": "Validate the 15 iterations of the KPI test, compute the mean, standard deviation and deltas, and issue the Vertex verdict for DL and UL. Then use the KPIs and the L1/MAC traces of iteration 11 to explain why both directions fail, each for a different reason.",
+  "sideInfo": [
+    {
+      "label": "Network"
+    },
+    {
+      "label": "Carrier",
+      "value": "100 MHz · SCS 30 kHz · TDD DDDSUUDDDD · no CA/NR-DC"
+    },
+    {
+      "label": "Test",
+      "value": "iperf3 UDP · DL 1500 + UL 300 Mbps · 15 × 60 s"
+    }
+  ],
+  "kpiTest": {
+    "chainNotes": {
+      "dl": "Scheduling, PRBs and MCS are equal or better on the Vertex; the factor left over is the layers (rank 2 against 4), capped by the twoLayers UE Capability.",
+      "ul": "Grants, PRBs and MCS are equal; what is left are the retransmissions (only half of the grants carry new data) and the TBs lost in HARQ, because the Vertex answers retransmission requests with NEW_TX."
+    }
+  },
+  "report": {
+    "title": "Issue Report — Challenge 7 · Throughput KPI",
+    "template": "data/i18n/en/relatorios/desafio-7.html"
+  },
+  "scenarios": {
+    "cdut-lumen": {
+      "number": "02 · REFERENCE",
+      "label": "Lumen · iteration 11",
+      "kicker": "SCENARIO 02 · CDUT · 5G SA n78",
+      "title": "Reference: rank 4 on DL and a healthy UL HARQ",
+      "description": "Lumen · 60 s bidirectional iperf3 UDP, side by side with the Vertex, on the same Near-Cell cell · iteration 11 of 15",
+      "status": "Reference · DL 952.4 · UL 74.0 Mbps",
+      "rat": "NR SA · n78 · single carrier",
+      "rightNode": "iperf3 server · operator network",
+      "rightCell": "UDP · 1400 B datagrams · 60 s",
+      "timeReference": {
+        "label": "Time since the iperf3 start"
+      },
+      "timelineLabels": {
+        "eyebrow": "Iteration 11 · 60 s",
+        "note": "Seconds since the iperf3 start · dots = radio snapshots and L1/MAC trace windows (≈2 s each)"
+      },
+      "metrics": [
+        {
+          "label": "Test reference (valid)",
+          "value": "DL 948.9 · UL 73.7 Mbps",
+          "note": "means of the 11 valid iterations · σ 20.7 / 1.7"
+        },
+        {
+          "label": "DL · MIMO layers",
+          "value": "3.90 (RI 4)"
+        },
+        {
+          "label": "UL · MAC retransmission",
+          "value": "10.1%",
+          "note": "10 HARQ failures in 60 s · RLC ReTx 0.03%"
+        },
+        {
+          "label": "RF condition (it. 11)",
+          "value": "−79.0 dBm · 24.8 dB",
+          "note": "Near-Cell · PCI 214 the whole time"
+        }
+      ],
+      "rows": [
+        {
+          "label": "iperf3 UDP session",
+          "sub": "DL 952.4 · UL 74.0 Mbps (mean)",
+          "final": "60.6 s"
+        },
+        {
+          "label": "Snapshots and L1/MAC traces",
+          "sub": "t ≈ 8, 22, 38 and 52 s",
+          "final": "4 windows"
+        }
+      ],
+      "evidence": [
+        {
+          "title": "Declares 4 layers and gets 4",
+          "html": "UE Capability with <code>maxNumberMIMO-LayersPDSCH = fourLayers</code>; the network configures <code>typeI-SinglePanel-ri-Restriction 00001111</code> (ranks 1 to 4). The Lumen reports RI 4 in 91% of the CSI reports and receives 3.90 layers on average."
+        },
+        {
+          "title": "UL HARQ working",
+          "html": "Every retransmission grant (<code>DCI 0_1</code> with the NDI kept and RV 1/2/3) becomes a <code>tx_type RE_TX</code> on the same HARQ_ID with the requested RV in <code>0xB883</code>: 8 out of 8 in the trace windows."
+        },
+        {
+          "title": "Same conditions as the Vertex",
+          "html": "Same cell (PCI 214), equivalent Near-Cell RF, scheduling rate of 98.7% on DL and 96.6% on UL, 272 PRBs per slot and 250 per grant, same MCS and UL power."
+        },
+        {
+          "title": "UDP loss is expected",
+          "html": "The offered load (1500/300 Mbps) is above the capacity on both devices: 36.5% loss on DL and 75.3% on UL. Read the loss together with the delivered throughput, never on its own."
+        }
+      ],
+      "notice": "The log holds the network registration and a single iteration (11, the worst of the DUT against the CDUT). The per-second KPIs come from the file's own \"KPIs (planilha)\" tab.",
+      "logLabel": "Source: Desafio_S07_Log_CDUT_Lumen.html · registration + iteration 11 of 15 · 191 events. Original log, unchanged.",
+      "guide": [
+        {
+          "title": "UE Capability: fourLayers",
+          "text": "The Lumen declares up to 4 PDSCH layers (maxNumberMIMO-LayersPDSCH = fourLayers). That is the ceiling the network will respect."
+        },
+        {
+          "title": "ri_Restriction 00001111",
+          "text": "In the rrcReconfiguration, the typeI-SinglePanel codebook allows ranks 1 to 4: the Lumen can report and receive up to 4 layers."
+        },
+        {
+          "title": "iperf3 start: T 0",
+          "text": "Iteration 11/15: UDP with DL 1500 Mbps and UL 300 Mbps, 60 s, 1400-byte datagrams. The load is above the link capacity."
+        },
+        {
+          "title": "Near-Cell confirmed",
+          "text": "SS-RSRP −78.7 dBm and SS-SINR 25.6 dB on PCI 214: inside Near-Cell (> −85 dBm and > 10 dB)."
+        },
+        {
+          "title": "PDSCH with 4 layers",
+          "text": "Every DL TB goes with Layers = 4 and an MCS around 20, over the 273 PRBs."
+        },
+        {
+          "title": "CSI: ri = 3 (rank 4)",
+          "text": "The ri field is an index (rank − 1): ri 3 means rank 4. Wideband CQI around 12–13."
+        },
+        {
+          "title": "UL grants ask for retransmission",
+          "text": "Two grants keep the NDI and ask for RV 2 (HARQ 11 and HARQ 0): the gNB did not decode those PUSCHs and asks for another redundancy version."
+        },
+        {
+          "title": "RE_TX as requested",
+          "text": "The Lumen retransmits: tx_type RE_TX, l2_new_tb FALSE and rv_index 2, on the same HARQ_ID. The gNB combines the attempts (soft combining)."
+        },
+        {
+          "title": "Counters: healthy HARQ",
+          "text": "DL MAC ReTx 9.37%, 37 HARQ failures, UL RLC ReTx 0.03%, no RLF and no handover."
+        },
+        {
+          "title": "Result: DL 952.4 · UL 74.0 Mbps",
+          "text": "60 s mean, as expected for the reference (valid ones: DL 948.9 · UL 73.7 Mbps)."
+        }
+      ]
+    },
+    "dut-vertex": {
+      "label": "Vertex · iteration 11",
+      "kicker": "SCENARIO 01 · DUT · 5G SA n78",
+      "title": "FAIL on DL and UL, for two different reasons",
+      "description": "Vertex · 60 s bidirectional iperf3 UDP on the Near-Cell cell PCI 214 · iteration 11 of 15, the worst one against the Lumen",
+      "status": "FAIL · DL −39.0% · UL −49.9%",
+      "rat": "NR SA · n78 · single carrier",
+      "rightNode": "iperf3 server · operator network",
+      "rightCell": "UDP · 1400 B datagrams · 60 s",
+      "timeReference": {
+        "label": "Time since the iperf3 start"
+      },
+      "timelineLabels": {
+        "eyebrow": "Iteration 11 · 60 s",
+        "note": "Seconds since the iperf3 start · dots = radio snapshots and L1/MAC trace windows (≈2 s each)"
+      },
+      "metrics": [
+        {
+          "label": "KPI test verdict",
+          "value": "FAIL · DL and UL",
+          "note": "11 valid · DL Δ −39.0% · UL Δ −49.9% and Δσ +262.8%"
+        },
+        {
+          "label": "DL · MIMO layers",
+          "value": "2.00 (RI 2)",
+          "note": "Lumen 3.90 · UE Capability twoLayers"
+        },
+        {
+          "label": "UL · MAC retransmission",
+          "value": "51.2%",
+          "note": "Lumen 10.1% · 5393 HARQ failures · RLC ReTx 45.9%"
+        },
+        {
+          "label": "RF condition (it. 11)",
+          "value": "−78.6 dBm · 24.4 dB",
+          "note": "Near-Cell · PCI 214 · same as the Lumen"
+        }
+      ],
+      "rows": [
+        {
+          "label": "iperf3 UDP session",
+          "sub": "DL 571.4 · UL 28.0 Mbps (mean)",
+          "final": "60.6 s"
+        },
+        {
+          "label": "Snapshots and L1/MAC traces",
+          "sub": "t ≈ 8, 22, 38 and 52 s",
+          "final": "4 windows"
+        }
+      ],
+      "evidence": [
+        {
+          "title": "DL: the Vertex limits its own rank",
+          "html": "The UE Capability declares <code>maxNumberMIMO-LayersPDSCH = twoLayers</code> (Lumen: fourLayers), and the network answers with <code>typeI-SinglePanel-ri-Restriction 00000011</code> (ranks 1–2). Result: RI 2 in 100% of the CSI reports and 2 layers in every TB. <code>0xB8D8</code> shows SNR on four receive antennas. Four PDSCH layers still need to be verified."
+        },
+        {
+          "title": "UL: a requested retransmission becomes a new transmission",
+          "html": "In <code>0xB885</code> the gNB keeps the NDI and asks for RV 1/2/3 on the same HARQ_ID (48 requests in the trace windows). In <code>0xB883</code> the Vertex sends <code>tx_type NEW_TX</code>, <code>rv_index 0</code>, <code>l2_new_tb TRUE</code> for all of them: no RE_TX. Sending a different TB prevents combining the original TB. The uplink counters record 5,393 HARQ failures and 45.9% RLC ReTx."
+        },
+        {
+          "title": "What does not differ",
+          "html": "Same cell and RF (−78.6 × −79.0 dBm), scheduling rate (98.6% × 98.7% on DL), 272 PRBs per slot, an even higher DL MCS (21.2 × 20.1), normal DL BLER (7.6%), same PHR (index 38 → 6 dB) and same PUSCH power (~15 dBm). These observations weigh against coverage, lack of queued data, resource limits and power as explanations."
+        },
+        {
+          "title": "Why there is no RLF",
+          "html": "Uplink data TB failures drive more RLC AM retransmissions. Downlink continues with two layers and the logs record <code>RLF_events 0</code>, with no handover or session drop."
+        }
+      ],
+      "notice": "The log holds the network registration and iteration 11 only. Signalling between network nodes and gNB logs are not visible: PUSCH decoding as seen by the gNB, the UL SINR measured by the network and the scheduler decision remain evidence to collect.",
+      "logLabel": "Source: Desafio_S07_Log_DUT_Vertex.html · registration + iteration 11 of 15 · 191 events. Original log, unchanged.",
+      "guide": [
+        {
+          "title": "UE Capability: twoLayers",
+          "text": "First divergence, before any data: the Vertex declares at most 2 PDSCH layers (maxNumberMIMO-LayersPDSCH = twoLayers). This field is set by the UE."
+        },
+        {
+          "title": "ri_Restriction 00000011",
+          "text": "The network respects the capability: it allows only ranks 1 and 2 in the codebook. The Lumen gets 00001111 (ranks 1 to 4) on the same cell."
+        },
+        {
+          "title": "iperf3 start: T 0",
+          "text": "Iteration 11/15: UDP with DL 1500 Mbps and UL 300 Mbps, 60 s. The DUT/CDUT order alternates every iteration."
+        },
+        {
+          "title": "Near-Cell, same as the Lumen",
+          "text": "SS-RSRP −78.6 dBm and SS-SINR 24.5 dB on PCI 214. RF does not explain the difference."
+        },
+        {
+          "title": "PDSCH with 2 layers",
+          "text": "Layers = 2 in every TB, with MCS 20–23 and 273 PRBs. The MCS is even higher than the Lumen's: the channel is good, layers are missing."
+        },
+        {
+          "title": "CSI: ri = 1 (rank 2)",
+          "text": "ri is reported as rank − 1. The Vertex never reports above rank 2, because the ri_Restriction does not allow it."
+        },
+        {
+          "title": "The gNB asks for retransmissions",
+          "text": "Seven of the 12 grants keep the NDI and request RV 1, 2 or 3 (HARQ 13, 14 and 15). Check the PUSCH report to see how the UE responded."
+        },
+        {
+          "title": "The Vertex sends NEW_TX",
+          "text": "The same HARQ_IDs go out as tx_type NEW_TX, rv_index 0, l2_new_tb TRUE. No RE_TX: the retransmission request is ignored and the gNB cannot combine."
+        },
+        {
+          "title": "Full buffer and power to spare",
+          "text": "BSR index 31 (> 150 kB buffered) and PHR 38 → 6 dB of headroom, same as the Lumen. Neither data nor power is missing."
+        },
+        {
+          "title": "Same PUSCH power",
+          "text": "15.2 dBm with a 97.9 dB pathloss (Lumen: 15.9 dBm). The sample shows comparable power and available headroom."
+        },
+        {
+          "title": "Counters: RLC carries the UL",
+          "text": "UL RLC ReTx 45.92% (Lumen 0.03%), and RLF_events 0. RLC retransmission helps sustain data delivery at a lower rate."
+        },
+        {
+          "title": "Result: DL 571.4 · UL 28.0 Mbps",
+          "text": "Against 952.4 / 74.0 Mbps for the Lumen in the same iteration. 90.7% UDP loss on UL."
+        }
+      ]
+    }
+  }
+}

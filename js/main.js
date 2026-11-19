@@ -1,6 +1,6 @@
 import { $ } from "./dom.js";
 import { createStore } from "./store.js";
-import { loadCatalog, loadLogFile, findChallenge, findScenario } from "./data.js";
+import { loadCatalog, loadLogFile, loadKpiData, findChallenge, findScenario } from "./data.js";
 import { buildTrace } from "./insights.js";
 import { createReplay, initialReplay } from "./replay.js";
 import { t, setLang, getLang, translateDocument } from "./i18n.js";
@@ -15,6 +15,7 @@ import { mountGlossary } from "./views/glossary.js";
 import { mountRaceView } from "./views/race.js";
 import { mountGuideView, guideStops } from "./views/guide.js";
 import { mountInsightView } from "./views/insight.js";
+import { mountKpiTestView } from "./views/kpitest.js";
 
 function mountThemeToggle() {
   const button = $("#theme-toggle");
@@ -59,6 +60,9 @@ async function main() {
     replay: initialReplay,
     traces: null, // { challengeId, byScenario } — measurement evidence derived from the logs
     insightTab: "measure",
+    kpiData: null, // { challengeId, byScenario } — per-second KPI counters embedded in throughput logs
+    kpiTab: "verdict",
+    kpiScope: "valid",
     overlay: true,
     guided: Boolean(prefs.guided),
     revealed: Boolean(prefs.revealed),
@@ -105,6 +109,22 @@ async function main() {
     }
   }
 
+  // Throughput KPI test: loads the per-second counters of the DUT/CDUT logs once.
+  async function ensureKpiData(challenge) {
+    const config = challenge.kpiTest;
+    const previous = store.get().kpiData;
+    if (!config || (previous?.challengeId === challenge.id && !previous.error)) return;
+    store.set({ kpiData: { challengeId: challenge.id, byScenario: null } });
+    try {
+      const entries = await Promise.all([config.dut, config.cdut].map(async (id) =>
+        [id, await loadKpiData(findScenario(challenge, id).logPath)]));
+      if (store.get().kpiData?.challengeId === challenge.id) store.set({ kpiData: { challengeId: challenge.id, byScenario: Object.fromEntries(entries) } });
+    } catch (error) {
+      console.error(error);
+      if (store.get().kpiData?.challengeId === challenge.id) store.set({ kpiData: { challengeId: challenge.id, error: error.message } });
+    }
+  }
+
   // Jumps from evidence links and charts: opens the scenario and pauses on
   // log event `idx` (0 = just open the scenario), keeping the scene in view.
   const jumpTo = async (scenarioId, idx) => {
@@ -147,6 +167,11 @@ async function main() {
       savePrefs({ hypothesisMarks });
     }
   });
+  const renderKpiTest = mountKpiTestView({
+    onRetry: () => ensureKpiData(current().challenge),
+    onSetTab: (kpiTab) => store.set({ kpiTab }),
+    onSetScope: (kpiScope) => store.set({ kpiScope })
+  });
   const syncTheme = mountThemeToggle();
 
   const renderStatic = () => {
@@ -155,6 +180,7 @@ async function main() {
     renderModals(scenario);
     renderScene(scenario.scene, scenario.rightKind, scenario.coreNodes);
     ensureTraces(challenge);
+    ensureKpiData(challenge);
     refreshGlossary();
   };
   // Always reads the latest state: ensureTraces may update the store while a
@@ -163,6 +189,7 @@ async function main() {
     const state = store.get();
     const { challenge, scenario } = current(state);
     renderInsight(state, challenge, scenario);
+    renderKpiTest(state, challenge, scenario);
     renderRace(state, challenge, scenario);
     renderGuide(state, scenario);
   };

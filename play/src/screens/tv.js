@@ -22,9 +22,10 @@ function tvRender(withBack) {
     if (!ch) {
       const done = CHALLENGES.filter((c) => (save.progress[c.id] || {}).completed).length;
       UI.text(s, `Chamados resolvidos: ${done}/${CHALLENGES.length}`, 30 * k, 110 * k, { size: 40, weight: "bold", color: "#4fd194" });
+      const rowHeight = Math.min(62, 280 / Math.max(1, CHALLENGES.length - 1));
       CHALLENGES.forEach((c, i) => {
         const p = save.progress[c.id] || {}, un = unlockedChallenges().includes(c);
-        UI.text(s, `${un ? (p.completed ? "✔" : "•") : "🔒"}  Desafio ${pad2(c.num)} · ${c.game.short}${p.completed ? `  ·  recorde ${p.best}` : ""}`, 30 * k, (190 + i * 62) * k, { size: 32, color: un ? "#F4F6F9" : "#7f8ea6" });
+        UI.text(s, `${un ? (p.completed ? "✔" : "•") : "🔒"}  Desafio ${pad2(c.num)} · ${c.game.short}${p.completed ? `  ·  recorde ${p.best}` : ""}`, 30 * k, (190 + i * rowHeight) * k, { size: 32, color: un ? "#F4F6F9" : "#7f8ea6" });
       });
       UI.text(s, "Fale com a supervisora Lia para receber o próximo chamado.", 30 * k, 520 * k, { size: 28, color: "#FFC59A" });
     } else {

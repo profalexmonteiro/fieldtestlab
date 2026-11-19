@@ -54,14 +54,30 @@ function parseLogTimestamp(value) {
 // (e.g. Measurement Configuration #2 = T 0); events then carry `refTimeMs`.
 // Parsed logs are cached by path: the replay and the measurement views read
 // the same files, and a log is several hundred kB.
+const logBlocks = new Map();
+
+function loadLogBlocks(path) {
+  if (!logBlocks.has(path)) {
+    const pending = fetchOk(path).then((response) => response.text())
+      .then((html) => {
+        const doc = new DOMParser().parseFromString(html, "text/html");
+        return {
+          log: doc.getElementById("log-data")?.textContent,
+          kpis: doc.getElementById("kpi-data")?.textContent
+        };
+      });
+    pending.catch(() => logBlocks.delete(path));
+    logBlocks.set(path, pending);
+  }
+  return logBlocks.get(path);
+}
+
 const logCache = new Map();
 
 async function fetchLogEntries(path) {
-  const text = await (await fetchOk(path)).text();
-  const doc = new DOMParser().parseFromString(text, "text/html");
-  const dataElement = doc.querySelector("#log-data");
-  if (!dataElement) throw new Error(t("data.noLogData", { path }));
-  const data = JSON.parse(dataElement.textContent);
+  const { log } = await loadLogBlocks(path);
+  if (!log) throw new Error(t("data.noLogData", { path }));
+  const data = JSON.parse(log);
   if (!Array.isArray(data) || data.length === 0) throw new Error(t("data.emptyLog", { path }));
   return data;
 }
@@ -69,10 +85,31 @@ async function fetchLogEntries(path) {
 function cachedLogEntries(path) {
   if (!logCache.has(path)) {
     const pending = fetchLogEntries(path);
-    pending.catch(() => logCache.delete(path));
+    pending.catch(() => { logCache.delete(path); logBlocks.delete(path); });
     logCache.set(path, pending);
   }
   return logCache.get(path);
+}
+
+// Throughput logs also embed per-second L1/MAC counters in <script id="kpi-data">
+// ({ meta, rows }): the source of their "KPIs (planilha)" and "Gráficos" tabs.
+const kpiCache = new Map();
+
+async function fetchKpiData(path) {
+  const { kpis } = await loadLogBlocks(path);
+  if (!kpis) throw new Error(t("data.noKpiData", { path }));
+  const data = JSON.parse(kpis);
+  if (!Array.isArray(data?.rows) || data.rows.length === 0) throw new Error(t("data.noKpiData", { path }));
+  return data;
+}
+
+export function loadKpiData(path) {
+  if (!kpiCache.has(path)) {
+    const pending = fetchKpiData(path);
+    pending.catch(() => { kpiCache.delete(path); logBlocks.delete(path); });
+    kpiCache.set(path, pending);
+  }
+  return kpiCache.get(path);
 }
 
 const abortable = (promise, signal) => !signal ? promise : new Promise((resolve, reject) => {

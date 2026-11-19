@@ -617,6 +617,66 @@
     "n26": {
       "name": "AMF–MME interface",
       "description": "Links the 5GC to the EPC and allows the UE context to move in EPS Fallback: the UE does a TAU with the mapped GUTI and remains a subscriber."
+    },
+    "near-cell": {
+      "name": "Near-cell coverage",
+      "description": "In Challenge 7, SS-RSRP above −85 dBm and SS-SINR above 10 dB, with stationary devices in line of sight."
+    },
+    "iperf3": {
+      "name": "IP throughput test",
+      "description": "iperf3 sends UDP datagrams at the configured rate and measures received throughput, loss and jitter. Challenge 7 offers DL and UL concurrently."
+    },
+    "mimo-ri": {
+      "name": "Multiple Input Multiple Output / Rank Indicator",
+      "description": "Spatial MIMO uses concurrent layers. RI reports a rank within the configured codebook. In log 0xB8A7 the index is rank minus one."
+    },
+    "ue-capability-mimo": {
+      "name": "PDSCH layer limit",
+      "description": "The UE advertises its maximum supported layers. In this case the gNB restricts codebook ranks through typeI-SinglePanel-ri-Restriction in rrcReconfiguration."
+    },
+    "csi-cqi": {
+      "name": "Channel State Information / Channel Quality Indicator",
+      "description": "The UE reports channel information such as rank, PMI and estimated quality (CQI) to guide link adaptation."
+    },
+    "pdsch-pusch": {
+      "name": "Physical shared data channels",
+      "description": "PDSCH carries downlink data. PUSCH carries uplink data."
+    },
+    "prb-mcs-tbs": {
+      "name": "Resources, modulation and transport block",
+      "description": "PRBs are frequency resources. MCS selects modulation and coding. Allocation, MCS and layers affect the transport block size (TBS)."
+    },
+    "harq-ndi-rv": {
+      "name": "Radio-link retransmission",
+      "description": "HARQ combines versions of a TB. For the same HARQ ID, toggled NDI indicates new data. Unchanged NDI indicates retransmission. RV identifies the redundancy version."
+    },
+    "bsr-phr": {
+      "name": "Buffer Status Report / Power Headroom Report",
+      "description": "The UE reports queued data and available uplink power headroom."
+    },
+    "rlc-am": {
+      "name": "Acknowledged-mode Radio Link Control",
+      "description": "A layer that can recover data through retransmission after losses HARQ has not recovered."
+    },
+    "acked-tput": {
+      "name": "MAC acknowledged throughput",
+      "description": "Rate of acknowledged bytes at MAC. The iperf3 application rate measures data delivered to the UDP receiver."
+    },
+    "b887-b888": {
+      "name": "PDSCH Status / PDSCH Stats",
+      "description": "Per-slot DL records and cumulative counters, including layers, TBS, CRC, BLER and retransmissions."
+    },
+    "b8a7-b8d8": {
+      "name": "CSF Report / Serving SNR",
+      "description": "Show reported CSI and reference-signal SNR by receive antenna."
+    },
+    "b885-b883": {
+      "name": "DCI Info / UL Schedule Report",
+      "description": "The first shows the received grant (NDI, RV and HARQ ID). The second shows the UE's PUSCH transmission (NEW_TX or RE_TX)."
+    },
+    "b872-b884": {
+      "name": "UL TB / UL Power Control",
+      "description": "Show TB assembly, BSR/PHR and PUSCH transmit power."
     }
   }
 }

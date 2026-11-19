@@ -47,7 +47,8 @@
         "desafio-3",
         "desafio-4",
         "desafio-5",
-        "desafio-6"
+        "desafio-6",
+        "desafio-7"
       ],
       "name": "5G Standalone",
       "description": "5G com núcleo próprio (5GC), sem depender de uma âncora LTE. É o modo avaliado em todos os desafios."
@@ -61,7 +62,8 @@
         "desafio-3",
         "desafio-4",
         "desafio-5",
-        "desafio-6"
+        "desafio-6",
+        "desafio-7"
       ],
       "name": "New Radio",
       "description": "Interface aérea do 5G definida pelo 3GPP."
@@ -116,7 +118,8 @@
         "desafio-3",
         "desafio-4",
         "desafio-5",
-        "desafio-6"
+        "desafio-6",
+        "desafio-7"
       ],
       "name": "Next Generation NodeB",
       "description": "Estação rádio base do 5G NR."
@@ -140,7 +143,8 @@
       "category": "rede",
       "challenges": [
         "desafio-2",
-        "desafio-3"
+        "desafio-3",
+        "desafio-7"
       ],
       "name": "5G Core",
       "description": "Núcleo da rede 5G. Recebe a sinalização NAS do UE."
@@ -163,7 +167,8 @@
         "desafio-2",
         "desafio-4",
         "desafio-5",
-        "desafio-6"
+        "desafio-6",
+        "desafio-7"
       ],
       "name": "Public Land Mobile Network",
       "description": "A rede de uma operadora, identificada por MCC/MNC (por exemplo 724/085)."
@@ -238,7 +243,8 @@
         "desafio-3",
         "desafio-4",
         "desafio-5",
-        "desafio-6"
+        "desafio-6",
+        "desafio-7"
       ],
       "name": "Physical Cell Identity",
       "description": "Identificador físico da célula (0 a 1007 no NR). Ex.: PCI 88 (serving) e PCI 145 (vizinha n41)."
@@ -251,7 +257,8 @@
         "desafio-3",
         "desafio-4",
         "desafio-5",
-        "desafio-6"
+        "desafio-6",
+        "desafio-7"
       ],
       "name": "NR Absolute Radio Frequency Channel Number",
       "description": "Número que identifica a frequência da portadora. 633180 = 3497,7 MHz (n78); 504990 = 2524,95 MHz (n41)."
@@ -330,7 +337,8 @@
         "desafio-3",
         "desafio-4",
         "desafio-5",
-        "desafio-6"
+        "desafio-6",
+        "desafio-7"
       ],
       "name": "Radio Resource Control",
       "description": "Protocolo de controle entre UE e gNB (TS 38.331): conexão, medição, handover e reestabelecimento."
@@ -452,7 +460,8 @@
         "desafio-3",
         "desafio-4",
         "desafio-5",
-        "desafio-6"
+        "desafio-6",
+        "desafio-7"
       ],
       "name": "Non-Access Stratum",
       "description": "Sinalização entre UE e núcleo (AMF): registro, autenticação, segurança e sessão. Viaja dentro do RRC (DL/ULInformationTransfer)."
@@ -551,7 +560,8 @@
       "challenges": [
         "desafio-3",
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-7"
       ],
       "name": "Reference Signal Received Power",
       "description": "Potência média recebida dos sinais de referência (no NR, do SSB), em dBm. É a principal medida de nível de sinal."
@@ -563,7 +573,8 @@
       "challenges": [
         "desafio-3",
         "desafio-4",
-        "desafio-5"
+        "desafio-5",
+        "desafio-7"
       ],
       "name": "Reference Signal Received Quality",
       "description": "Qualidade do sinal em dB, considerando a interferência e a carga."
@@ -574,7 +585,8 @@
       "category": "medicao",
       "challenges": [
         "desafio-3",
-        "desafio-5"
+        "desafio-5",
+        "desafio-7"
       ],
       "name": "Signal to Interference plus Noise Ratio",
       "description": "Relação sinal/(interferência + ruído), em dB. No report tardio do DUT a serving estava em −12 dB."
@@ -585,7 +597,8 @@
       "category": "medicao",
       "challenges": [
         "desafio-2",
-        "desafio-3"
+        "desafio-3",
+        "desafio-7"
       ],
       "name": "SS/PBCH Block",
       "description": "Bloco com PSS, SSS e PBCH (MIB) transmitido periodicamente. É o que o UE mede para RSRP/RSRQ."
@@ -770,7 +783,8 @@
       "category": "enlace",
       "challenges": [
         "desafio-3",
-        "desafio-5"
+        "desafio-5",
+        "desafio-7"
       ],
       "name": "Radio Link Failure",
       "description": "Falha declarada pelo UE quando o enlace é perdido (por exemplo, T310 expira). Leva ao reestabelecimento."
@@ -781,7 +795,8 @@
       "category": "enlace",
       "challenges": [
         "desafio-3",
-        "desafio-5"
+        "desafio-5",
+        "desafio-7"
       ],
       "name": "Block Error Rate",
       "description": "Taxa de erro de bloco. No RLM é a de um PDCCH hipotético, filtrada (OOS_FILT_BLER / IS_FILT_BLER)."
@@ -1077,7 +1092,8 @@
         "desafio-3",
         "desafio-4",
         "desafio-5",
-        "desafio-6"
+        "desafio-6",
+        "desafio-7"
       ],
       "name": "Device Under Test",
       "description": "Aparelho em homologação (Aurora no Desafio 2, Meridian no Desafio 3)."
@@ -1091,7 +1107,8 @@
         "desafio-3",
         "desafio-4",
         "desafio-5",
-        "desafio-6"
+        "desafio-6",
+        "desafio-7"
       ],
       "name": "Comparator DUT",
       "description": "Aparelho de referência já homologado, testado nas mesmas condições (Boreal no Desafio 2, Solstice no Desafio 3)."
@@ -1105,7 +1122,8 @@
         "desafio-3",
         "desafio-4",
         "desafio-5",
-        "desafio-6"
+        "desafio-6",
+        "desafio-7"
       ],
       "name": "Key Performance Indicator",
       "description": "Indicador usado para julgar o teste (por exemplo, handover sem RLF ou tempo até o report)."
@@ -1630,6 +1648,156 @@
       ],
       "name": "Interface AMF–MME",
       "description": "Liga o 5GC ao EPC e permite transferir o contexto do UE no EPS Fallback: o UE faz TAU com o GUTI mapeado e continua assinante."
+    },
+    {
+      "id": "near-cell",
+      "term": "Near-Cell",
+      "category": "medicao",
+      "challenges": [
+        "desafio-7"
+      ],
+      "name": "Cobertura próxima à célula",
+      "description": "No Desafio 7, SS-RSRP acima de −85 dBm e SS-SINR acima de 10 dB, com visada e aparelhos parados."
+    },
+    {
+      "id": "iperf3",
+      "term": "iperf3 / UDP",
+      "category": "teste",
+      "challenges": [
+        "desafio-7"
+      ],
+      "name": "Teste de throughput IP",
+      "description": "O iperf3 envia datagramas UDP à taxa configurada e mede a taxa recebida, perda e jitter. No Desafio 7, DL e UL são oferecidos simultaneamente."
+    },
+    {
+      "id": "mimo-ri",
+      "term": "MIMO / RI",
+      "category": "enlace",
+      "challenges": [
+        "desafio-7"
+      ],
+      "name": "Multiple Input Multiple Output / Rank Indicator",
+      "description": "MIMO espacial usa camadas simultâneas. O RI indica o rank reportado pelo UE, limitado pelo codebook configurado. No log 0xB8A7 o índice é rank − 1."
+    },
+    {
+      "id": "ue-capability-mimo",
+      "term": "UE Capability · maxNumberMIMO-LayersPDSCH",
+      "category": "rrc",
+      "challenges": [
+        "desafio-7"
+      ],
+      "name": "Limite de camadas PDSCH",
+      "description": "O UE anuncia o máximo de camadas suportadas. No caso, o gNB limita os ranks do codebook com typeI-SinglePanel-ri-Restriction em rrcReconfiguration."
+    },
+    {
+      "id": "csi-cqi",
+      "term": "CSI / CQI",
+      "category": "medicao",
+      "challenges": [
+        "desafio-7"
+      ],
+      "name": "Channel State Information / Channel Quality Indicator",
+      "description": "O UE reporta ao gNB informações de canal, como rank, PMI e qualidade estimada (CQI), para orientar a adaptação de enlace."
+    },
+    {
+      "id": "pdsch-pusch",
+      "term": "PDSCH / PUSCH",
+      "category": "enlace",
+      "challenges": [
+        "desafio-7"
+      ],
+      "name": "Canais físicos compartilhados de dados",
+      "description": "PDSCH transporta dados no DL. PUSCH transporta dados no UL."
+    },
+    {
+      "id": "prb-mcs-tbs",
+      "term": "PRB / MCS / TB / TBS",
+      "category": "enlace",
+      "challenges": [
+        "desafio-7"
+      ],
+      "name": "Recursos, modulação e bloco de transporte",
+      "description": "PRBs são recursos de frequência. O MCS seleciona modulação e codificação. A alocação, o MCS e as camadas afetam o tamanho do bloco de transporte (TBS)."
+    },
+    {
+      "id": "harq-ndi-rv",
+      "term": "HARQ / NDI / RV",
+      "category": "enlace",
+      "challenges": [
+        "desafio-7"
+      ],
+      "name": "Retransmissão no enlace de rádio",
+      "description": "O HARQ combina versões de um TB. Para o mesmo HARQ ID, mudança de NDI indica dado novo. NDI mantido indica retransmissão. RV indica a versão de redundância."
+    },
+    {
+      "id": "bsr-phr",
+      "term": "BSR / PHR",
+      "category": "enlace",
+      "challenges": [
+        "desafio-7"
+      ],
+      "name": "Buffer Status Report / Power Headroom Report",
+      "description": "O UE indica os dados pendentes no buffer e a margem de potência disponível para o UL."
+    },
+    {
+      "id": "rlc-am",
+      "term": "RLC AM",
+      "category": "enlace",
+      "challenges": [
+        "desafio-7"
+      ],
+      "name": "Radio Link Control em modo reconhecido",
+      "description": "Camada que pode recuperar dados por retransmissão após perdas que o HARQ não recuperou."
+    },
+    {
+      "id": "acked-tput",
+      "term": "Acked Tput",
+      "category": "teste",
+      "challenges": [
+        "desafio-7"
+      ],
+      "name": "Taxa de dados reconhecidos no MAC",
+      "description": "Taxa de bytes reconhecidos no MAC. A taxa de aplicação iperf3 mede os dados entregues no receptor UDP."
+    },
+    {
+      "id": "b887-b888",
+      "term": "0xB887 / 0xB888",
+      "category": "log",
+      "challenges": [
+        "desafio-7"
+      ],
+      "name": "PDSCH Status / PDSCH Stats",
+      "description": "Registros de DL por slot e contadores acumulados, incluindo camadas, TBS, CRC, BLER e retransmissões."
+    },
+    {
+      "id": "b8a7-b8d8",
+      "term": "0xB8A7 / 0xB8D8",
+      "category": "log",
+      "challenges": [
+        "desafio-7"
+      ],
+      "name": "CSF Report / Serving SNR",
+      "description": "Mostram o CSI reportado e o SNR do sinal de referência por antena de recepção."
+    },
+    {
+      "id": "b885-b883",
+      "term": "0xB885 / 0xB883",
+      "category": "log",
+      "challenges": [
+        "desafio-7"
+      ],
+      "name": "DCI Info / UL Schedule Report",
+      "description": "O primeiro mostra o grant recebido (NDI, RV e HARQ ID). O segundo mostra a transmissão do UE no PUSCH (NEW_TX ou RE_TX)."
+    },
+    {
+      "id": "b872-b884",
+      "term": "0xB872 / 0xB884",
+      "category": "log",
+      "challenges": [
+        "desafio-7"
+      ],
+      "name": "UL TB / UL Power Control",
+      "description": "Mostram montagem do TB, BSR/PHR e potência transmitida no PUSCH."
     }
   ]
 }
