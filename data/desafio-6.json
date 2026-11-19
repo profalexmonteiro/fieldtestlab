@@ -29,6 +29,197 @@
   },
   "scenarios": [
     {
+      "id": "cen2-cdut",
+      "number": "02 · REFERÊNCIA",
+      "label": "Equinox · 112 em 5G SA",
+      "kicker": "CENÁRIO 02 · CDUT · 5G SA",
+      "title": "Fica na própria operadora: VoLTE de emergência",
+      "description": "Equinox · 112 discado em 5G SA, mesma célula do cenário 1 · três repetições",
+      "status": "Referência aprovada · 3/3",
+      "statusClass": "good",
+      "device": "Equinox / CDUT",
+      "state": "112 via VoLTE na Zenith",
+      "scene": "home-only",
+      "rat": "NR → LTE",
+      "network": "Zenith (HPLMN) · Aurora na área",
+      "leftNode": "gNodeB/eNodeB · Zenith · 724/078",
+      "leftCell": "n78 · PCI 88 + B3 · EARFCN 1444 · PCI 220",
+      "rightNode": "eNodeB/BTS · Aurora · 724/023",
+      "rightCell": "B3 · EARFCN 1300 · PCI 145 + GERAN ARFCN 62",
+      "rightRats": [
+        "GERAN"
+      ],
+      "coreNodes": {
+        "left": "5GC/EPC/IMS · Zenith",
+        "right": "EPC/IMS/MSC · Aurora"
+      },
+      "coreProtocols": [
+        "NAS-5GMM",
+        "NAS-5GSM",
+        "NAS-EMM",
+        "NAS-ESM",
+        "NAS-MM",
+        "NAS-CC",
+        "SIP"
+      ],
+      "timelineLabels": {
+        "eyebrow": "Repetições 01–03",
+        "note": "Segundos desde a discagem do 112 (Emergency Dial) · pontos = três repetições"
+      },
+      "axisMax": 4.5,
+      "metrics": [
+        {
+          "label": "Tempo de estabelecimento",
+          "value": "1,88–2,05 s",
+          "note": "3/3 · média 1,96 s",
+          "tone": "good-text"
+        },
+        {
+          "label": "Célula escolhida após a falha",
+          "value": "Zenith · 724/078",
+          "note": "LTE PCI 220 · mesma operadora, mesmo site",
+          "tone": "good-text"
+        },
+        {
+          "label": "Domínio final",
+          "value": "IMS (VoLTE) · Zenith",
+          "note": "urn:service:sos · APN sos",
+          "tone": "good-text"
+        },
+        {
+          "label": "Resposta da rede em 5G",
+          "value": "5GMM cause 90",
+          "note": "sem EPS Fallback · igual no DUT",
+          "tone": "warn-text"
+        }
+      ],
+      "rows": [
+        {
+          "label": "Chamada estabelecida",
+          "sub": "discagem → 200 OK · 3 rep.",
+          "start": 1.88,
+          "end": 2.05,
+          "final": "1,88–2,05 s",
+          "color": "reference",
+          "points": [
+            {
+              "at": 1.95,
+              "kind": "reference"
+            },
+            {
+              "at": 2.05,
+              "kind": "reference"
+            },
+            {
+              "at": 1.88,
+              "kind": "reference"
+            }
+          ]
+        },
+        {
+          "label": "Saída do 5G para LTE",
+          "sub": "seleção de célula · Zenith",
+          "start": 0.65,
+          "end": 0.65,
+          "final": "0,65 s",
+          "color": "success",
+          "points": [
+            {
+              "at": 0.65,
+              "kind": "success"
+            },
+            {
+              "at": 0.65,
+              "kind": "success"
+            },
+            {
+              "at": 0.65,
+              "kind": "success"
+            }
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "ok",
+          "title": "Mesma rede, mesma resposta",
+          "html": "Também recebe <code>5GMM cause 90</code> sem redirecionamento. As condições de rede são as mesmas do Polaris."
+        },
+        {
+          "kind": "ok",
+          "title": "Fica na HPLMN",
+          "html": "A próxima tentativa é <code>LTE Cell Selection · EARFCN 1444 · PCI 220 · PLMN 724/078</code>: outra RAT da própria Zenith, como manda a hierarquia."
+        },
+        {
+          "kind": "ok",
+          "title": "Continua assinante",
+          "html": "TAU com GUTI mapeado do 5G-GUTI (contexto preservado) e TAU Accept com <code>EMC BS supported</code>; depois a PDN de emergência (APN sos)."
+        },
+        {
+          "kind": "ok",
+          "title": "VoLTE de emergência em 1,95 s",
+          "html": "REGISTER de emergência no P-CSCF da Zenith, INVITE <code>urn:service:sos</code> e 200 OK em T +1,95 s."
+        }
+      ],
+      "notice": "Log com as três repetições do cenário 2. O CDUT mostra o comportamento esperado diante da mesma falha de rede: outra RAT da HPLMN antes de qualquer outra operadora.",
+      "logPath": "Desafios/Desafio 6/Desafio_S06_Log_CDUT_Equinox.html",
+      "logRange": {
+        "from": 21000,
+        "to": 25656
+      },
+      "logLabel": "Fonte: Desafio_S06_Log_CDUT_Equinox.html · cenário 2, repetições 01–03 · 105 eventos. Log original sem alterações (o arquivo também traz o cenário 4).",
+      "timeReference": {
+        "idx": [
+          21341,
+          23598,
+          25459
+        ],
+        "label": "Tempo desde a discagem do 112"
+      },
+      "guide": [
+        {
+          "idx": 21341,
+          "title": "Discagem do 112: T 0",
+          "text": "Mesma célula 5G SA (PCI 88) e mesma HPLMN do Polaris."
+        },
+        {
+          "idx": 21403,
+          "title": "A mesma causa 90",
+          "text": "DL NAS Transport com 5GMM cause 90, igual ao Polaris: a rede trata os dois aparelhos da mesma forma."
+        },
+        {
+          "idx": 21409,
+          "title": "Próximo passo: LTE da própria operadora",
+          "text": "O gerenciador de emergência do Equinox vai direto à seleção de célula LTE, sem varredura ampla."
+        },
+        {
+          "idx": 21416,
+          "title": "Zenith LTE PCI 220",
+          "text": "EARFCN 1444, PLMN 724/078, em T +0,65 s. É o ponto exato em que os dois aparelhos divergem."
+        },
+        {
+          "idx": 21449,
+          "title": "TAU de assinante",
+          "text": "TAU com GUTI mapeado do 5G-GUTI: o contexto passa do 5GC para o EPC (N26). O Equinox continua assinante, não visitante."
+        },
+        {
+          "idx": 21480,
+          "title": "PDN de emergência",
+          "text": "PDN Connectivity Request com Request type = emergency; a rede responde com APN sos."
+        },
+        {
+          "idx": 21525,
+          "title": "INVITE urn:service:sos",
+          "text": "Registro de emergência aceito pelo P-CSCF da Zenith e INVITE para urn:service:sos."
+        },
+        {
+          "idx": 21560,
+          "title": "200 OK em T +1,95 s",
+          "text": "Chamada estabelecida por VoLTE na própria Zenith: o caminho preferencial (HPLMN, IMS)."
+        }
+      ]
+    },
+    {
       "id": "cen1-dut",
       "number": "01 · DUT",
       "label": "Polaris · 112 em 5G SA",
@@ -250,18 +441,18 @@
       ]
     },
     {
-      "id": "cen2-cdut",
-      "number": "02 · REFERÊNCIA",
-      "label": "Equinox · 112 em 5G SA",
-      "kicker": "CENÁRIO 02 · CDUT · 5G SA",
-      "title": "Fica na própria operadora: VoLTE de emergência",
-      "description": "Equinox · 112 discado em 5G SA, mesma célula do cenário 1 · três repetições",
+      "id": "cen4-cdut",
+      "number": "04 · REFERÊNCIA",
+      "label": "Equinox · 112 em 4G",
+      "kicker": "CENÁRIO 04 · CDUT · 4G (CONTROLE)",
+      "title": "Referência do controle em LTE",
+      "description": "Equinox · 112 discado já em LTE, mesma condição do cenário 3 · três repetições",
       "status": "Referência aprovada · 3/3",
       "statusClass": "good",
       "device": "Equinox / CDUT",
       "state": "112 via VoLTE na Zenith",
       "scene": "home-only",
-      "rat": "NR → LTE",
+      "rat": "LTE",
       "network": "Zenith (HPLMN) · Aurora na área",
       "leftNode": "gNodeB/eNodeB · Zenith · 724/078",
       "leftCell": "n78 · PCI 88 + B3 · EARFCN 1444 · PCI 220",
@@ -291,14 +482,14 @@
       "metrics": [
         {
           "label": "Tempo de estabelecimento",
-          "value": "1,88–2,05 s",
-          "note": "3/3 · média 1,96 s",
+          "value": "1,55–1,60 s",
+          "note": "3/3 · média 1,58 s",
           "tone": "good-text"
         },
         {
-          "label": "Célula escolhida após a falha",
+          "label": "Rede usada",
           "value": "Zenith · 724/078",
-          "note": "LTE PCI 220 · mesma operadora, mesmo site",
+          "note": "LTE PCI 220 · sem troca de RAT",
           "tone": "good-text"
         },
         {
@@ -308,54 +499,32 @@
           "tone": "good-text"
         },
         {
-          "label": "Resposta da rede em 5G",
-          "value": "5GMM cause 90",
-          "note": "sem EPS Fallback · igual no DUT",
-          "tone": "warn-text"
+          "label": "Custo de partir do 5G",
+          "value": "+0,38 s",
+          "note": "média 5G 1,96 s × 4G 1,58 s",
+          "tone": "accent-text"
         }
       ],
       "rows": [
         {
           "label": "Chamada estabelecida",
           "sub": "discagem → 200 OK · 3 rep.",
-          "start": 1.88,
-          "end": 2.05,
-          "final": "1,88–2,05 s",
+          "start": 1.55,
+          "end": 1.6,
+          "final": "1,55–1,60 s",
           "color": "reference",
           "points": [
             {
-              "at": 1.95,
+              "at": 1.58,
               "kind": "reference"
             },
             {
-              "at": 2.05,
+              "at": 1.55,
               "kind": "reference"
             },
             {
-              "at": 1.88,
+              "at": 1.6,
               "kind": "reference"
-            }
-          ]
-        },
-        {
-          "label": "Saída do 5G para LTE",
-          "sub": "seleção de célula · Zenith",
-          "start": 0.65,
-          "end": 0.65,
-          "final": "0,65 s",
-          "color": "success",
-          "points": [
-            {
-              "at": 0.65,
-              "kind": "success"
-            },
-            {
-              "at": 0.65,
-              "kind": "success"
-            },
-            {
-              "at": 0.65,
-              "kind": "success"
             }
           ]
         }
@@ -363,80 +532,60 @@
       "evidence": [
         {
           "kind": "ok",
-          "title": "Mesma rede, mesma resposta",
-          "html": "Também recebe <code>5GMM cause 90</code> sem redirecionamento. As condições de rede são as mesmas do Polaris."
+          "title": "Referência do controle",
+          "html": "1,55–1,60 s em LTE, com o mesmo fluxo IMS de emergência do Polaris."
         },
         {
           "kind": "ok",
-          "title": "Fica na HPLMN",
-          "html": "A próxima tentativa é <code>LTE Cell Selection · EARFCN 1444 · PCI 220 · PLMN 724/078</code>: outra RAT da própria Zenith, como manda a hierarquia."
+          "title": "Custo da falha em 5G no CDUT",
+          "html": "Partindo de 5G, o Equinox leva 0,38 s a mais em média (1,96 s × 1,58 s): a causa 90 e a troca para LTE custam pouco quando o UE fica na HPLMN."
         },
         {
           "kind": "ok",
-          "title": "Continua assinante",
-          "html": "TAU com GUTI mapeado do 5G-GUTI (contexto preservado) e TAU Accept com <code>EMC BS supported</code>; depois a PDN de emergência (APN sos)."
+          "title": "Mesma rede do controle do DUT",
+          "html": "Mesma célula LTE PCI 220 e mesmo P-CSCF da Zenith do cenário 3."
         },
         {
-          "kind": "ok",
-          "title": "VoLTE de emergência em 1,95 s",
-          "html": "REGISTER de emergência no P-CSCF da Zenith, INVITE <code>urn:service:sos</code> e 200 OK em T +1,95 s."
+          "kind": "issue",
+          "title": "O que os controles não fecham",
+          "html": "Nenhum dos controles explica por que a Zenith responde causa 90 em 5G; isso exige logs do core (N11, N2)."
         }
       ],
-      "notice": "Log com as três repetições do cenário 2. O CDUT mostra o comportamento esperado diante da mesma falha de rede: outra RAT da HPLMN antes de qualquer outra operadora.",
+      "notice": "Log com as três repetições do cenário 4, no mesmo arquivo do cenário 2.",
       "logPath": "Desafios/Desafio 6/Desafio_S06_Log_CDUT_Equinox.html",
       "logRange": {
-        "from": 21000,
-        "to": 25656
+        "from": 27597,
+        "to": 32236
       },
-      "logLabel": "Fonte: Desafio_S06_Log_CDUT_Equinox.html · cenário 2, repetições 01–03 · 105 eventos. Log original sem alterações (o arquivo também traz o cenário 4).",
+      "logLabel": "Fonte: Desafio_S06_Log_CDUT_Equinox.html · cenário 4, repetições 01–03 · 60 eventos. Log original sem alterações (o arquivo também traz o cenário 2).",
       "timeReference": {
         "idx": [
-          21341,
-          23598,
-          25459
+          27898,
+          30320,
+          32063
         ],
         "label": "Tempo desde a discagem do 112"
       },
       "guide": [
         {
-          "idx": 21341,
-          "title": "Discagem do 112: T 0",
-          "text": "Mesma célula 5G SA (PCI 88) e mesma HPLMN do Polaris."
+          "idx": 27898,
+          "title": "Discagem do 112 já em LTE: T 0",
+          "text": "Equinox acampado no LTE da Zenith (PCI 220)."
         },
         {
-          "idx": 21403,
-          "title": "A mesma causa 90",
-          "text": "DL NAS Transport com 5GMM cause 90, igual ao Polaris: a rede trata os dois aparelhos da mesma forma."
-        },
-        {
-          "idx": 21409,
-          "title": "Próximo passo: LTE da própria operadora",
-          "text": "O gerenciador de emergência do Equinox vai direto à seleção de célula LTE, sem varredura ampla."
-        },
-        {
-          "idx": 21416,
-          "title": "Zenith LTE PCI 220",
-          "text": "EARFCN 1444, PLMN 724/078, em T +0,65 s. É o ponto exato em que os dois aparelhos divergem."
-        },
-        {
-          "idx": 21449,
-          "title": "TAU de assinante",
-          "text": "TAU com GUTI mapeado do 5G-GUTI: o contexto passa do 5GC para o EPC (N26). O Equinox continua assinante, não visitante."
-        },
-        {
-          "idx": 21480,
+          "idx": 27950,
           "title": "PDN de emergência",
-          "text": "PDN Connectivity Request com Request type = emergency; a rede responde com APN sos."
+          "text": "Request type = emergency e APN sos."
         },
         {
-          "idx": 21525,
+          "idx": 28014,
           "title": "INVITE urn:service:sos",
-          "text": "Registro de emergência aceito pelo P-CSCF da Zenith e INVITE para urn:service:sos."
+          "text": "Mesma sinalização IMS de emergência do cenário 3."
         },
         {
-          "idx": 21560,
-          "title": "200 OK em T +1,95 s",
-          "text": "Chamada estabelecida por VoLTE na própria Zenith: o caminho preferencial (HPLMN, IMS)."
+          "idx": 28066,
+          "title": "200 OK em T +1,58 s",
+          "text": "Referência do controle em LTE."
         }
       ]
     },
@@ -591,155 +740,6 @@
           "idx": 28885,
           "title": "200 OK em T +1,62 s",
           "text": "VoLTE de emergência na Zenith, quase igual ao Equinox (1,58 s). Sem decisão de rede a tomar, o Polaris se comporta como o CDUT."
-        }
-      ]
-    },
-    {
-      "id": "cen4-cdut",
-      "number": "04 · REFERÊNCIA",
-      "label": "Equinox · 112 em 4G",
-      "kicker": "CENÁRIO 04 · CDUT · 4G (CONTROLE)",
-      "title": "Referência do controle em LTE",
-      "description": "Equinox · 112 discado já em LTE, mesma condição do cenário 3 · três repetições",
-      "status": "Referência aprovada · 3/3",
-      "statusClass": "good",
-      "device": "Equinox / CDUT",
-      "state": "112 via VoLTE na Zenith",
-      "scene": "home-only",
-      "rat": "LTE",
-      "network": "Zenith (HPLMN) · Aurora na área",
-      "leftNode": "gNodeB/eNodeB · Zenith · 724/078",
-      "leftCell": "n78 · PCI 88 + B3 · EARFCN 1444 · PCI 220",
-      "rightNode": "eNodeB/BTS · Aurora · 724/023",
-      "rightCell": "B3 · EARFCN 1300 · PCI 145 + GERAN ARFCN 62",
-      "rightRats": [
-        "GERAN"
-      ],
-      "coreNodes": {
-        "left": "5GC/EPC/IMS · Zenith",
-        "right": "EPC/IMS/MSC · Aurora"
-      },
-      "coreProtocols": [
-        "NAS-5GMM",
-        "NAS-5GSM",
-        "NAS-EMM",
-        "NAS-ESM",
-        "NAS-MM",
-        "NAS-CC",
-        "SIP"
-      ],
-      "timelineLabels": {
-        "eyebrow": "Repetições 01–03",
-        "note": "Segundos desde a discagem do 112 (Emergency Dial) · pontos = três repetições"
-      },
-      "axisMax": 4.5,
-      "metrics": [
-        {
-          "label": "Tempo de estabelecimento",
-          "value": "1,55–1,60 s",
-          "note": "3/3 · média 1,58 s",
-          "tone": "good-text"
-        },
-        {
-          "label": "Rede usada",
-          "value": "Zenith · 724/078",
-          "note": "LTE PCI 220 · sem troca de RAT",
-          "tone": "good-text"
-        },
-        {
-          "label": "Domínio final",
-          "value": "IMS (VoLTE) · Zenith",
-          "note": "urn:service:sos · APN sos",
-          "tone": "good-text"
-        },
-        {
-          "label": "Custo de partir do 5G",
-          "value": "+0,38 s",
-          "note": "média 5G 1,96 s × 4G 1,58 s",
-          "tone": "accent-text"
-        }
-      ],
-      "rows": [
-        {
-          "label": "Chamada estabelecida",
-          "sub": "discagem → 200 OK · 3 rep.",
-          "start": 1.55,
-          "end": 1.6,
-          "final": "1,55–1,60 s",
-          "color": "reference",
-          "points": [
-            {
-              "at": 1.58,
-              "kind": "reference"
-            },
-            {
-              "at": 1.55,
-              "kind": "reference"
-            },
-            {
-              "at": 1.6,
-              "kind": "reference"
-            }
-          ]
-        }
-      ],
-      "evidence": [
-        {
-          "kind": "ok",
-          "title": "Referência do controle",
-          "html": "1,55–1,60 s em LTE, com o mesmo fluxo IMS de emergência do Polaris."
-        },
-        {
-          "kind": "ok",
-          "title": "Custo da falha em 5G no CDUT",
-          "html": "Partindo de 5G, o Equinox leva 0,38 s a mais em média (1,96 s × 1,58 s): a causa 90 e a troca para LTE custam pouco quando o UE fica na HPLMN."
-        },
-        {
-          "kind": "ok",
-          "title": "Mesma rede do controle do DUT",
-          "html": "Mesma célula LTE PCI 220 e mesmo P-CSCF da Zenith do cenário 3."
-        },
-        {
-          "kind": "issue",
-          "title": "O que os controles não fecham",
-          "html": "Nenhum dos controles explica por que a Zenith responde causa 90 em 5G; isso exige logs do core (N11, N2)."
-        }
-      ],
-      "notice": "Log com as três repetições do cenário 4, no mesmo arquivo do cenário 2.",
-      "logPath": "Desafios/Desafio 6/Desafio_S06_Log_CDUT_Equinox.html",
-      "logRange": {
-        "from": 27597,
-        "to": 32236
-      },
-      "logLabel": "Fonte: Desafio_S06_Log_CDUT_Equinox.html · cenário 4, repetições 01–03 · 60 eventos. Log original sem alterações (o arquivo também traz o cenário 2).",
-      "timeReference": {
-        "idx": [
-          27898,
-          30320,
-          32063
-        ],
-        "label": "Tempo desde a discagem do 112"
-      },
-      "guide": [
-        {
-          "idx": 27898,
-          "title": "Discagem do 112 já em LTE: T 0",
-          "text": "Equinox acampado no LTE da Zenith (PCI 220)."
-        },
-        {
-          "idx": 27950,
-          "title": "PDN de emergência",
-          "text": "Request type = emergency e APN sos."
-        },
-        {
-          "idx": 28014,
-          "title": "INVITE urn:service:sos",
-          "text": "Mesma sinalização IMS de emergência do cenário 3."
-        },
-        {
-          "idx": 28066,
-          "title": "200 OK em T +1,58 s",
-          "text": "Referência do controle em LTE."
         }
       ]
     }

@@ -52,10 +52,10 @@ Rejeições em cascata no registro 5G SA do **Aurora** (DUT) após troca de perf
 
 | Cenário | Aparelho | Troca de perfil | RAT | Fonte da reprodução |
 |---|---|---|---|---|
+| 04 · Referência | Boreal | Vantis → Zenith | 5G SA | Log `Desafio_S02_Log_CDUT_Boreal.html` |
 | 01 · DUT | Aurora | Vantis (724/085) → Zenith (724/078) | 5G SA | Log `Desafio_S02_Log_DUT_Aurora.html` |
 | 02 · DUT | Aurora | Zenith (724/078) → Nimbus (724/091) | 5G SA | Etapas resumidas do caso |
 | 03 · Controle | Aurora | Vantis → Zenith | LTE | Etapas resumidas do caso |
-| 04 · Referência | Boreal | Vantis → Zenith | 5G SA | Log `Desafio_S02_Log_CDUT_Boreal.html` |
 
 Fontes: o caso `Desafio_Semana_2.docx` (fora do projeto) e os dois logs da pasta `Desafios/Desafio 2/`.
 
@@ -65,9 +65,9 @@ Radio Link Failure do **Meridian** (DUT) no handover inter-frequência n78 → n
 
 | Cenário | Aparelho | Mobilidade | Fonte da reprodução |
 |---|---|---|---|
-| 01 · Controle | Meridian | Intra-frequência n78 (PCI 88 → 101) | Etapas e horários da repetição 01 do caso |
-| 02 · DUT | Meridian | Inter-frequência n78 → n41 (PCI 145/160) | Log `Desafio_S03_Log_DUT_Meridian.html` |
 | 03 · Referência | Solstice | Inter-frequência n78 → n41 | Log `Desafio_S03_Log_CDUT_Solstice.html` |
+| 02 · DUT | Meridian | Inter-frequência n78 → n41 (PCI 145/160) | Log `Desafio_S03_Log_DUT_Meridian.html` |
+| 01 · Controle | Meridian | Intra-frequência n78 (PCI 88 → 101) | Etapas e horários da repetição 01 do caso |
 
 Fontes: o caso `Desafio_S03_Caso_Aluno.docx` (fora do projeto) e os dois logs da pasta `Desafios/Desafio 3/`.
 
@@ -77,10 +77,10 @@ Dois sintomas do **Vanguard** (DUT), comparados ao **Solstice** (CDUT): no Test 
 
 | Cenário | Aparelho | Procedimento | RAT | Fonte da reprodução |
 |---|---|---|---|---|
-| 01 · DUT | Vanguard | Toggle de modo avião + chamada MT | 5G SA (n78 · PCI 88) | Log `Desafio_S04_Log_Cen1_MT_VoNR_DUT_Vanguard.html` |
-| 02 · Referência | Solstice | Toggle de modo avião + chamada MT | 5G SA (n78 · PCI 88) | Log `Desafio_S04_Log_Cen1_MT_VoNR_CDUT_Solstice.html` |
-| 03 · DUT | Vanguard | Power cycle + chamada MO | LTE (Band 3 · PCI 41) | Log `Desafio_S04_Log_Cen2_MO_VoLTE_DUT_Vanguard.html` |
-| 04 · Referência | Solstice | Power cycle + chamada MO | LTE (Band 3 · PCI 41) | Log `Desafio_S04_Log_Cen2_MO_VoLTE_CDUT_Solstice.html` |
+| 01 · Referência | Solstice | Toggle de modo avião + chamada MT | 5G SA (n78 · PCI 88) | Log `Desafio_S04_Log_Cen1_MT_VoNR_CDUT_Solstice.html` |
+| 02 · DUT | Vanguard | Toggle de modo avião + chamada MT | 5G SA (n78 · PCI 88) | Log `Desafio_S04_Log_Cen1_MT_VoNR_DUT_Vanguard.html` |
+| 03 · Referência | Solstice | Power cycle + chamada MO | LTE (Band 3 · PCI 41) | Log `Desafio_S04_Log_Cen2_MO_VoLTE_CDUT_Solstice.html` |
+| 04 · DUT | Vanguard | Power cycle + chamada MO | LTE (Band 3 · PCI 41) | Log `Desafio_S04_Log_Cen2_MO_VoLTE_DUT_Vanguard.html` |
 
 Fontes: o caso `Desafio_S04.docx` (fora do projeto) e os quatro logs da pasta `Desafios/Desafio 4/`.
 
@@ -90,10 +90,10 @@ Dois sintomas do **Polaris** (DUT) na mesma chamada, comparados ao **Equinox** (
 
 | Cenário | Aparelho | Chamada | RATs | Fonte da reprodução |
 |---|---|---|---|---|
-| 01 · DUT | Polaris | MO | 5G SA → LTE → (GERAN) | Log `Desafio_S05_Log_DUT_Polaris_Cenario1_vf.html` |
 | 02 · Referência | Equinox | MO | 5G SA → LTE → GERAN | Log `Desafio_S05_Log_CDUT_Equinox_Cenario2_vf.html` |
-| 03 · DUT | Polaris | MT | 5G SA → LTE → (GERAN) | Log `Desafio_S05_Log_DUT_Polaris_Cenario3_vf.html` |
+| 01 · DUT | Polaris | MO | 5G SA → LTE → (GERAN) | Log `Desafio_S05_Log_DUT_Polaris_Cenario1_vf.html` |
 | 04 · Referência | Equinox | MT | 5G SA → LTE → GERAN | Log `Desafio_S05_Log_CDUT_Equinox_Cenario4_vf.html` |
+| 03 · DUT | Polaris | MT | 5G SA → LTE → (GERAN) | Log `Desafio_S05_Log_DUT_Polaris_Cenario3_vf.html` |
 
 Fontes: o caso `Desafio_S05_vf.docx` (não publicado) e os quatro logs da pasta `Desafios/Desafio 5/`. A seção **Material de apoio** mostra as figuras `CSFB.png` (arquitetura de referência), `SRVCC antes.png` e `SRVCC depois.png`.
 
@@ -104,10 +104,10 @@ O **Polaris** (DUT) leva quase o dobro do tempo do **Equinox** (CDUT) para compl
 
 | Cenário | Aparelho | Origem | Fonte da reprodução |
 |---|---|---|---|
-| 01 · DUT | Polaris | 5G SA | Log `Desafio_S06_Log_DUT_Polaris.html`, repetições 01–03 do cenário 1 |
 | 02 · Referência | Equinox | 5G SA | Log `Desafio_S06_Log_CDUT_Equinox.html`, repetições 01–03 do cenário 2 |
-| 03 · Controle | Polaris | 4G | Log `Desafio_S06_Log_DUT_Polaris.html`, repetições 01–03 do cenário 3 |
+| 01 · DUT | Polaris | 5G SA | Log `Desafio_S06_Log_DUT_Polaris.html`, repetições 01–03 do cenário 1 |
 | 04 · Referência | Equinox | 4G | Log `Desafio_S06_Log_CDUT_Equinox.html`, repetições 01–03 do cenário 4 |
+| 03 · Controle | Polaris | 4G | Log `Desafio_S06_Log_DUT_Polaris.html`, repetições 01–03 do cenário 3 |
 
 Fontes: o caso e a apresentação da sessão 6 (não publicados) e os dois logs da pasta `Desafios/Desafio 6/`. Cada log traz dois cenários; o campo `logRange` recorta o cenário certo.
 

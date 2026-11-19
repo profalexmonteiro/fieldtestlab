@@ -20,6 +20,43 @@
     "num": 2,
     "scenarios": [
       {
+        "id": "cdut-boreal",
+        "label": "Boreal · Vantis → Zenith · 5G SA",
+        "title": "Boreal conclui registro na primeira tentativa",
+        "status": "Referência aprovada · 5/5",
+        "statusClass": "good",
+        "device": "Boreal / CDUT",
+        "desc": "Boreal · Vantis (724/085) → Zenith (724/078) · mesmas células do cenário 1",
+        "rat": "NR · 5G SA",
+        "metrics": [
+          {
+            "label": "Tentativas de registro",
+            "value": "1 tentativa",
+            "note": "5 de 5 trocas · 100%",
+            "tone": "good-text"
+          },
+          {
+            "label": "Tempo até registro",
+            "value": "0,98–1,15 s",
+            "note": "5G SA · sem rejeição",
+            "tone": "good-text"
+          },
+          {
+            "label": "Authentication",
+            "value": "sucesso",
+            "note": "RES* e NIA2/NEA2",
+            "tone": "accent-text"
+          },
+          {
+            "label": "Registration Complete",
+            "value": "registrado",
+            "note": "5GS-Registration-Result",
+            "tone": "good-text"
+          }
+        ],
+        "notice": "Log de referência do Boreal: uma tentativa, 19 mensagens. Atenção: o log dura 0,82 s (da detecção PSS/SSS ao Registration Complete), menos que qualquer tempo total do cenário 4 no caso (0,98–1,15 s); o documento não define o instante inicial da medição. O relato de 5/5 trocas é agregado; não há cinco arquivos de log individuais."
+      },
+      {
         "id": "dut-vantis-zenith",
         "label": "Aurora · Vantis → Zenith · 5G SA",
         "title": "Cascata de rejeições no registro",
@@ -129,43 +166,6 @@
           }
         ],
         "notice": "O material descreve LTE como controle adicional, não fornece captura OTA LTE nem detalhes de call flow. A visualização mostra eNodeB/LTE, sem inventar mensagens ausentes."
-      },
-      {
-        "id": "cdut-boreal",
-        "label": "Boreal · Vantis → Zenith · 5G SA",
-        "title": "Boreal conclui registro na primeira tentativa",
-        "status": "Referência aprovada · 5/5",
-        "statusClass": "good",
-        "device": "Boreal / CDUT",
-        "desc": "Boreal · Vantis (724/085) → Zenith (724/078) · mesmas células do cenário 1",
-        "rat": "NR · 5G SA",
-        "metrics": [
-          {
-            "label": "Tentativas de registro",
-            "value": "1 tentativa",
-            "note": "5 de 5 trocas · 100%",
-            "tone": "good-text"
-          },
-          {
-            "label": "Tempo até registro",
-            "value": "0,98–1,15 s",
-            "note": "5G SA · sem rejeição",
-            "tone": "good-text"
-          },
-          {
-            "label": "Authentication",
-            "value": "sucesso",
-            "note": "RES* e NIA2/NEA2",
-            "tone": "accent-text"
-          },
-          {
-            "label": "Registration Complete",
-            "value": "registrado",
-            "note": "5GS-Registration-Result",
-            "tone": "good-text"
-          }
-        ],
-        "notice": "Log de referência do Boreal: uma tentativa, 19 mensagens. Atenção: o log dura 0,82 s (da detecção PSS/SSS ao Registration Complete), menos que qualquer tempo total do cenário 4 no caso (0,98–1,15 s); o documento não define o instante inicial da medição. O relato de 5/5 trocas é agregado; não há cinco arquivos de log individuais."
       }
     ]
   },
@@ -190,41 +190,41 @@
     "num": 3,
     "scenarios": [
       {
-        "id": "controle-intra",
-        "label": "Meridian · intra-frequência",
-        "title": "Handover intra-frequência concluído",
-        "status": "Controle aprovado · 3/3",
+        "id": "cdut-solstice",
+        "label": "Solstice · inter-frequência",
+        "title": "Handover inter-frequência sem RLF",
+        "status": "Referência aprovada · 3/3",
         "statusClass": "good",
-        "device": "Meridian / DUT",
-        "desc": "Meridian · n78 PCI 88 → PCI 101 · mesma frequência · três repetições",
+        "device": "Solstice / CDUT",
+        "desc": "Solstice · n78 PCI 88 → n41 PCI 145/160 · mesma rede e sequência de medição",
         "rat": "NR · SA",
         "metrics": [
           {
-            "label": "Medição ativa",
-            "value": "A3 · measId=1",
-            "note": "mesma frequência",
+            "label": "Measurement Report A5",
+            "value": "0,655–0,705 s",
+            "note": "TTT configurado: 240 ms",
             "tone": "accent-text"
           },
           {
-            "label": "Measurement Report",
-            "value": "1,155–1,210 s",
-            "note": "desde o início da degradação",
-            "tone": ""
-          },
-          {
-            "label": "Conclusão HO",
-            "value": "1,312–1,370 s",
+            "label": "Handover concluído",
+            "value": "0,815–0,865 s",
             "note": "RRCReconfigurationComplete",
             "tone": "good-text"
           },
           {
-            "label": "RLF",
+            "label": "Radio Link Failure",
             "value": "0 / 3",
             "note": "OOS_FILT_BLER abaixo do limiar",
             "tone": "good-text"
+          },
+          {
+            "label": "Cadeia Report → HO",
+            "value": "≈ 160 ms",
+            "note": "mesma banda alvo n41",
+            "tone": "good-text"
           }
         ],
-        "notice": "O caso descreve este cenário como controle de mesma frequência. Não há um arquivo de log detalhado anexado para ele; os valores exibidos vêm da ficha do desafio."
+        "notice": "A comparação com o CDUT é uma evidência de controle, não uma prova de que todos os parâmetros de RF e de rede eram idênticos em cada instante."
       },
       {
         "id": "dut-inter",
@@ -264,41 +264,41 @@
         "notice": "A repetição 01 do log detalhado mostra a sequência completa. O caso não traz coordenadas GPS nem sinalização entre nós (Xn/NGAP); não atribua a causa à rede com base apenas neste log UE."
       },
       {
-        "id": "cdut-solstice",
-        "label": "Solstice · inter-frequência",
-        "title": "Handover inter-frequência sem RLF",
-        "status": "Referência aprovada · 3/3",
+        "id": "controle-intra",
+        "label": "Meridian · intra-frequência",
+        "title": "Handover intra-frequência concluído",
+        "status": "Controle aprovado · 3/3",
         "statusClass": "good",
-        "device": "Solstice / CDUT",
-        "desc": "Solstice · n78 PCI 88 → n41 PCI 145/160 · mesma rede e sequência de medição",
+        "device": "Meridian / DUT",
+        "desc": "Meridian · n78 PCI 88 → PCI 101 · mesma frequência · três repetições",
         "rat": "NR · SA",
         "metrics": [
           {
-            "label": "Measurement Report A5",
-            "value": "0,655–0,705 s",
-            "note": "TTT configurado: 240 ms",
+            "label": "Medição ativa",
+            "value": "A3 · measId=1",
+            "note": "mesma frequência",
             "tone": "accent-text"
           },
           {
-            "label": "Handover concluído",
-            "value": "0,815–0,865 s",
+            "label": "Measurement Report",
+            "value": "1,155–1,210 s",
+            "note": "desde o início da degradação",
+            "tone": ""
+          },
+          {
+            "label": "Conclusão HO",
+            "value": "1,312–1,370 s",
             "note": "RRCReconfigurationComplete",
             "tone": "good-text"
           },
           {
-            "label": "Radio Link Failure",
+            "label": "RLF",
             "value": "0 / 3",
             "note": "OOS_FILT_BLER abaixo do limiar",
             "tone": "good-text"
-          },
-          {
-            "label": "Cadeia Report → HO",
-            "value": "≈ 160 ms",
-            "note": "mesma banda alvo n41",
-            "tone": "good-text"
           }
         ],
-        "notice": "A comparação com o CDUT é uma evidência de controle, não uma prova de que todos os parâmetros de RF e de rede eram idênticos em cada instante."
+        "notice": "O caso descreve este cenário como controle de mesma frequência. Não há um arquivo de log detalhado anexado para ele; os valores exibidos vêm da ficha do desafio."
       }
     ]
   },
@@ -322,43 +322,6 @@
     ],
     "num": 4,
     "scenarios": [
-      {
-        "id": "cen1-dut",
-        "label": "Vanguard · MT VoNR · 5G SA",
-        "title": "Registro IMS rejeitado: a chamada MT não chega",
-        "status": "Falha reproduzida · 3/3",
-        "statusClass": "bad",
-        "device": "Vanguard / DUT",
-        "desc": "Vanguard · toggle de modo avião + chamada MT em VoNR · n78 PCI 88 · três repetições",
-        "rat": "NR · 5G SA",
-        "metrics": [
-          {
-            "label": "Tentativas autenticadas",
-            "value": "2 × 403 Forbidden",
-            "note": "3 de 3 repetições · 100%",
-            "tone": "bad-text"
-          },
-          {
-            "label": "Motivo da rejeição",
-            "value": "Warning 399",
-            "note": "nonce does not match latest challenge",
-            "tone": "bad-text"
-          },
-          {
-            "label": "Registro IMS",
-            "value": "abandonado",
-            "note": "max_auth_attempts = 2",
-            "tone": "bad-text"
-          },
-          {
-            "label": "RSRP / RSRQ · PCI 88",
-            "value": "−82 / −8 dB",
-            "note": "n78 · UE estacionário",
-            "tone": "accent-text"
-          }
-        ],
-        "notice": "Log da repetição 01. As repetições 02 e 03 (403 em 0,104/0,212 s e 0,116/0,231 s) vêm do documento do caso. A bancada usa SIP Digest MD5 em vez de IMS-AKA. O log do UE não mostra o lado do P-CSCF/S-CSCF; o motivo do 403 vem do cabeçalho Warning da resposta."
-      },
       {
         "id": "cen1-cdut",
         "label": "Solstice · MT VoNR · 5G SA",
@@ -397,41 +360,41 @@
         "notice": "Log da repetição 01. Os 200 OK das repetições 02 e 03 (0,098 s e 0,109 s) vêm do documento do caso. A chamada MT chega cerca de 12 s depois do registro, quando o terminal remoto origina a chamada; a reprodução comprime intervalos longos."
       },
       {
-        "id": "cen2-dut",
-        "label": "Vanguard · MO VoLTE · LTE",
-        "title": "Chamada estabelecida, voz ininteligível",
+        "id": "cen1-dut",
+        "label": "Vanguard · MT VoNR · 5G SA",
+        "title": "Registro IMS rejeitado: a chamada MT não chega",
         "status": "Falha reproduzida · 3/3",
         "statusClass": "bad",
         "device": "Vanguard / DUT",
-        "desc": "Vanguard · power cycle + chamada MO em VoLTE · Band 3 EARFCN 1575 PCI 41 · três repetições",
-        "rat": "LTE · 4G",
+        "desc": "Vanguard · toggle de modo avião + chamada MT em VoNR · n78 PCI 88 · três repetições",
+        "rat": "NR · 5G SA",
         "metrics": [
           {
-            "label": "Registro IMS",
-            "value": "1ª tentativa",
-            "note": "200 OK em 0,110 s · após power cycle",
-            "tone": "good-text"
-          },
-          {
-            "label": "SDP da rede · PT 97",
-            "value": "AMR/8000",
-            "note": "183 e 200 OK do UPDATE",
-            "tone": "accent-text"
-          },
-          {
-            "label": "Vocoder do DUT · PT 97",
-            "value": "EVS 24,4 kbps",
-            "note": "mismatch de payload type",
+            "label": "Tentativas autenticadas",
+            "value": "2 × 403 Forbidden",
+            "note": "3 de 3 repetições · 100%",
             "tone": "bad-text"
           },
           {
-            "label": "RTP em T+10 s",
-            "value": "TX 500 / RX 497–499",
-            "note": "3/3 voz ininteligível",
-            "tone": "warn-text"
+            "label": "Motivo da rejeição",
+            "value": "Warning 399",
+            "note": "nonce does not match latest challenge",
+            "tone": "bad-text"
+          },
+          {
+            "label": "Registro IMS",
+            "value": "abandonado",
+            "note": "max_auth_attempts = 2",
+            "tone": "bad-text"
+          },
+          {
+            "label": "RSRP / RSRQ · PCI 88",
+            "value": "−82 / −8 dB",
+            "note": "n78 · UE estacionário",
+            "tone": "accent-text"
           }
         ],
-        "notice": "Log da repetição 01. Os contadores RTP das repetições 02 e 03 (RX 497 e 499) vêm do documento do caso. O log é do UE: ele não mostra o payload que a rede efetivamente envia, apenas os SDPs trocados e o vocoder escolhido pelo DUT."
+        "notice": "Log da repetição 01. As repetições 02 e 03 (403 em 0,104/0,212 s e 0,116/0,231 s) vêm do documento do caso. A bancada usa SIP Digest MD5 em vez de IMS-AKA. O log do UE não mostra o lado do P-CSCF/S-CSCF; o motivo do 403 vem do cabeçalho Warning da resposta."
       },
       {
         "id": "cen2-cdut",
@@ -469,6 +432,43 @@
           }
         ],
         "notice": "Log da repetição 01. Os contadores RTP das repetições 02 e 03 (RX 498 e 496) vêm do documento do caso."
+      },
+      {
+        "id": "cen2-dut",
+        "label": "Vanguard · MO VoLTE · LTE",
+        "title": "Chamada estabelecida, voz ininteligível",
+        "status": "Falha reproduzida · 3/3",
+        "statusClass": "bad",
+        "device": "Vanguard / DUT",
+        "desc": "Vanguard · power cycle + chamada MO em VoLTE · Band 3 EARFCN 1575 PCI 41 · três repetições",
+        "rat": "LTE · 4G",
+        "metrics": [
+          {
+            "label": "Registro IMS",
+            "value": "1ª tentativa",
+            "note": "200 OK em 0,110 s · após power cycle",
+            "tone": "good-text"
+          },
+          {
+            "label": "SDP da rede · PT 97",
+            "value": "AMR/8000",
+            "note": "183 e 200 OK do UPDATE",
+            "tone": "accent-text"
+          },
+          {
+            "label": "Vocoder do DUT · PT 97",
+            "value": "EVS 24,4 kbps",
+            "note": "mismatch de payload type",
+            "tone": "bad-text"
+          },
+          {
+            "label": "RTP em T+10 s",
+            "value": "TX 500 / RX 497–499",
+            "note": "3/3 voz ininteligível",
+            "tone": "warn-text"
+          }
+        ],
+        "notice": "Log da repetição 01. Os contadores RTP das repetições 02 e 03 (RX 497 e 499) vêm do documento do caso. O log é do UE: ele não mostra o payload que a rede efetivamente envia, apenas os SDPs trocados e o vocoder escolhido pelo DUT."
       }
     ]
   },
@@ -492,6 +492,43 @@
     ],
     "num": 5,
     "scenarios": [
+      {
+        "id": "cen2-cdut",
+        "label": "Equinox · MO · 5G SA → EPSFB",
+        "title": "CST normal e SRVCC para 2G",
+        "status": "Referência aprovada · 3/3",
+        "statusClass": "good",
+        "device": "Equinox / CDUT",
+        "desc": "Equinox · mesma chamada MO, mesmo site e mesma rota do cenário 1 · três repetições",
+        "rat": "NR → LTE → GERAN",
+        "metrics": [
+          {
+            "label": "Call Setup Time",
+            "value": "3,25–3,52 s",
+            "note": "média 3,39 s",
+            "tone": "good-text"
+          },
+          {
+            "label": "Accept do bearer QCI 1",
+            "value": "EBI 6",
+            "note": "1ª tentativa · sem retransmissão",
+            "tone": "good-text"
+          },
+          {
+            "label": "Far-cell",
+            "value": "SRVCC → GERAN",
+            "note": "3/3 · 2,05–2,22 s após o report B2",
+            "tone": "good-text"
+          },
+          {
+            "label": "TAU Request",
+            "value": "Classmark 2/3 + Codecs",
+            "note": "IEs do SRVCC presentes",
+            "tone": "accent-text"
+          }
+        ],
+        "notice": "Log da repetição 01. Os tempos das repetições 02 e 03 vêm do documento do caso. O \"handover concluído em T\" do caso é medido do Measurement Report B2 até o RR Handover Complete."
+      },
       {
         "id": "cen1-dut",
         "label": "Polaris · MO · 5G SA → EPSFB",
@@ -530,19 +567,19 @@
         "notice": "Log da repetição 01. Os tempos das repetições 02 e 03 vêm do documento do caso. O log é do UE: a sinalização entre nós da rede (S1AP, Sv, MSC, HSS) não aparece, então a decisão do MME de não preparar o SRVCC é inferida a partir do que o UE envia e recebe."
       },
       {
-        "id": "cen2-cdut",
-        "label": "Equinox · MO · 5G SA → EPSFB",
+        "id": "cen4-cdut",
+        "label": "Equinox · MT · 5G SA → EPSFB",
         "title": "CST normal e SRVCC para 2G",
         "status": "Referência aprovada · 3/3",
         "statusClass": "good",
         "device": "Equinox / CDUT",
-        "desc": "Equinox · mesma chamada MO, mesmo site e mesma rota do cenário 1 · três repetições",
+        "desc": "Equinox · mesma chamada MT, mesmo site e mesma rota do cenário 3 · três repetições",
         "rat": "NR → LTE → GERAN",
         "metrics": [
           {
             "label": "Call Setup Time",
-            "value": "3,25–3,52 s",
-            "note": "média 3,39 s",
+            "value": "3,38–3,61 s",
+            "note": "média 3,51 s",
             "tone": "good-text"
           },
           {
@@ -602,43 +639,6 @@
           }
         ],
         "notice": "Log da repetição 01. Os tempos das repetições 02 e 03 vêm do documento do caso. O log é do UE: a sinalização entre nós da rede (S1AP, Sv, MSC, HSS) não aparece, então a decisão do MME de não preparar o SRVCC é inferida a partir do que o UE envia e recebe."
-      },
-      {
-        "id": "cen4-cdut",
-        "label": "Equinox · MT · 5G SA → EPSFB",
-        "title": "CST normal e SRVCC para 2G",
-        "status": "Referência aprovada · 3/3",
-        "statusClass": "good",
-        "device": "Equinox / CDUT",
-        "desc": "Equinox · mesma chamada MT, mesmo site e mesma rota do cenário 3 · três repetições",
-        "rat": "NR → LTE → GERAN",
-        "metrics": [
-          {
-            "label": "Call Setup Time",
-            "value": "3,38–3,61 s",
-            "note": "média 3,51 s",
-            "tone": "good-text"
-          },
-          {
-            "label": "Accept do bearer QCI 1",
-            "value": "EBI 6",
-            "note": "1ª tentativa · sem retransmissão",
-            "tone": "good-text"
-          },
-          {
-            "label": "Far-cell",
-            "value": "SRVCC → GERAN",
-            "note": "3/3 · 2,05–2,22 s após o report B2",
-            "tone": "good-text"
-          },
-          {
-            "label": "TAU Request",
-            "value": "Classmark 2/3 + Codecs",
-            "note": "IEs do SRVCC presentes",
-            "tone": "accent-text"
-          }
-        ],
-        "notice": "Log da repetição 01. Os tempos das repetições 02 e 03 vêm do documento do caso. O \"handover concluído em T\" do caso é medido do Measurement Report B2 até o RR Handover Complete."
       }
     ]
   },
@@ -662,43 +662,6 @@
     ],
     "num": 6,
     "scenarios": [
-      {
-        "id": "cen1-dut",
-        "label": "Polaris · 112 em 5G SA",
-        "title": "Emergência completada em outra operadora, por CS",
-        "status": "Desvio reproduzido · 3/3",
-        "statusClass": "bad",
-        "device": "Polaris / DUT",
-        "desc": "Polaris · 112 discado em 5G SA (n78 PCI 88, Zenith) · três repetições",
-        "rat": "NR → LTE → GERAN",
-        "metrics": [
-          {
-            "label": "Tempo de estabelecimento",
-            "value": "3,72–3,95 s",
-            "note": "3/3 · média 3,82 s · CDUT 1,96 s",
-            "tone": "bad-text"
-          },
-          {
-            "label": "Célula escolhida após a falha",
-            "value": "Aurora · 724/023",
-            "note": "PCI 145 −80 dBm · Zenith PCI 220 −85 dBm disponível",
-            "tone": "bad-text"
-          },
-          {
-            "label": "Domínio final",
-            "value": "CS (2G) · Aurora",
-            "note": "IMS da Aurora: 403 Emergency registration not permitted",
-            "tone": "warn-text"
-          },
-          {
-            "label": "Resposta da rede em 5G",
-            "value": "5GMM cause 90",
-            "note": "sem EPS Fallback · igual no CDUT",
-            "tone": "warn-text"
-          }
-        ],
-        "notice": "Log com as três repetições do cenário 1; os tempos de todas batem com o documento do caso. O log do UE não mostra o core (N11 entre AMF e SMF, N2, interconexão IMS): a causa 90 e a falta de EPS Fallback ficam como hipóteses de rede em aberto. O desvio do Polaris é o que ele decide depois delas."
-      },
       {
         "id": "cen2-cdut",
         "label": "Equinox · 112 em 5G SA",
@@ -737,41 +700,41 @@
         "notice": "Log com as três repetições do cenário 2. O CDUT mostra o comportamento esperado diante da mesma falha de rede: outra RAT da HPLMN antes de qualquer outra operadora."
       },
       {
-        "id": "cen3-dut",
-        "label": "Polaris · 112 em 4G",
-        "title": "Em LTE, o Polaris faz a emergência normalmente",
-        "status": "Controle aprovado · 3/3",
-        "statusClass": "good",
+        "id": "cen1-dut",
+        "label": "Polaris · 112 em 5G SA",
+        "title": "Emergência completada em outra operadora, por CS",
+        "status": "Desvio reproduzido · 3/3",
+        "statusClass": "bad",
         "device": "Polaris / DUT",
-        "desc": "Polaris · 112 discado já em LTE (B3 PCI 220, Zenith) · três repetições",
-        "rat": "LTE",
+        "desc": "Polaris · 112 discado em 5G SA (n78 PCI 88, Zenith) · três repetições",
+        "rat": "NR → LTE → GERAN",
         "metrics": [
           {
             "label": "Tempo de estabelecimento",
-            "value": "1,62–1,70 s",
-            "note": "3/3 · média 1,66 s · CDUT 1,58 s",
-            "tone": "good-text"
+            "value": "3,72–3,95 s",
+            "note": "3/3 · média 3,82 s · CDUT 1,96 s",
+            "tone": "bad-text"
           },
           {
-            "label": "Rede usada",
-            "value": "Zenith · 724/078",
-            "note": "LTE PCI 220 · sem troca de RAT",
-            "tone": "good-text"
+            "label": "Célula escolhida após a falha",
+            "value": "Aurora · 724/023",
+            "note": "PCI 145 −80 dBm · Zenith PCI 220 −85 dBm disponível",
+            "tone": "bad-text"
           },
           {
             "label": "Domínio final",
-            "value": "IMS (VoLTE) · Zenith",
-            "note": "urn:service:sos · APN sos",
-            "tone": "good-text"
+            "value": "CS (2G) · Aurora",
+            "note": "IMS da Aurora: 403 Emergency registration not permitted",
+            "tone": "warn-text"
           },
           {
-            "label": "Diferença para o CDUT",
-            "value": "+0,04 a +0,15 s",
-            "note": "por repetição · dentro da variação",
-            "tone": "accent-text"
+            "label": "Resposta da rede em 5G",
+            "value": "5GMM cause 90",
+            "note": "sem EPS Fallback · igual no CDUT",
+            "tone": "warn-text"
           }
         ],
-        "notice": "Log com as três repetições do cenário 3, no mesmo arquivo do cenário 1."
+        "notice": "Log com as três repetições do cenário 1; os tempos de todas batem com o documento do caso. O log do UE não mostra o core (N11 entre AMF e SMF, N2, interconexão IMS): a causa 90 e a falta de EPS Fallback ficam como hipóteses de rede em aberto. O desvio do Polaris é o que ele decide depois delas."
       },
       {
         "id": "cen4-cdut",
@@ -809,6 +772,43 @@
           }
         ],
         "notice": "Log com as três repetições do cenário 4, no mesmo arquivo do cenário 2."
+      },
+      {
+        "id": "cen3-dut",
+        "label": "Polaris · 112 em 4G",
+        "title": "Em LTE, o Polaris faz a emergência normalmente",
+        "status": "Controle aprovado · 3/3",
+        "statusClass": "good",
+        "device": "Polaris / DUT",
+        "desc": "Polaris · 112 discado já em LTE (B3 PCI 220, Zenith) · três repetições",
+        "rat": "LTE",
+        "metrics": [
+          {
+            "label": "Tempo de estabelecimento",
+            "value": "1,62–1,70 s",
+            "note": "3/3 · média 1,66 s · CDUT 1,58 s",
+            "tone": "good-text"
+          },
+          {
+            "label": "Rede usada",
+            "value": "Zenith · 724/078",
+            "note": "LTE PCI 220 · sem troca de RAT",
+            "tone": "good-text"
+          },
+          {
+            "label": "Domínio final",
+            "value": "IMS (VoLTE) · Zenith",
+            "note": "urn:service:sos · APN sos",
+            "tone": "good-text"
+          },
+          {
+            "label": "Diferença para o CDUT",
+            "value": "+0,04 a +0,15 s",
+            "note": "por repetição · dentro da variação",
+            "tone": "accent-text"
+          }
+        ],
+        "notice": "Log com as três repetições do cenário 3, no mesmo arquivo do cenário 1."
       }
     ]
   }

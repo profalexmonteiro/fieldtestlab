@@ -29,8 +29,165 @@
   },
   "scenarios": [
     {
+      "id": "cen1-cdut",
+      "number": "01 · REFERÊNCIA",
+      "label": "Solstice · MT VoNR · 5G SA",
+      "kicker": "CENÁRIO 01 · CDUT · TEST CASE #1",
+      "title": "Registro na 1ª tentativa e chamada MT atendida",
+      "description": "Solstice · mesmo toggle de modo avião + chamada MT em VoNR · n78 PCI 88 · três repetições",
+      "status": "Referência aprovada · 3/3",
+      "statusClass": "good",
+      "device": "Solstice / CDUT",
+      "state": "IMS REGISTERED · chamada VoNR",
+      "scene": "reference",
+      "rat": "NR · 5G SA",
+      "network": "NovaLink / Site Delta",
+      "leftNode": "gNodeB · NovaLink",
+      "leftCell": "n78 · NR-ARFCN 633180 · PCI 88",
+      "rightNode": "IMS · P-CSCF",
+      "rightCell": "ims.novalink.com.br · SIP",
+      "rightProtocols": [
+        "SIP"
+      ],
+      "rightKind": "core",
+      "coreNodes": { "left": "5GC · NovaLink" },
+      "coreProtocols": ["NAS"],
+      "axisMax": 0.3,
+      "metrics": [
+        {
+          "label": "Tentativas autenticadas",
+          "value": "1 tentativa",
+          "note": "3 de 3 repetições · 100%",
+          "tone": "good-text"
+        },
+        {
+          "label": "200 OK do REGISTER",
+          "value": "0,098–0,109 s",
+          "note": "desde o REGISTER #1",
+          "tone": "good-text"
+        },
+        {
+          "label": "Chamada MT",
+          "value": "recebida e atendida",
+          "note": "VoNR · EVS 24,4 kbps · PT 97",
+          "tone": "good-text"
+        },
+        {
+          "label": "RTP em T+10 s",
+          "value": "TX 500 / RX 498",
+          "note": "repetição 01 · áudio nítido",
+          "tone": "accent-text"
+        }
+      ],
+      "rows": [
+        {
+          "label": "200 OK · REGISTER",
+          "sub": "1ª tentativa autenticada · 3 rep.",
+          "start": 0.098,
+          "end": 0.109,
+          "final": "0,098–0,109 s",
+          "color": "reference",
+          "points": [
+            {
+              "at": 0.098,
+              "kind": "reference"
+            },
+            {
+              "at": 0.102,
+              "kind": "reference"
+            },
+            {
+              "at": 0.109,
+              "kind": "reference"
+            }
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "ok",
+          "title": "Responde ao desafio atual",
+          "html": "Após o 401 com <code>nonce=\"N1-5c20e9b7d1\"</code>, o REGISTER CSeq 2 usa o mesmo nonce, e o 200 OK chega em T +0,102 s."
+        },
+        {
+          "kind": "ok",
+          "title": "Mesmo procedimento do DUT",
+          "html": "Mesma célula (PCI 88), mesmo realm SIP, mesmo toggle de modo avião e o mesmo terminal remoto originando a chamada."
+        },
+        {
+          "kind": "ok",
+          "title": "Chamada MT entregue",
+          "html": "Paging → RRC Setup <code>mt-Access</code> → INVITE → 183 → precondições de QoS (5QI 1) → 180 Ringing → 200 OK. Vocoder EVS no PT 97, o mesmo do SDP."
+        },
+        {
+          "kind": "issue",
+          "title": "Contraste localiza, não prova",
+          "html": "O CDUT mostra que rede e realm aceitam Digest MD5 na 1ª tentativa. O mecanismo interno do DUT vem dos eventos <code>Authorization Build</code> do próprio log do Vanguard."
+        }
+      ],
+      "notice": "Log da repetição 01. Os 200 OK das repetições 02 e 03 (0,098 s e 0,109 s) vêm do documento do caso. A chamada MT chega cerca de 12 s depois do registro, quando o terminal remoto origina a chamada; a reprodução comprime intervalos longos.",
+      "logPath": "Desafios/Desafio 4/Desafio_S04_Log_Cen1_MT_VoNR_CDUT_Solstice.html",
+      "logLabel": "Fonte: Desafio_S04_Log_Cen1_MT_VoNR_CDUT_Solstice.html · cenário 1, repetição 01 · 97 eventos · 34,1 s. Log original sem alterações.",
+      "timeReference": {
+        "idx": 21553,
+        "label": "Tempo desde o REGISTER #1"
+      },
+      "guide": [
+        {
+          "idx": 21553,
+          "title": "REGISTER #1: T 0",
+          "text": "Mesma sequência do DUT até aqui: toggle de modo avião, registro 5G SA e duas sessões PDU."
+        },
+        {
+          "idx": 21556,
+          "title": "401 com o nonce N1",
+          "text": "nonce=\"N1-5c20e9b7d1\", qop=auth, MD5, realm ims.novalink.com.br."
+        },
+        {
+          "idx": 21557,
+          "title": "Authorization com o nonce do desafio",
+          "text": "\"using challenge nonce N1-5c20e9b7d1\". Este é o ponto exato em que o DUT diverge: lá aparece \"using CACHED nonce\"."
+        },
+        {
+          "idx": 21566,
+          "title": "200 OK em T +0,102 s",
+          "text": "Registro IMS concluído na 1ª tentativa autenticada, seguido do SUBSCRIBE/NOTIFY do reg event."
+        },
+        {
+          "idx": 22788,
+          "title": "Paging: a rede encontra o UE",
+          "text": "Com o IMS registrado, a chamada do terminal remoto vira paging em 5G SA. O UE responde com RRC Setup com establishmentCause mt-Access."
+        },
+        {
+          "idx": 22891,
+          "title": "INVITE MT com oferta SDP",
+          "text": "A rede oferece EVS (PT 97), AMR-WB (96/99), AMR (98/101) e DTMF. Aqui a rede é a ofertante e o PT 97 é EVS dos dois lados."
+        },
+        {
+          "idx": 22928,
+          "title": "Bearer de voz: 5QI 1",
+          "text": "PDU session modification com QFI 2 / 5QI 1 (GBR 53 kbps). As precondições de QoS passam a valer nos dois lados no UPDATE."
+        },
+        {
+          "idx": 22956,
+          "title": "180 Ringing",
+          "text": "O aparelho toca: a chamada MT foi entregue, o oposto do DUT."
+        },
+        {
+          "idx": 23121,
+          "title": "Vocoder EVS no PT 97",
+          "text": "EVS 24,4 kbps SWB no PT 97: o codec do vocoder é o mesmo que o SDP associa ao PT 97."
+        },
+        {
+          "idx": 24392,
+          "title": "RTP em T+10 s",
+          "text": "TX 500 / RX 498 pacotes no PT 97, com áudio nítido."
+        }
+      ]
+    },
+    {
       "id": "cen1-dut",
-      "number": "01 · DUT",
+      "number": "02 · DUT",
       "label": "Vanguard · MT VoNR · 5G SA",
       "kicker": "CENÁRIO 01 · DUT · TEST CASE #1",
       "title": "Registro IMS rejeitado: a chamada MT não chega",
@@ -218,76 +375,102 @@
       ]
     },
     {
-      "id": "cen1-cdut",
-      "number": "02 · REFERÊNCIA",
-      "label": "Solstice · MT VoNR · 5G SA",
-      "kicker": "CENÁRIO 01 · CDUT · TEST CASE #1",
-      "title": "Registro na 1ª tentativa e chamada MT atendida",
-      "description": "Solstice · mesmo toggle de modo avião + chamada MT em VoNR · n78 PCI 88 · três repetições",
+      "id": "cen2-cdut",
+      "number": "03 · REFERÊNCIA",
+      "label": "Solstice · MO VoLTE · LTE",
+      "kicker": "CENÁRIO 02 · CDUT · TEST CASE #2",
+      "title": "Mesma sinalização, áudio nítido",
+      "description": "Solstice · power cycle + chamada MO em VoLTE · Band 3 EARFCN 1575 PCI 41 · três repetições",
       "status": "Referência aprovada · 3/3",
       "statusClass": "good",
       "device": "Solstice / CDUT",
-      "state": "IMS REGISTERED · chamada VoNR",
+      "state": "Chamada VoLTE ativa · AMR-NB",
       "scene": "reference",
-      "rat": "NR · 5G SA",
+      "rat": "LTE · 4G",
       "network": "NovaLink / Site Delta",
-      "leftNode": "gNodeB · NovaLink",
-      "leftCell": "n78 · NR-ARFCN 633180 · PCI 88",
+      "leftNode": "eNodeB · NovaLink",
+      "leftCell": "Band 3 · EARFCN 1575 · PCI 41",
       "rightNode": "IMS · P-CSCF",
       "rightCell": "ims.novalink.com.br · SIP",
       "rightProtocols": [
         "SIP"
       ],
       "rightKind": "core",
-      "coreNodes": { "left": "5GC · NovaLink" },
+      "coreNodes": { "left": "EPC · NovaLink" },
       "coreProtocols": ["NAS"],
-      "axisMax": 0.3,
+      "axisMax": 15,
+      "timelineLabels": {
+        "eyebrow": "Repetição 01 · log",
+        "note": "Segundos desde o INVITE · marcas: INVITE, 183, 200 OK; início do vocoder, RTP em T+10 s, BYE"
+      },
       "metrics": [
         {
-          "label": "Tentativas autenticadas",
-          "value": "1 tentativa",
-          "note": "3 de 3 repetições · 100%",
+          "label": "Registro IMS",
+          "value": "1ª tentativa",
+          "note": "200 OK em 0,101 s",
           "tone": "good-text"
         },
         {
-          "label": "200 OK do REGISTER",
-          "value": "0,098–0,109 s",
-          "note": "desde o REGISTER #1",
-          "tone": "good-text"
+          "label": "SDP da rede · PT 97",
+          "value": "AMR/8000",
+          "note": "igual ao oferecido pelo CDUT",
+          "tone": "accent-text"
         },
         {
-          "label": "Chamada MT",
-          "value": "recebida e atendida",
-          "note": "VoNR · EVS 24,4 kbps · PT 97",
+          "label": "Vocoder do CDUT · PT 97",
+          "value": "AMR-NB 12,2 kbps",
+          "note": "coerente com o SDP",
           "tone": "good-text"
         },
         {
           "label": "RTP em T+10 s",
-          "value": "TX 500 / RX 498",
-          "note": "repetição 01 · áudio nítido",
-          "tone": "accent-text"
+          "value": "TX 500 / RX 496–498",
+          "note": "3/3 áudio nítido",
+          "tone": "good-text"
         }
       ],
       "rows": [
         {
-          "label": "200 OK · REGISTER",
-          "sub": "1ª tentativa autenticada · 3 rep.",
-          "start": 0.098,
-          "end": 0.109,
-          "final": "0,098–0,109 s",
+          "label": "Sinalização SIP",
+          "sub": "INVITE → 200 OK · sem erro",
+          "start": 0,
+          "end": 2.105,
+          "final": "2,105 s",
           "color": "reference",
           "points": [
             {
-              "at": 0.098,
+              "at": 0,
               "kind": "reference"
             },
             {
-              "at": 0.102,
+              "at": 0.4,
               "kind": "reference"
             },
             {
-              "at": 0.109,
+              "at": 2.105,
               "kind": "reference"
+            }
+          ]
+        },
+        {
+          "label": "Áudio RTP",
+          "sub": "AMR-NB no PT 97",
+          "start": 2.16,
+          "end": 14.605,
+          "final": "áudio nítido",
+          "color": "success",
+          "points": [
+            {
+              "at": 2.16,
+              "kind": "success"
+            },
+            {
+              "at": 12.16,
+              "kind": "success"
+            },
+            {
+              "at": 14.605,
+              "kind": "success"
             }
           ]
         }
@@ -295,88 +478,68 @@
       "evidence": [
         {
           "kind": "ok",
-          "title": "Responde ao desafio atual",
-          "html": "Após o 401 com <code>nonce=\"N1-5c20e9b7d1\"</code>, o REGISTER CSeq 2 usa o mesmo nonce, e o 200 OK chega em T +0,102 s."
+          "title": "Mapa de payload types coerente",
+          "html": "O CDUT oferece <code>97 = AMR/8000</code> (EVS é o 107), e a rede responde <code>a=rtpmap:97 AMR/8000</code>: o mesmo número com o mesmo codec nos dois lados."
         },
         {
           "kind": "ok",
-          "title": "Mesmo procedimento do DUT",
-          "html": "Mesma célula (PCI 88), mesmo realm SIP, mesmo toggle de modo avião e o mesmo terminal remoto originando a chamada."
+          "title": "UPDATE segue a resposta",
+          "html": "O UPDATE reoferece apenas <code>97 = AMR/8000</code>, o codec negociado, e o vocoder sobe como <code>AMR-NB 12.2 kbps, PT 97</code>."
         },
         {
           "kind": "ok",
-          "title": "Chamada MT entregue",
-          "html": "Paging → RRC Setup <code>mt-Access</code> → INVITE → 183 → precondições de QoS (5QI 1) → 180 Ringing → 200 OK. Vocoder EVS no PT 97, o mesmo do SDP."
+          "title": "Mesma sinalização e contadores",
+          "html": "Mesmos tempos de 183, PRACK, bearer QCI 1, UPDATE, 180 e 200 OK do DUT. RTP com TX 500 / RX 497, praticamente igual ao DUT."
         },
         {
           "kind": "issue",
-          "title": "Contraste localiza, não prova",
-          "html": "O CDUT mostra que rede e realm aceitam Digest MD5 na 1ª tentativa. O mecanismo interno do DUT vem dos eventos <code>Authorization Build</code> do próprio log do Vanguard."
+          "title": "O controle não testa o remapeamento",
+          "html": "A numeração do CDUT coincide com a da rede, então este log não mostra como o Solstice reagiria a um PT renumerado na resposta. O contraste localiza o defeito no DUT; o mecanismo vem dos SDPs do próprio Vanguard."
         }
       ],
-      "notice": "Log da repetição 01. Os 200 OK das repetições 02 e 03 (0,098 s e 0,109 s) vêm do documento do caso. A chamada MT chega cerca de 12 s depois do registro, quando o terminal remoto origina a chamada; a reprodução comprime intervalos longos.",
-      "logPath": "Desafios/Desafio 4/Desafio_S04_Log_Cen1_MT_VoNR_CDUT_Solstice.html",
-      "logLabel": "Fonte: Desafio_S04_Log_Cen1_MT_VoNR_CDUT_Solstice.html · cenário 1, repetição 01 · 97 eventos · 34,1 s. Log original sem alterações.",
+      "notice": "Log da repetição 01. Os contadores RTP das repetições 02 e 03 (RX 498 e 496) vêm do documento do caso.",
+      "logPath": "Desafios/Desafio 4/Desafio_S04_Log_Cen2_MO_VoLTE_CDUT_Solstice.html",
+      "logLabel": "Fonte: Desafio_S04_Log_Cen2_MO_VoLTE_CDUT_Solstice.html · cenário 2, repetição 01 · 101 eventos · 25,7 s. Log original sem alterações.",
       "timeReference": {
-        "idx": 21553,
-        "label": "Tempo desde o REGISTER #1"
+        "idx": 22004,
+        "label": "Tempo desde o INVITE"
       },
       "guide": [
         {
-          "idx": 21553,
-          "title": "REGISTER #1: T 0",
-          "text": "Mesma sequência do DUT até aqui: toggle de modo avião, registro 5G SA e duas sessões PDU."
+          "idx": 21618,
+          "title": "Registro IMS na 1ª tentativa",
+          "text": "Mesmo fluxo do DUT após o power cycle: cache vazio, nonce do desafio, 200 OK em 0,101 s."
         },
         {
-          "idx": 21556,
-          "title": "401 com o nonce N1",
-          "text": "nonce=\"N1-5c20e9b7d1\", qop=auth, MD5, realm ims.novalink.com.br."
+          "idx": 22004,
+          "title": "INVITE MO: a oferta do CDUT",
+          "text": "m=audio 40020 RTP/AVP 107 104 110 97 108 105 100. O CDUT numera: 107 = EVS, 104/110 = AMR-WB, 97/108 = AMR/8000. Este é o T 0."
         },
         {
-          "idx": 21557,
-          "title": "Authorization com o nonce do desafio",
-          "text": "\"using challenge nonce N1-5c20e9b7d1\". Este é o ponto exato em que o DUT diverge: lá aparece \"using CACHED nonce\"."
+          "idx": 22040,
+          "title": "183: a rede escolhe AMR no 97",
+          "text": "a=rtpmap:97 AMR/8000, o mesmo número e o mesmo codec que o CDUT ofereceu. Não há ambiguidade."
         },
         {
-          "idx": 21566,
-          "title": "200 OK em T +0,102 s",
-          "text": "Registro IMS concluído na 1ª tentativa autenticada, seguido do SUBSCRIBE/NOTIFY do reg event."
+          "idx": 22070,
+          "title": "UPDATE com o codec negociado",
+          "text": "O CDUT reoferece m=audio 40020 RTP/AVP 97 100 com a=rtpmap:97 AMR/8000. A oferta acompanha a resposta anterior."
         },
         {
-          "idx": 22788,
-          "title": "Paging: a rede encontra o UE",
-          "text": "Com o IMS registrado, a chamada do terminal remoto vira paging em 5G SA. O UE responde com RRC Setup com establishmentCause mt-Access."
+          "idx": 22260,
+          "title": "Vocoder AMR-NB no PT 97",
+          "text": "\"AMR-NB 12.2 kbps, PT 97\": o vocoder usa o codec que o SDP associa ao PT 97. No DUT, este mesmo evento mostra EVS."
         },
         {
-          "idx": 22891,
-          "title": "INVITE MT com oferta SDP",
-          "text": "A rede oferece EVS (PT 97), AMR-WB (96/99), AMR (98/101) e DTMF. Aqui a rede é a ofertante e o PT 97 é EVS dos dois lados."
-        },
-        {
-          "idx": 22928,
-          "title": "Bearer de voz: 5QI 1",
-          "text": "PDU session modification com QFI 2 / 5QI 1 (GBR 53 kbps). As precondições de QoS passam a valer nos dois lados no UPDATE."
-        },
-        {
-          "idx": 22956,
-          "title": "180 Ringing",
-          "text": "O aparelho toca: a chamada MT foi entregue, o oposto do DUT."
-        },
-        {
-          "idx": 23121,
-          "title": "Vocoder EVS no PT 97",
-          "text": "EVS 24,4 kbps SWB no PT 97: o codec do vocoder é o mesmo que o SDP associa ao PT 97."
-        },
-        {
-          "idx": 24392,
+          "idx": 23071,
           "title": "RTP em T+10 s",
-          "text": "TX 500 / RX 498 pacotes no PT 97, com áudio nítido."
+          "text": "TX 500 / RX 497 no PT 97, praticamente os mesmos contadores do DUT, com áudio nítido. A diferença está no codec, não nos pacotes."
         }
       ]
     },
     {
       "id": "cen2-dut",
-      "number": "03 · DUT",
+      "number": "04 · DUT",
       "label": "Vanguard · MO VoLTE · LTE",
       "kicker": "CENÁRIO 02 · DUT · TEST CASE #2",
       "title": "Chamada estabelecida, voz ininteligível",
@@ -559,169 +722,6 @@
           "idx": 23621,
           "title": "BYE: voz ininteligível",
           "text": "O usuário encerra a chamada (\"audio unintelligible\"). O sintoma se repete em 3 de 3 repetições."
-        }
-      ]
-    },
-    {
-      "id": "cen2-cdut",
-      "number": "04 · REFERÊNCIA",
-      "label": "Solstice · MO VoLTE · LTE",
-      "kicker": "CENÁRIO 02 · CDUT · TEST CASE #2",
-      "title": "Mesma sinalização, áudio nítido",
-      "description": "Solstice · power cycle + chamada MO em VoLTE · Band 3 EARFCN 1575 PCI 41 · três repetições",
-      "status": "Referência aprovada · 3/3",
-      "statusClass": "good",
-      "device": "Solstice / CDUT",
-      "state": "Chamada VoLTE ativa · AMR-NB",
-      "scene": "reference",
-      "rat": "LTE · 4G",
-      "network": "NovaLink / Site Delta",
-      "leftNode": "eNodeB · NovaLink",
-      "leftCell": "Band 3 · EARFCN 1575 · PCI 41",
-      "rightNode": "IMS · P-CSCF",
-      "rightCell": "ims.novalink.com.br · SIP",
-      "rightProtocols": [
-        "SIP"
-      ],
-      "rightKind": "core",
-      "coreNodes": { "left": "EPC · NovaLink" },
-      "coreProtocols": ["NAS"],
-      "axisMax": 15,
-      "timelineLabels": {
-        "eyebrow": "Repetição 01 · log",
-        "note": "Segundos desde o INVITE · marcas: INVITE, 183, 200 OK; início do vocoder, RTP em T+10 s, BYE"
-      },
-      "metrics": [
-        {
-          "label": "Registro IMS",
-          "value": "1ª tentativa",
-          "note": "200 OK em 0,101 s",
-          "tone": "good-text"
-        },
-        {
-          "label": "SDP da rede · PT 97",
-          "value": "AMR/8000",
-          "note": "igual ao oferecido pelo CDUT",
-          "tone": "accent-text"
-        },
-        {
-          "label": "Vocoder do CDUT · PT 97",
-          "value": "AMR-NB 12,2 kbps",
-          "note": "coerente com o SDP",
-          "tone": "good-text"
-        },
-        {
-          "label": "RTP em T+10 s",
-          "value": "TX 500 / RX 496–498",
-          "note": "3/3 áudio nítido",
-          "tone": "good-text"
-        }
-      ],
-      "rows": [
-        {
-          "label": "Sinalização SIP",
-          "sub": "INVITE → 200 OK · sem erro",
-          "start": 0,
-          "end": 2.105,
-          "final": "2,105 s",
-          "color": "reference",
-          "points": [
-            {
-              "at": 0,
-              "kind": "reference"
-            },
-            {
-              "at": 0.4,
-              "kind": "reference"
-            },
-            {
-              "at": 2.105,
-              "kind": "reference"
-            }
-          ]
-        },
-        {
-          "label": "Áudio RTP",
-          "sub": "AMR-NB no PT 97",
-          "start": 2.16,
-          "end": 14.605,
-          "final": "áudio nítido",
-          "color": "success",
-          "points": [
-            {
-              "at": 2.16,
-              "kind": "success"
-            },
-            {
-              "at": 12.16,
-              "kind": "success"
-            },
-            {
-              "at": 14.605,
-              "kind": "success"
-            }
-          ]
-        }
-      ],
-      "evidence": [
-        {
-          "kind": "ok",
-          "title": "Mapa de payload types coerente",
-          "html": "O CDUT oferece <code>97 = AMR/8000</code> (EVS é o 107), e a rede responde <code>a=rtpmap:97 AMR/8000</code>: o mesmo número com o mesmo codec nos dois lados."
-        },
-        {
-          "kind": "ok",
-          "title": "UPDATE segue a resposta",
-          "html": "O UPDATE reoferece apenas <code>97 = AMR/8000</code>, o codec negociado, e o vocoder sobe como <code>AMR-NB 12.2 kbps, PT 97</code>."
-        },
-        {
-          "kind": "ok",
-          "title": "Mesma sinalização e contadores",
-          "html": "Mesmos tempos de 183, PRACK, bearer QCI 1, UPDATE, 180 e 200 OK do DUT. RTP com TX 500 / RX 497, praticamente igual ao DUT."
-        },
-        {
-          "kind": "issue",
-          "title": "O controle não testa o remapeamento",
-          "html": "A numeração do CDUT coincide com a da rede, então este log não mostra como o Solstice reagiria a um PT renumerado na resposta. O contraste localiza o defeito no DUT; o mecanismo vem dos SDPs do próprio Vanguard."
-        }
-      ],
-      "notice": "Log da repetição 01. Os contadores RTP das repetições 02 e 03 (RX 498 e 496) vêm do documento do caso.",
-      "logPath": "Desafios/Desafio 4/Desafio_S04_Log_Cen2_MO_VoLTE_CDUT_Solstice.html",
-      "logLabel": "Fonte: Desafio_S04_Log_Cen2_MO_VoLTE_CDUT_Solstice.html · cenário 2, repetição 01 · 101 eventos · 25,7 s. Log original sem alterações.",
-      "timeReference": {
-        "idx": 22004,
-        "label": "Tempo desde o INVITE"
-      },
-      "guide": [
-        {
-          "idx": 21618,
-          "title": "Registro IMS na 1ª tentativa",
-          "text": "Mesmo fluxo do DUT após o power cycle: cache vazio, nonce do desafio, 200 OK em 0,101 s."
-        },
-        {
-          "idx": 22004,
-          "title": "INVITE MO: a oferta do CDUT",
-          "text": "m=audio 40020 RTP/AVP 107 104 110 97 108 105 100. O CDUT numera: 107 = EVS, 104/110 = AMR-WB, 97/108 = AMR/8000. Este é o T 0."
-        },
-        {
-          "idx": 22040,
-          "title": "183: a rede escolhe AMR no 97",
-          "text": "a=rtpmap:97 AMR/8000, o mesmo número e o mesmo codec que o CDUT ofereceu. Não há ambiguidade."
-        },
-        {
-          "idx": 22070,
-          "title": "UPDATE com o codec negociado",
-          "text": "O CDUT reoferece m=audio 40020 RTP/AVP 97 100 com a=rtpmap:97 AMR/8000. A oferta acompanha a resposta anterior."
-        },
-        {
-          "idx": 22260,
-          "title": "Vocoder AMR-NB no PT 97",
-          "text": "\"AMR-NB 12.2 kbps, PT 97\": o vocoder usa o codec que o SDP associa ao PT 97. No DUT, este mesmo evento mostra EVS."
-        },
-        {
-          "idx": 23071,
-          "title": "RTP em T+10 s",
-          "text": "TX 500 / RX 497 no PT 97, praticamente os mesmos contadores do DUT, com áudio nítido. A diferença está no codec, não nos pacotes."
         }
       ]
     }

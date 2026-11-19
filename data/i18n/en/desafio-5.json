@@ -37,6 +37,7 @@
   },
   "scenarios": {
     "cen1-dut": {
+      "number": "01 · DUT",
       "kicker": "SCENARIO 01 · DUT · MO",
       "title": "Delayed voice bearer and drop in the far-cell",
       "description": "Polaris · MO call on 5G SA → EPS Fallback → VoLTE, followed along the route to the far-cell · three repetitions",
@@ -161,6 +162,7 @@
       ]
     },
     "cen2-cdut": {
+      "number": "02 · REFERENCE",
       "kicker": "SCENARIO 02 · CDUT · MO",
       "title": "Normal CST and SRVCC to 2G",
       "description": "Equinox · same MO call, same site and same route as scenario 1 · three repetitions",
@@ -256,6 +258,7 @@
       ]
     },
     "cen3-dut": {
+      "number": "03 · DUT",
       "kicker": "SCENARIO 03 · DUT · MT",
       "title": "Delayed voice bearer and drop in the far-cell",
       "description": "Polaris · MT call on 5G SA → EPS Fallback → VoLTE, followed along the route to the far-cell · three repetitions",
@@ -380,6 +383,7 @@
       ]
     },
     "cen4-cdut": {
+      "number": "04 · REFERENCE",
       "kicker": "SCENARIO 04 · CDUT · MT",
       "title": "Normal CST and SRVCC to 2G",
       "description": "Equinox · same MT call, same site and same route as scenario 3 · three repetitions",

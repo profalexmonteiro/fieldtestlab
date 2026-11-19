@@ -23,7 +23,7 @@
   },
   "scenarios": {
     "cen1-dut": {
-      "number": "01 · DUT",
+      "number": "02 · DUT",
       "kicker": "SCENARIO 01 · DUT · TEST CASE #1",
       "title": "IMS registration rejected: the MT call never arrives",
       "description": "Vanguard · airplane mode toggle + MT call over VoNR · n78 PCI 88 · three repetitions",
@@ -132,7 +132,7 @@
       ]
     },
     "cen1-cdut": {
-      "number": "02 · REFERENCE",
+      "number": "01 · REFERENCE",
       "kicker": "SCENARIO 01 · CDUT · TEST CASE #1",
       "title": "Registered on the 1st attempt, MT call answered",
       "description": "Solstice · same airplane mode toggle + MT call over VoNR · n78 PCI 88 · three repetitions",
@@ -232,7 +232,7 @@
       ]
     },
     "cen2-dut": {
-      "number": "03 · DUT",
+      "number": "04 · DUT",
       "kicker": "SCENARIO 02 · DUT · TEST CASE #2",
       "title": "Call established, unintelligible voice",
       "description": "Vanguard · power cycle + MO call over VoLTE · Band 3 EARFCN 1575 PCI 41 · three repetitions",
@@ -345,7 +345,7 @@
       ]
     },
     "cen2-cdut": {
-      "number": "04 · REFERENCE",
+      "number": "03 · REFERENCE",
       "kicker": "SCENARIO 02 · CDUT · TEST CASE #2",
       "title": "Same signalling, clear audio",
       "description": "Solstice · power cycle + MO call over VoLTE · Band 3 EARFCN 1575 PCI 41 · three repetitions",

@@ -24,6 +24,7 @@
   },
   "scenarios": {
     "cen1-dut": {
+      "number": "01 · DUT",
       "kicker": "SCENARIO 01 · DUT · 5G SA",
       "title": "Emergency call completed on another operator, over CS",
       "description": "Polaris · 112 dialled on 5G SA (n78 PCI 88, Zenith) · three repetitions",
@@ -147,6 +148,7 @@
       ]
     },
     "cen2-cdut": {
+      "number": "02 · REFERENCE",
       "kicker": "SCENARIO 02 · CDUT · 5G SA",
       "title": "Stays on its own operator: emergency VoLTE",
       "description": "Equinox · 112 dialled on 5G SA, same cell as scenario 1 · three repetitions",
@@ -245,6 +247,7 @@
       ]
     },
     "cen3-dut": {
+      "number": "03 · CONTROL",
       "kicker": "SCENARIO 03 · DUT · 4G (CONTROL)",
       "title": "On LTE, the Polaris handles the emergency call normally",
       "description": "Polaris · 112 dialled already on LTE (B3 PCI 220, Zenith) · three repetitions",
@@ -327,6 +330,7 @@
       ]
     },
     "cen4-cdut": {
+      "number": "04 · REFERENCE",
       "kicker": "SCENARIO 04 · CDUT · 4G (CONTROL)",
       "title": "LTE control reference",
       "description": "Equinox · 112 dialled already on LTE, same condition as scenario 3 · three repetitions",

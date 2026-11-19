@@ -29,6 +29,144 @@
   },
   "scenarios": [
     {
+      "id": "cdut-boreal",
+      "number": "04 · REFERÊNCIA",
+      "label": "Boreal · Vantis → Zenith · 5G SA",
+      "kicker": "CENÁRIO 04 · CDUT · 5G SA",
+      "title": "Boreal conclui registro na primeira tentativa",
+      "description": "Boreal · Vantis (724/085) → Zenith (724/078) · mesmas células do cenário 1",
+      "status": "Referência aprovada · 5/5",
+      "statusClass": "good",
+      "device": "Boreal / CDUT",
+      "state": "NR SA · Registration Complete",
+      "scene": "reference",
+      "rat": "NR · 5G SA",
+      "network": "Vantis → Zenith / Site de homologação",
+      "leftNode": "gNodeB · Vantis · 724/085",
+      "leftCell": "n78 · NR-ARFCN 633120 · PCI 177",
+      "rightNode": "gNodeB · Zenith · 724/078",
+      "rightCell": "n78 · NR-ARFCN 633120 · PCI 201",
+      "coreNodes": {
+        "left": "AMF · Vantis",
+        "right": "AMF · Zenith"
+      },
+      "coreProtocols": [
+        "NAS"
+      ],
+      "timelineLabels": {
+        "eyebrow": "Trocas 01–05",
+        "note": "Tempo total até o registro completo, em segundos · barras mostram a faixa das 5 trocas"
+      },
+      "axisMax": 1.25,
+      "metrics": [
+        {
+          "label": "Tentativas de registro",
+          "value": "1 tentativa",
+          "note": "5 de 5 trocas · 100%",
+          "tone": "good-text"
+        },
+        {
+          "label": "Tempo até registro",
+          "value": "0,98–1,15 s",
+          "note": "5G SA · sem rejeição",
+          "tone": "good-text"
+        },
+        {
+          "label": "Authentication",
+          "value": "sucesso",
+          "note": "RES* e NIA2/NEA2",
+          "tone": "accent-text"
+        },
+        {
+          "label": "Registration Complete",
+          "value": "registrado",
+          "note": "5GS-Registration-Result",
+          "tone": "good-text"
+        }
+      ],
+      "rows": [
+        {
+          "label": "Boreal · 5G SA",
+          "sub": "Registration · 5 trocas",
+          "start": 0.98,
+          "end": 1.15,
+          "final": "0,98–1,15 s",
+          "color": "reference",
+          "points": [
+            {
+              "at": 0.98,
+              "kind": "reference"
+            },
+            {
+              "at": 1.15,
+              "kind": "reference"
+            }
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "ok",
+          "title": "Mesmo site e mesmas células",
+          "html": "O CDUT acessa PCI 201/PLMN 724/078; a rede aceita a Registration Request já com SUCI 724/078."
+        },
+        {
+          "kind": "ok",
+          "title": "Sequência NAS completa",
+          "html": "Authentication Request/Response, Security Mode Command/Complete, Registration Accept e Registration Complete."
+        },
+        {
+          "kind": "ok",
+          "title": "Registro 5G SA de primeira",
+          "html": "5/5 trocas concluem na primeira tentativa; log detalhado mostra uma tentativa bem-sucedida."
+        },
+        {
+          "kind": "issue",
+          "title": "Contraste aponta ao DUT, não prova implementação",
+          "html": "DUT e CDUT diferem em estado de SIM/identidade e hardware; controle localiza o desvio no Aurora, mas não identifica sozinho o mecanismo interno."
+        }
+      ],
+      "notice": "Log de referência do Boreal: uma tentativa, 19 mensagens. Atenção: o log dura 0,82 s (da detecção PSS/SSS ao Registration Complete), menos que qualquer tempo total do cenário 4 no caso (0,98–1,15 s); o documento não define o instante inicial da medição. O relato de 5/5 trocas é agregado; não há cinco arquivos de log individuais.",
+      "logPath": "Desafios/Desafio 2/Desafio_S02_Log_CDUT_Boreal.html",
+      "logLabel": "Fonte: Desafio_S02_Log_CDUT_Boreal.html · cenário 4 · 19 mensagens / 1 tentativa bem-sucedida · 0,82 s. Log original sem alterações.",
+      "timeReference": {
+        "idx": 1,
+        "label": "Tempo desde a 1ª detecção de célula"
+      },
+      "guide": [
+        {
+          "idx": 1,
+          "title": "Direto para a célula da Zenith",
+          "text": "Após a mesma troca Vantis → Zenith, o Boreal sincroniza já na PCI 201. Não há passagem pela célula da operadora antiga. T 0."
+        },
+        {
+          "idx": 6,
+          "title": "PLMN 724/078",
+          "text": "No RRCSetupComplete, o PLMN selecionado é o da Zenith, como no Aurora a partir da tentativa 2."
+        },
+        {
+          "idx": 7,
+          "title": "SUCI alinhado já na 1ª tentativa",
+          "text": "Home-Network-Id 724/078 e MSIN 7729009876: a identidade do perfil Zenith. É exatamente o que falta ao Aurora nas tentativas 1 e 2."
+        },
+        {
+          "idx": 9,
+          "title": "Autenticação sem rejeição",
+          "text": "O AMF da Zenith responde com Authentication Request: nenhuma rejeição NAS."
+        },
+        {
+          "idx": 13,
+          "title": "Segurança NAS",
+          "text": "Security Mode Command com NIA2/NEA2, os mesmos algoritmos da tentativa 3 do Aurora."
+        },
+        {
+          "idx": 19,
+          "title": "Registrado em T +0,82 s",
+          "text": "Registration Complete na 1ª tentativa. O caso relata 0,98–1,15 s para o cenário 4; o log é mais curto porque o documento não define o instante inicial da medição."
+        }
+      ]
+    },
+    {
       "id": "dut-vantis-zenith",
       "number": "01 · DUT",
       "label": "Aurora · Vantis → Zenith · 5G SA",
@@ -436,144 +574,6 @@
           "msg": "Resultado agregado · 5 trocas",
           "summary": "Tempos totais entre 0,98 e 1,15 s; RSRP/RSRQ no caso: −82/−8 dB e −85/−9 dB.",
           "offsetMs": 1300
-        }
-      ]
-    },
-    {
-      "id": "cdut-boreal",
-      "number": "04 · REFERÊNCIA",
-      "label": "Boreal · Vantis → Zenith · 5G SA",
-      "kicker": "CENÁRIO 04 · CDUT · 5G SA",
-      "title": "Boreal conclui registro na primeira tentativa",
-      "description": "Boreal · Vantis (724/085) → Zenith (724/078) · mesmas células do cenário 1",
-      "status": "Referência aprovada · 5/5",
-      "statusClass": "good",
-      "device": "Boreal / CDUT",
-      "state": "NR SA · Registration Complete",
-      "scene": "reference",
-      "rat": "NR · 5G SA",
-      "network": "Vantis → Zenith / Site de homologação",
-      "leftNode": "gNodeB · Vantis · 724/085",
-      "leftCell": "n78 · NR-ARFCN 633120 · PCI 177",
-      "rightNode": "gNodeB · Zenith · 724/078",
-      "rightCell": "n78 · NR-ARFCN 633120 · PCI 201",
-      "coreNodes": {
-        "left": "AMF · Vantis",
-        "right": "AMF · Zenith"
-      },
-      "coreProtocols": [
-        "NAS"
-      ],
-      "timelineLabels": {
-        "eyebrow": "Trocas 01–05",
-        "note": "Tempo total até o registro completo, em segundos · barras mostram a faixa das 5 trocas"
-      },
-      "axisMax": 1.25,
-      "metrics": [
-        {
-          "label": "Tentativas de registro",
-          "value": "1 tentativa",
-          "note": "5 de 5 trocas · 100%",
-          "tone": "good-text"
-        },
-        {
-          "label": "Tempo até registro",
-          "value": "0,98–1,15 s",
-          "note": "5G SA · sem rejeição",
-          "tone": "good-text"
-        },
-        {
-          "label": "Authentication",
-          "value": "sucesso",
-          "note": "RES* e NIA2/NEA2",
-          "tone": "accent-text"
-        },
-        {
-          "label": "Registration Complete",
-          "value": "registrado",
-          "note": "5GS-Registration-Result",
-          "tone": "good-text"
-        }
-      ],
-      "rows": [
-        {
-          "label": "Boreal · 5G SA",
-          "sub": "Registration · 5 trocas",
-          "start": 0.98,
-          "end": 1.15,
-          "final": "0,98–1,15 s",
-          "color": "reference",
-          "points": [
-            {
-              "at": 0.98,
-              "kind": "reference"
-            },
-            {
-              "at": 1.15,
-              "kind": "reference"
-            }
-          ]
-        }
-      ],
-      "evidence": [
-        {
-          "kind": "ok",
-          "title": "Mesmo site e mesmas células",
-          "html": "O CDUT acessa PCI 201/PLMN 724/078; a rede aceita a Registration Request já com SUCI 724/078."
-        },
-        {
-          "kind": "ok",
-          "title": "Sequência NAS completa",
-          "html": "Authentication Request/Response, Security Mode Command/Complete, Registration Accept e Registration Complete."
-        },
-        {
-          "kind": "ok",
-          "title": "Registro 5G SA de primeira",
-          "html": "5/5 trocas concluem na primeira tentativa; log detalhado mostra uma tentativa bem-sucedida."
-        },
-        {
-          "kind": "issue",
-          "title": "Contraste aponta ao DUT, não prova implementação",
-          "html": "DUT e CDUT diferem em estado de SIM/identidade e hardware; controle localiza o desvio no Aurora, mas não identifica sozinho o mecanismo interno."
-        }
-      ],
-      "notice": "Log de referência do Boreal: uma tentativa, 19 mensagens. Atenção: o log dura 0,82 s (da detecção PSS/SSS ao Registration Complete), menos que qualquer tempo total do cenário 4 no caso (0,98–1,15 s); o documento não define o instante inicial da medição. O relato de 5/5 trocas é agregado; não há cinco arquivos de log individuais.",
-      "logPath": "Desafios/Desafio 2/Desafio_S02_Log_CDUT_Boreal.html",
-      "logLabel": "Fonte: Desafio_S02_Log_CDUT_Boreal.html · cenário 4 · 19 mensagens / 1 tentativa bem-sucedida · 0,82 s. Log original sem alterações.",
-      "timeReference": {
-        "idx": 1,
-        "label": "Tempo desde a 1ª detecção de célula"
-      },
-      "guide": [
-        {
-          "idx": 1,
-          "title": "Direto para a célula da Zenith",
-          "text": "Após a mesma troca Vantis → Zenith, o Boreal sincroniza já na PCI 201. Não há passagem pela célula da operadora antiga. T 0."
-        },
-        {
-          "idx": 6,
-          "title": "PLMN 724/078",
-          "text": "No RRCSetupComplete, o PLMN selecionado é o da Zenith, como no Aurora a partir da tentativa 2."
-        },
-        {
-          "idx": 7,
-          "title": "SUCI alinhado já na 1ª tentativa",
-          "text": "Home-Network-Id 724/078 e MSIN 7729009876: a identidade do perfil Zenith. É exatamente o que falta ao Aurora nas tentativas 1 e 2."
-        },
-        {
-          "idx": 9,
-          "title": "Autenticação sem rejeição",
-          "text": "O AMF da Zenith responde com Authentication Request: nenhuma rejeição NAS."
-        },
-        {
-          "idx": 13,
-          "title": "Segurança NAS",
-          "text": "Security Mode Command com NIA2/NEA2, os mesmos algoritmos da tentativa 3 do Aurora."
-        },
-        {
-          "idx": 19,
-          "title": "Registrado em T +0,82 s",
-          "text": "Registration Complete na 1ª tentativa. O caso relata 0,98–1,15 s para o cenário 4; o log é mais curto porque o documento não define o instante inicial da medição."
         }
       ]
     }

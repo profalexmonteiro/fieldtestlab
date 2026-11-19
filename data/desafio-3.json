@@ -29,23 +29,23 @@
   },
   "scenarios": [
     {
-      "id": "controle-intra",
-      "number": "01 · CONTROLE",
-      "label": "Meridian · intra-frequência",
-      "kicker": "CENÁRIO 01 · CONTROLE",
-      "title": "Handover intra-frequência concluído",
-      "description": "Meridian · n78 PCI 88 → PCI 101 · mesma frequência · três repetições",
-      "status": "Controle aprovado · 3/3",
+      "id": "cdut-solstice",
+      "number": "03 · REFERÊNCIA",
+      "label": "Solstice · inter-frequência",
+      "kicker": "CENÁRIO 03 · REFERÊNCIA",
+      "title": "Handover inter-frequência sem RLF",
+      "description": "Solstice · n78 PCI 88 → n41 PCI 145/160 · mesma rede e sequência de medição",
+      "status": "Referência aprovada · 3/3",
       "statusClass": "good",
-      "device": "Meridian / DUT",
+      "device": "Solstice / CDUT",
       "state": "RRC_CONNECTED · handover OK",
-      "scene": "control",
+      "scene": "reference",
       "rat": "NR · SA",
       "network": "NovaLink / Site Delta",
       "leftNode": "gNodeB · serving",
       "leftCell": "n78 · NR-ARFCN 633180 · PCI 88",
       "rightNode": "gNodeB · alvo",
-      "rightCell": "n78 · NR-ARFCN 633180 · PCI 101",
+      "rightCell": "n41 · NR-ARFCN 504990 · PCI 145",
       "coreNodes": {
         "left": "5GC · NovaLink",
         "shared": true
@@ -56,63 +56,63 @@
       "axisMax": 4.2,
       "metrics": [
         {
-          "label": "Medição ativa",
-          "value": "A3 · measId=1",
-          "note": "mesma frequência",
+          "label": "Measurement Report A5",
+          "value": "0,655–0,705 s",
+          "note": "TTT configurado: 240 ms",
           "tone": "accent-text"
         },
         {
-          "label": "Measurement Report",
-          "value": "1,155–1,210 s",
-          "note": "desde o início da degradação",
-          "tone": ""
-        },
-        {
-          "label": "Conclusão HO",
-          "value": "1,312–1,370 s",
+          "label": "Handover concluído",
+          "value": "0,815–0,865 s",
           "note": "RRCReconfigurationComplete",
           "tone": "good-text"
         },
         {
-          "label": "RLF",
+          "label": "Radio Link Failure",
           "value": "0 / 3",
           "note": "OOS_FILT_BLER abaixo do limiar",
+          "tone": "good-text"
+        },
+        {
+          "label": "Cadeia Report → HO",
+          "value": "≈ 160 ms",
+          "note": "mesma banda alvo n41",
           "tone": "good-text"
         }
       ],
       "rows": [
         {
-          "label": "Meridian · intra",
-          "sub": "Report A3",
-          "start": 1.155,
-          "end": 1.21,
-          "final": "1,155–1,210 s",
-          "color": "success",
+          "label": "Solstice · inter",
+          "sub": "Report A5 · n41",
+          "start": 0.655,
+          "end": 0.705,
+          "final": "0,655–0,705 s",
+          "color": "reference",
           "points": [
             {
-              "at": 1.155,
-              "kind": "success"
+              "at": 0.655,
+              "kind": "reference"
             },
             {
-              "at": 1.21,
-              "kind": "success"
+              "at": 0.705,
+              "kind": "reference"
             }
           ]
         },
         {
           "label": "Handover OK",
           "sub": "ReconfigurationComplete",
-          "start": 1.312,
-          "end": 1.37,
-          "final": "1,312–1,370 s",
+          "start": 0.815,
+          "end": 0.865,
+          "final": "0,815–0,865 s",
           "color": "success",
           "points": [
             {
-              "at": 1.312,
+              "at": 0.815,
               "kind": "success"
             },
             {
-              "at": 1.37,
+              "at": 0.865,
               "kind": "success"
             }
           ]
@@ -121,61 +121,79 @@
       "evidence": [
         {
           "kind": "ok",
-          "title": "Controle intra-RAT estável",
-          "html": "3/3 handovers completos; a cadeia Report → conclusão levou 155–160 ms."
+          "title": "Mesmo cenário inter-frequência",
+          "html": "O CDUT usa o mesmo site, par de bandas e sequência de medição (A2 e A5) do cenário DUT."
         },
         {
           "kind": "ok",
-          "title": "Medição intra-frequência ativa",
-          "html": "<code>measId=1</code> (A3) e <code>measId=3</code> (A2) já estavam configurados."
+          "title": "Relatório A5 seguido de handover",
+          "html": "<code>measId=2</code> é reportado entre 0,655–0,705 s; RRCReconfigurationComplete entre 0,815–0,865 s."
         },
         {
           "kind": "ok",
-          "title": "Sem falha de enlace",
-          "html": "O registro 0xB959 manteve OOS_FILT_BLER abaixo do limiar em todas as repetições."
+          "title": "Sem RLF nas repetições",
+          "html": "3/3 handovers concluídos; estatística 0xB959 permanece abaixo do limiar OOS."
         },
         {
           "kind": "issue",
-          "title": "Log detalhado não fornecido",
-          "html": "O material inclui logs completos para os cenários 2 (DUT) e 3 (CDUT), não para este controle."
+          "title": "Diferença exige investigação no UE",
+          "html": "O contraste reduz a probabilidade de falha geral do site, mas não prova sozinho a causa raiz."
         }
       ],
-      "notice": "O caso descreve este cenário como controle de mesma frequência. Não há um arquivo de log detalhado anexado para ele; os valores exibidos vêm da ficha do desafio.",
-      "logPath": "",
-      "logLabel": "Sem arquivo de log detalhado para este cenário.",
-      "playbackSteps": [
+      "notice": "A comparação com o CDUT é uma evidência de controle, não uma prova de que todos os parâmetros de RF e de rede eram idênticos em cada instante.",
+      "logPath": "Desafios/Desafio 3/Desafio_S03_Log_CDUT_Solstice.html",
+      "logLabel": "Fonte: Desafio_S03_Log_CDUT_Solstice.html · repetição 01 do cenário 3. O arquivo original é apresentado sem alterações.",
+      "timeReference": {
+        "idx": 38,
+        "label": "Tempo desde a MeasConfig #2"
+      },
+      "guide": [
         {
-          "msg": "Início da degradação da serving · PCI 88",
-          "summary": "measId=1 (A3, hysteresis 1 dB, TTT 320 ms) e measId=3 (A2, −100 dBm, TTT 160 ms) ativos desde a primeira RRCReconfiguration; a n41 não está configurada.",
-          "offsetMs": 0
+          "idx": 38,
+          "title": "MeasConfig #2: mesma configuração",
+          "text": "A rede envia a mesma measConfig do cenário DUT: n41, A5 −106/−100 dBm, hysteresis 1 dB, TTT 240 ms, gaps de 6 ms a cada 40 ms."
         },
         {
-          "msg": "Measurement Report · measId=1 (A3)",
-          "summary": "SS-RSRP/SS-RSRQ serving −101 dBm/−13 dB; vizinha PCI 101 −90 dBm/−8 dB.",
-          "offsetMs": 1180
+          "idx": 41,
+          "title": "1ª medição da n41 com gap",
+          "text": "SFN 349: PCI 145 em −98,8 dBm. No mesmo SFN, o Meridian mediu −100,6 dBm."
         },
         {
-          "msg": "RRCReconfiguration · targetPhysCellId=101",
-          "summary": "reconfigurationWithSync sem absoluteFrequencySSB (mesma frequência), rach-ConfigDedicated presente, t304=2000 ms.",
-          "offsetMs": 1240
+          "idx": 46,
+          "title": "2ª medição, 200 ms depois",
+          "text": "SFN 369: o Solstice atualiza a n41 a cada 120–200 ms (1 a cada 3 a 5 gaps)."
         },
         {
-          "msg": "Random Access · Msg1 (preâmbulo dedicado)",
-          "summary": "Acesso sem contenção na PCI 101.",
-          "offsetMs": 1285
+          "idx": 47,
+          "title": "Condição de entrada do A5 atendida",
+          "text": "Serving −107,2 dBm (< −107) e PCI 145 −95,8 dBm (> −99) em T +0,397 s. O TTT de 240 ms começa a contar."
         },
         {
-          "msg": "Random Access Response · Msg2",
-          "summary": "A PCI 101 responde ao preâmbulo dedicado.",
-          "offsetMs": 1310
+          "idx": 54,
+          "title": "Report A5 em T +0,680 s",
+          "text": "283 ms depois da condição de entrada (TTT de 240 ms + próxima avaliação): serving −109 dBm, PCI 145 −94 dBm."
         },
         {
-          "msg": "RRCReconfigurationComplete · sem RLF",
-          "summary": "Handover concluído 155 ms após o Report. Repetições 02 e 03: 1,312 s e 1,370 s; OOS_FILT_BLER (0xB959) sempre abaixo do limiar.",
-          "offsetMs": 1335
+          "idx": 56,
+          "title": "Comando de handover 63 ms depois",
+          "text": "reconfigurationWithSync para a PCI 145 com rach-ConfigDedicated (CFRA) e T304 = 2000 ms."
+        },
+        {
+          "idx": 64,
+          "title": "RACH na 1ª tentativa",
+          "text": "PRACH a −16 dBm com pathloss de 114 dB: sucesso na primeira tentativa, sem disputa (contention free)."
+        },
+        {
+          "idx": 69,
+          "title": "Handover concluído em T +0,840 s",
+          "text": "RRCReconfigurationComplete na PCI 145. O OOS_FILT_BLER ficou no máximo em 0,9 %: não houve RLF."
+        },
+        {
+          "idx": 71,
+          "title": "T304 com folga",
+          "text": "O T304 termina com 1903 ms restantes: o handover usou menos de 100 ms do temporizador."
         }
-      ],
-      "stepsTimed": true
+      ]
     },
     {
       "id": "dut-inter",
@@ -383,23 +401,23 @@
       ]
     },
     {
-      "id": "cdut-solstice",
-      "number": "03 · REFERÊNCIA",
-      "label": "Solstice · inter-frequência",
-      "kicker": "CENÁRIO 03 · REFERÊNCIA",
-      "title": "Handover inter-frequência sem RLF",
-      "description": "Solstice · n78 PCI 88 → n41 PCI 145/160 · mesma rede e sequência de medição",
-      "status": "Referência aprovada · 3/3",
+      "id": "controle-intra",
+      "number": "01 · CONTROLE",
+      "label": "Meridian · intra-frequência",
+      "kicker": "CENÁRIO 01 · CONTROLE",
+      "title": "Handover intra-frequência concluído",
+      "description": "Meridian · n78 PCI 88 → PCI 101 · mesma frequência · três repetições",
+      "status": "Controle aprovado · 3/3",
       "statusClass": "good",
-      "device": "Solstice / CDUT",
+      "device": "Meridian / DUT",
       "state": "RRC_CONNECTED · handover OK",
-      "scene": "reference",
+      "scene": "control",
       "rat": "NR · SA",
       "network": "NovaLink / Site Delta",
       "leftNode": "gNodeB · serving",
       "leftCell": "n78 · NR-ARFCN 633180 · PCI 88",
       "rightNode": "gNodeB · alvo",
-      "rightCell": "n41 · NR-ARFCN 504990 · PCI 145",
+      "rightCell": "n78 · NR-ARFCN 633180 · PCI 101",
       "coreNodes": {
         "left": "5GC · NovaLink",
         "shared": true
@@ -410,63 +428,63 @@
       "axisMax": 4.2,
       "metrics": [
         {
-          "label": "Measurement Report A5",
-          "value": "0,655–0,705 s",
-          "note": "TTT configurado: 240 ms",
+          "label": "Medição ativa",
+          "value": "A3 · measId=1",
+          "note": "mesma frequência",
           "tone": "accent-text"
         },
         {
-          "label": "Handover concluído",
-          "value": "0,815–0,865 s",
+          "label": "Measurement Report",
+          "value": "1,155–1,210 s",
+          "note": "desde o início da degradação",
+          "tone": ""
+        },
+        {
+          "label": "Conclusão HO",
+          "value": "1,312–1,370 s",
           "note": "RRCReconfigurationComplete",
           "tone": "good-text"
         },
         {
-          "label": "Radio Link Failure",
+          "label": "RLF",
           "value": "0 / 3",
           "note": "OOS_FILT_BLER abaixo do limiar",
-          "tone": "good-text"
-        },
-        {
-          "label": "Cadeia Report → HO",
-          "value": "≈ 160 ms",
-          "note": "mesma banda alvo n41",
           "tone": "good-text"
         }
       ],
       "rows": [
         {
-          "label": "Solstice · inter",
-          "sub": "Report A5 · n41",
-          "start": 0.655,
-          "end": 0.705,
-          "final": "0,655–0,705 s",
-          "color": "reference",
+          "label": "Meridian · intra",
+          "sub": "Report A3",
+          "start": 1.155,
+          "end": 1.21,
+          "final": "1,155–1,210 s",
+          "color": "success",
           "points": [
             {
-              "at": 0.655,
-              "kind": "reference"
+              "at": 1.155,
+              "kind": "success"
             },
             {
-              "at": 0.705,
-              "kind": "reference"
+              "at": 1.21,
+              "kind": "success"
             }
           ]
         },
         {
           "label": "Handover OK",
           "sub": "ReconfigurationComplete",
-          "start": 0.815,
-          "end": 0.865,
-          "final": "0,815–0,865 s",
+          "start": 1.312,
+          "end": 1.37,
+          "final": "1,312–1,370 s",
           "color": "success",
           "points": [
             {
-              "at": 0.815,
+              "at": 1.312,
               "kind": "success"
             },
             {
-              "at": 0.865,
+              "at": 1.37,
               "kind": "success"
             }
           ]
@@ -475,79 +493,61 @@
       "evidence": [
         {
           "kind": "ok",
-          "title": "Mesmo cenário inter-frequência",
-          "html": "O CDUT usa o mesmo site, par de bandas e sequência de medição (A2 e A5) do cenário DUT."
+          "title": "Controle intra-RAT estável",
+          "html": "3/3 handovers completos; a cadeia Report → conclusão levou 155–160 ms."
         },
         {
           "kind": "ok",
-          "title": "Relatório A5 seguido de handover",
-          "html": "<code>measId=2</code> é reportado entre 0,655–0,705 s; RRCReconfigurationComplete entre 0,815–0,865 s."
+          "title": "Medição intra-frequência ativa",
+          "html": "<code>measId=1</code> (A3) e <code>measId=3</code> (A2) já estavam configurados."
         },
         {
           "kind": "ok",
-          "title": "Sem RLF nas repetições",
-          "html": "3/3 handovers concluídos; estatística 0xB959 permanece abaixo do limiar OOS."
+          "title": "Sem falha de enlace",
+          "html": "O registro 0xB959 manteve OOS_FILT_BLER abaixo do limiar em todas as repetições."
         },
         {
           "kind": "issue",
-          "title": "Diferença exige investigação no UE",
-          "html": "O contraste reduz a probabilidade de falha geral do site, mas não prova sozinho a causa raiz."
+          "title": "Log detalhado não fornecido",
+          "html": "O material inclui logs completos para os cenários 2 (DUT) e 3 (CDUT), não para este controle."
         }
       ],
-      "notice": "A comparação com o CDUT é uma evidência de controle, não uma prova de que todos os parâmetros de RF e de rede eram idênticos em cada instante.",
-      "logPath": "Desafios/Desafio 3/Desafio_S03_Log_CDUT_Solstice.html",
-      "logLabel": "Fonte: Desafio_S03_Log_CDUT_Solstice.html · repetição 01 do cenário 3. O arquivo original é apresentado sem alterações.",
-      "timeReference": {
-        "idx": 38,
-        "label": "Tempo desde a MeasConfig #2"
-      },
-      "guide": [
+      "notice": "O caso descreve este cenário como controle de mesma frequência. Não há um arquivo de log detalhado anexado para ele; os valores exibidos vêm da ficha do desafio.",
+      "logPath": "",
+      "logLabel": "Sem arquivo de log detalhado para este cenário.",
+      "playbackSteps": [
         {
-          "idx": 38,
-          "title": "MeasConfig #2: mesma configuração",
-          "text": "A rede envia a mesma measConfig do cenário DUT: n41, A5 −106/−100 dBm, hysteresis 1 dB, TTT 240 ms, gaps de 6 ms a cada 40 ms."
+          "msg": "Início da degradação da serving · PCI 88",
+          "summary": "measId=1 (A3, hysteresis 1 dB, TTT 320 ms) e measId=3 (A2, −100 dBm, TTT 160 ms) ativos desde a primeira RRCReconfiguration; a n41 não está configurada.",
+          "offsetMs": 0
         },
         {
-          "idx": 41,
-          "title": "1ª medição da n41 com gap",
-          "text": "SFN 349: PCI 145 em −98,8 dBm. No mesmo SFN, o Meridian mediu −100,6 dBm."
+          "msg": "Measurement Report · measId=1 (A3)",
+          "summary": "SS-RSRP/SS-RSRQ serving −101 dBm/−13 dB; vizinha PCI 101 −90 dBm/−8 dB.",
+          "offsetMs": 1180
         },
         {
-          "idx": 46,
-          "title": "2ª medição, 200 ms depois",
-          "text": "SFN 369: o Solstice atualiza a n41 a cada 120–200 ms (1 a cada 3 a 5 gaps)."
+          "msg": "RRCReconfiguration · targetPhysCellId=101",
+          "summary": "reconfigurationWithSync sem absoluteFrequencySSB (mesma frequência), rach-ConfigDedicated presente, t304=2000 ms.",
+          "offsetMs": 1240
         },
         {
-          "idx": 47,
-          "title": "Condição de entrada do A5 atendida",
-          "text": "Serving −107,2 dBm (< −107) e PCI 145 −95,8 dBm (> −99) em T +0,397 s. O TTT de 240 ms começa a contar."
+          "msg": "Random Access · Msg1 (preâmbulo dedicado)",
+          "summary": "Acesso sem contenção na PCI 101.",
+          "offsetMs": 1285
         },
         {
-          "idx": 54,
-          "title": "Report A5 em T +0,680 s",
-          "text": "283 ms depois da condição de entrada (TTT de 240 ms + próxima avaliação): serving −109 dBm, PCI 145 −94 dBm."
+          "msg": "Random Access Response · Msg2",
+          "summary": "A PCI 101 responde ao preâmbulo dedicado.",
+          "offsetMs": 1310
         },
         {
-          "idx": 56,
-          "title": "Comando de handover 63 ms depois",
-          "text": "reconfigurationWithSync para a PCI 145 com rach-ConfigDedicated (CFRA) e T304 = 2000 ms."
-        },
-        {
-          "idx": 64,
-          "title": "RACH na 1ª tentativa",
-          "text": "PRACH a −16 dBm com pathloss de 114 dB: sucesso na primeira tentativa, sem disputa (contention free)."
-        },
-        {
-          "idx": 69,
-          "title": "Handover concluído em T +0,840 s",
-          "text": "RRCReconfigurationComplete na PCI 145. O OOS_FILT_BLER ficou no máximo em 0,9 %: não houve RLF."
-        },
-        {
-          "idx": 71,
-          "title": "T304 com folga",
-          "text": "O T304 termina com 1903 ms restantes: o handover usou menos de 100 ms do temporizador."
+          "msg": "RRCReconfigurationComplete · sem RLF",
+          "summary": "Handover concluído 155 ms após o Report. Repetições 02 e 03: 1,312 s e 1,370 s; OOS_FILT_BLER (0xB959) sempre abaixo do limiar.",
+          "offsetMs": 1335
         }
-      ]
+      ],
+      "stepsTimed": true
     }
   ],
   "insights": {
