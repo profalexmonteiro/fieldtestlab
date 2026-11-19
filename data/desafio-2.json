@@ -210,10 +210,10 @@
           "tone": "bad-text"
         },
         {
-          "label": "2ª rejeição NAS",
-          "value": "5GMM #11",
-          "note": "PLMN not allowed · SUCI antigo",
-          "tone": "warn-text"
+          "label": "Tentativa 2 · PLMN × SUCI",
+          "value": "724/078 ≠ 724/085",
+          "note": "SUCI do perfil antigo → 5GMM #11",
+          "tone": "bad-text"
         },
         {
           "label": "Registro completo",
@@ -290,7 +290,7 @@
         {
           "idx": 9,
           "title": "Rejeição #3 · Illegal UE",
-          "text": "O AMF da Vantis recusa a identidade apresentada (5GMM cause #3). Repare de onde vem a seta: do núcleo, passando pela gNodeB. A rejeição é NAS, não de rádio."
+          "text": "O AMF da Vantis recusa a identidade apresentada (5GMM cause #3). Repare de onde vem a seta: do núcleo, passando pela gNodeB. A rejeição é NAS, não de rádio. Pela TS 24.501, depois do #3 o UE deve considerar o USIM inválido para 5GS até ser desligado ou ter o cartão removido."
         },
         {
           "idx": 11,
@@ -310,7 +310,7 @@
         {
           "idx": 19,
           "title": "Rejeição #11 · PLMN not allowed",
-          "text": "O AMF da Zenith recusa um assinante cuja rede de origem (724/085) não é a dele. A rede reage corretamente à identidade errada."
+          "text": "O AMF da Zenith recusa um assinante cuja rede de origem (724/085) não é a dele. A rede reage corretamente à identidade errada. Pela norma, o UE guarda o PLMN rejeitado na lista de proibidos e refaz a seleção. Voltar à Zenith só faz sentido porque a identidade muda; repetir o SUCI 724/085 depois do #3 já mostra o Aurora misturando dados do perfil antigo e do novo."
         },
         {
           "idx": 21,
@@ -577,5 +577,321 @@
         }
       ]
     }
-  ]
+  ],
+  "hypotheses": [
+    {
+      "id": "rf",
+      "title": "Cobertura / RF",
+      "question": "O Aurora estava numa condição de rádio pior que a do Boreal?",
+      "evidence": [
+        {
+          "text": "Células boas e não barradas: Vantis PCI 177 (−80 dBm / −7 dB) e Zenith PCI 201 (−83 dBm / −8 dB), as mesmas usadas pelo Boreal.",
+          "links": [
+            {
+              "scenario": "dut-vantis-zenith",
+              "idx": 2,
+              "label": "DUT #2"
+            },
+            {
+              "scenario": "dut-vantis-zenith",
+              "idx": 13,
+              "label": "DUT #13"
+            },
+            {
+              "scenario": "cdut-boreal",
+              "idx": 3,
+              "label": "CDUT #3"
+            }
+          ]
+        },
+        {
+          "text": "As tentativas rejeitadas completam PSS/SSS, MIB, SIB1 e RRC Setup: o enlace de rádio funciona.",
+          "links": [
+            {
+              "scenario": "dut-vantis-zenith",
+              "idx": 5,
+              "label": "DUT #5"
+            },
+            {
+              "scenario": "dut-vantis-zenith",
+              "idx": 15,
+              "label": "DUT #15"
+            }
+          ]
+        },
+        {
+          "text": "As duas rejeições são NAS (Registration Reject do AMF), não falhas de RRC ou de acesso.",
+          "links": [
+            {
+              "scenario": "dut-vantis-zenith",
+              "idx": 9,
+              "label": "DUT #9"
+            },
+            {
+              "scenario": "dut-vantis-zenith",
+              "idx": 19,
+              "label": "DUT #19"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada: o rádio e a conexão RRC funcionam em todas as tentativas; a recusa vem do núcleo."
+    },
+    {
+      "id": "cell",
+      "title": "Célula ou planejamento da Zenith",
+      "question": "A célula PCI 201 (ou seu TAC) recusa novos assinantes?",
+      "evidence": [
+        {
+          "text": "O Boreal registra de primeira na mesma PCI 201 e no mesmo TAC 0x1042.",
+          "links": [
+            {
+              "scenario": "cdut-boreal",
+              "idx": 3,
+              "label": "CDUT #3"
+            },
+            {
+              "scenario": "cdut-boreal",
+              "idx": 19,
+              "label": "CDUT #19"
+            }
+          ]
+        },
+        {
+          "text": "A tentativa 3 do próprio Aurora é aceita na mesma célula que rejeitou a tentativa 2.",
+          "links": [
+            {
+              "scenario": "dut-vantis-zenith",
+              "idx": 21,
+              "label": "DUT #21"
+            },
+            {
+              "scenario": "dut-vantis-zenith",
+              "idx": 36,
+              "label": "DUT #36"
+            }
+          ]
+        },
+        {
+          "text": "Na troca Zenith → Nimbus (PCI 133) o Aurora também precisa de três tentativas (resultado agregado, sem log).",
+          "links": [
+            {
+              "scenario": "dut-zenith-nimbus",
+              "idx": 0,
+              "label": "Cenário 02"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada: a mesma célula aceita o Boreal e o próprio Aurora, e o sintoma se repete em outra operadora."
+    },
+    {
+      "id": "core",
+      "title": "Núcleo da Zenith rejeitando indevidamente",
+      "question": "O AMF da Zenith recusa um assinante que deveria aceitar?",
+      "evidence": [
+        {
+          "text": "Na tentativa 2 o Aurora apresenta SUCI com Home-Network-Id 724/085 (Vantis). #11 \"PLMN not allowed\" é a resposta correta para um assinante sem acordo com a Zenith.",
+          "links": [
+            {
+              "scenario": "dut-vantis-zenith",
+              "idx": 17,
+              "label": "DUT #17"
+            },
+            {
+              "scenario": "dut-vantis-zenith",
+              "idx": 19,
+              "label": "DUT #19"
+            }
+          ]
+        },
+        {
+          "text": "Com o SUCI 724/078, o mesmo AMF autentica, ativa a segurança e aceita o registro.",
+          "links": [
+            {
+              "scenario": "dut-vantis-zenith",
+              "idx": 24,
+              "label": "DUT #24"
+            },
+            {
+              "scenario": "dut-vantis-zenith",
+              "idx": 26,
+              "label": "DUT #26"
+            },
+            {
+              "scenario": "dut-vantis-zenith",
+              "idx": 34,
+              "label": "DUT #34"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada: a rede reage corretamente à identidade que recebe. O erro está na identidade enviada."
+    },
+    {
+      "id": "band",
+      "title": "Banda ou RAT",
+      "question": "O problema é da banda n78 ou do acesso por rádio 5G?",
+      "evidence": [
+        {
+          "text": "Em LTE Band 3, o mesmo Aurora faz Attach na primeira tentativa em 5/5 trocas (resultado agregado).",
+          "links": [
+            {
+              "scenario": "lte-controle",
+              "idx": 0,
+              "label": "Cenário 03"
+            }
+          ]
+        },
+        {
+          "text": "Em n78, o Boreal registra de primeira e o Aurora falha com duas operadoras de destino.",
+          "links": [
+            {
+              "scenario": "cdut-boreal",
+              "idx": 19,
+              "label": "CDUT #19"
+            },
+            {
+              "scenario": "dut-zenith-nimbus",
+              "idx": 0,
+              "label": "Cenário 02"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada como banda: a n78 funciona para o Boreal. O controle LTE indica que o defeito está no caminho de registro 5GS do Aurora (identidade e SUCI), não na frequência."
+    },
+    {
+      "id": "provisioning",
+      "title": "Perfil Zenith ainda não provisionado",
+      "question": "O perfil novo do Aurora ainda não existia no UDM da Zenith?",
+      "evidence": [
+        {
+          "text": "Nas tentativas 1 e 2 o Aurora nem apresenta a identidade Zenith: envia o SUCI 724/085 e o MSIN 4185551234.",
+          "links": [
+            {
+              "scenario": "dut-vantis-zenith",
+              "idx": 7,
+              "label": "DUT #7"
+            },
+            {
+              "scenario": "dut-vantis-zenith",
+              "idx": 17,
+              "label": "DUT #17"
+            }
+          ]
+        },
+        {
+          "text": "Na primeira vez em que apresenta o SUCI 724/078 (MSIN 7729004321), é autenticado sem rejeição.",
+          "links": [
+            {
+              "scenario": "dut-vantis-zenith",
+              "idx": 24,
+              "label": "DUT #24"
+            },
+            {
+              "scenario": "dut-vantis-zenith",
+              "idx": 26,
+              "label": "DUT #26"
+            }
+          ]
+        },
+        {
+          "text": "O Boreal usa outra assinatura (MSIN 7729009876): o sucesso dele não prova o provisionamento do perfil do Aurora.",
+          "links": [
+            {
+              "scenario": "cdut-boreal",
+              "idx": 7,
+              "label": "CDUT #7"
+            }
+          ]
+        }
+      ],
+      "verdict": "Improvável, mas não totalmente descartada pelos logs: a rede nunca recusou a identidade nova. Para fechar, consultar o UDM ou repetir com o aparelho ligado já no perfil Zenith."
+    },
+    {
+      "id": "ue",
+      "title": "Aurora usando dados do perfil antigo",
+      "question": "Depois da troca, o Aurora continua usando o PLMN e a identidade do perfil Vantis?",
+      "evidence": [
+        {
+          "text": "Tentativa 1: volta para a célula da Vantis (PLMN 724/085) com o SUCI da Vantis → #3.",
+          "links": [
+            {
+              "scenario": "dut-vantis-zenith",
+              "idx": 3,
+              "label": "DUT #3"
+            },
+            {
+              "scenario": "dut-vantis-zenith",
+              "idx": 7,
+              "label": "DUT #7"
+            }
+          ]
+        },
+        {
+          "text": "Tentativa 2: escolhe o PLMN 724/078, mas ainda envia o SUCI 724/085 → #11.",
+          "links": [
+            {
+              "scenario": "dut-vantis-zenith",
+              "idx": 16,
+              "label": "DUT #16"
+            },
+            {
+              "scenario": "dut-vantis-zenith",
+              "idx": 17,
+              "label": "DUT #17"
+            }
+          ]
+        },
+        {
+          "text": "Tentativa 3: identidade alinhada (SUCI 724/078) e registro aceito. O Boreal já começa assim.",
+          "links": [
+            {
+              "scenario": "dut-vantis-zenith",
+              "idx": 24,
+              "label": "DUT #24"
+            },
+            {
+              "scenario": "cdut-boreal",
+              "idx": 7,
+              "label": "CDUT #7"
+            }
+          ]
+        }
+      ],
+      "verdict": "Sustentada: é o único mecanismo que explica as duas rejeições, a ordem delas e o sucesso na terceira tentativa. Não deve ser marcada como descartada."
+    }
+  ],
+  "comparison": {
+    "outcome": "registro com rejeição",
+    "counts": {
+      "dut": [
+        5,
+        5
+      ],
+      "cdut": [
+        0,
+        5
+      ]
+    }
+  },
+  "conclusion": {
+    "title": "Mecanismo mais provável",
+    "summary": "Depois da troca de perfil, o Aurora continua usando dados do perfil Vantis no registro 5G SA. Só na terceira tentativa ele passa a usar a identidade do perfil Zenith. A rede responde corretamente em todas as etapas.",
+    "symptoms": [
+      "Tentativa 1: o aparelho volta à operadora antiga (célula e PLMN da Vantis) com o SUCI antigo e recebe #3 Illegal UE.",
+      "Tentativa 2: já seleciona a Zenith, mas o SUCI ainda traz Home-Network-Id 724/085 e o MSIN da Vantis, e recebe #11 PLMN not allowed. Pela TS 24.501, depois do #3 o USIM deveria ser tratado como inválido para 5GS; repetir a mesma identidade mostra o aparelho misturando dados do perfil antigo e do novo."
+    ],
+    "closing": "O controle LTE do próprio Aurora registra de primeira, o que aponta para os dados específicos do 5GS (SUCI e localização 5G guardados no aparelho) não relidos depois da troca no eSIM, que deveria levar o aparelho a reler o USIM.",
+    "statsTitle": "O que falta para fechar com certeza estatística",
+    "stats": [
+      "O resultado atual já é significativo: 5/5 trocas do Aurora com rejeição × 0/5 do Boreal dá p ≈ 0,008 (Fisher exato). Mais repetições estreitam o intervalo de confiança.",
+      "Controle sem troca: ligar o Aurora já com o perfil Zenith. Se registrar de primeira, o defeito está no tratamento da troca, e não no perfil.",
+      "Troca seguida de modo avião ou reinicialização: se o registro passar a sair de primeira, reforça a hipótese de dado guardado em cache.",
+      "Log do SIM/eUICC (APDUs): REFRESH depois da troca de perfil e leitura de EF IMSI, EF SUCI_Calc_Info e EF 5GS3GPPLOCI.",
+      "Log do núcleo (AMF/UDM) da Zenith, para descartar de vez um atraso de provisionamento.",
+      "Captura NAS da troca Zenith → Nimbus e o Boreal no mesmo cenário, que hoje só têm resultado agregado."
+    ]
+  }
 }

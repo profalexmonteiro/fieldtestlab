@@ -27,9 +27,10 @@ export function mountInsightView(actions) {
   });
   tabs.addEventListener("keydown", (event) => {
     if (!["ArrowLeft", "ArrowRight"].includes(event.key)) return;
-    const current = TABS.indexOf(event.target.dataset.tab);
+    const shown = [...tabs.querySelectorAll("[data-tab]")].map((button) => button.dataset.tab);
+    const current = shown.indexOf(event.target.dataset.tab);
     if (current < 0) return;
-    const next = TABS[(current + (event.key === "ArrowRight" ? 1 : TABS.length - 1)) % TABS.length];
+    const next = shown[(current + (event.key === "ArrowRight" ? 1 : shown.length - 1)) % shown.length];
     actions.onSetTab(next);
     requestAnimationFrame(() => tabs.querySelector(`[data-tab="${next}"]`)?.focus());
   });
@@ -51,34 +52,37 @@ export function mountInsightView(actions) {
   function render(state, challenge, scenario) {
     last = [state, challenge, scenario];
     const config = challenge.insights;
-    panel.hidden = !config;
-    if (!config) {
+    // A challenge with `hypotheses` but no measurement config gets only the hypotheses tab.
+    const available = config ? TABS : challenge.hypotheses ? ["hypotheses"] : [];
+    panel.hidden = !available.length;
+    if (!available.length) {
       lastKey = "";
       return;
     }
+    const tab = available.includes(state.insightTab) ? state.insightTab : available[0];
     const traces = state.traces?.challengeId === challenge.id ? state.traces : null;
     const width = Math.round(body.getBoundingClientRect().width);
-    const key = [challenge.id, scenario.id, getLang(), state.insightTab, state.overlay, state.revealed,
+    const key = [challenge.id, scenario.id, getLang(), tab, state.overlay, state.revealed,
       JSON.stringify(state.hypothesisMarks), traces?.byScenario ? "ready" : traces?.error || "loading", width].join("|");
 
     if (key !== lastKey) {
       lastKey = key;
-      tabs.replaceChildren(...TABS.map((tab) => el("button", {
+      tabs.replaceChildren(...available.map((item) => el("button", {
         type: "button",
         role: "tab",
         className: "insight-tab",
-        "data-tab": tab,
-        "aria-selected": String(tab === state.insightTab),
-        tabIndex: tab === state.insightTab ? 0 : -1
-      }, t(`insight.tab.${tab}`))));
+        "data-tab": item,
+        "aria-selected": String(item === tab),
+        tabIndex: item === tab ? 0 : -1
+      }, t(`insight.tab.${item}`))));
       update = () => {};
-      if (!traces?.byScenario && state.insightTab !== "hypotheses") {
+      if (!traces?.byScenario && tab !== "hypotheses") {
         body.replaceChildren(el("p", { className: "insight-empty" }, traces?.error ? t("insight.error", { error: traces.error }) : t("insight.loading")));
       } else {
         const ctx = { state, challenge, scenario, config, traces: traces?.byScenario, width, onJump: actions.onJump };
-        const built = state.insightTab === "compare" ? buildComparison(ctx)
-          : state.insightTab === "rach" ? buildRach(ctx)
-            : state.insightTab === "hypotheses" ? buildHypotheses(ctx)
+        const built = tab === "compare" ? buildComparison(ctx)
+          : tab === "rach" ? buildRach(ctx)
+            : tab === "hypotheses" ? buildHypotheses(ctx)
               : buildMeasure(ctx);
         body.replaceChildren(built.node);
         update = built.update || update;

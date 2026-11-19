@@ -87,16 +87,16 @@
             "value": "5GMM #3",
             "note": "Illegal UE · PLMN Vantis",
             "tone": "bad-text",
-            "observation": "1ª resposta NAS: Registration Reject · 5GMM cause 3",
+            "observation": "Tentativa 1: acampa na Vantis (PLMN 724/085) e envia SUCI 724/085 → 5GMM #3",
             "evidence": "mechanism"
           },
           {
-            "label": "2ª rejeição NAS",
-            "value": "5GMM #11",
-            "note": "PLMN not allowed · SUCI antigo",
-            "tone": "warn-text",
-            "observation": "2ª resposta NAS: Registration Reject · 5GMM cause 11",
-            "evidence": "mechanism"
+            "label": "Tentativa 2 · PLMN × SUCI",
+            "value": "724/078 ≠ 724/085",
+            "note": "SUCI do perfil antigo → 5GMM #11",
+            "tone": "bad-text",
+            "evidence": "mechanism",
+            "observation": "Tentativa 2: PLMN escolhido 724/078 · SUCI Home-Network-Id 724/085 → 5GMM #11"
           },
           {
             "label": "Registro completo",

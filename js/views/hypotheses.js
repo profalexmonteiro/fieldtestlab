@@ -76,6 +76,8 @@ function conclusionBlock(challenge) {
   const stats = el("div", { className: "stats-box" });
 
   if (counts) {
+    // What is being counted (e.g. "RLF"), shown in the statistics texts.
+    const outcome = comparison.outcome || "RLF";
     const [dutK, dutN] = counts.dut;
     const [cdutK, cdutN] = counts.cdut;
     const observed = fisherExact(dutK, dutN - dutK, cdutK, cdutN - cdutK);
@@ -99,13 +101,13 @@ function conclusionBlock(challenge) {
 
     stats.append(
       el("div", { className: "stats-observed" },
-        el("strong", {}, t("stats.observed", { dut: `${dutK}/${dutN}`, cdut: `${cdutK}/${cdutN}` })),
+        el("strong", {}, t("stats.observed", { outcome, dut: `${dutK}/${dutN}`, cdut: `${cdutK}/${cdutN}` })),
         el("span", { className: observed.twoSided < 0.05 ? "good-text" : "bad-text" },
           t("stats.fisher", { two: pValue(observed.twoSided), one: pValue(observed.oneSided), verdict: t(observed.twoSided < 0.05 ? "stats.significant" : "stats.notSignificant") })),
         dutCi && cdutCi ? el("span", {}, t("stats.ci", {
-          dutLow: percent(dutCi[0]), dutHigh: percent(dutCi[1]), cdutLow: percent(cdutCi[0]), cdutHigh: percent(cdutCi[1])
+          outcome, dutLow: percent(dutCi[0]), dutHigh: percent(dutCi[1]), cdutLow: percent(cdutCi[0]), cdutHigh: percent(cdutCi[1])
         })) : null),
-      el("label", { className: "stats-slider" }, el("span", {}, t("stats.slider")), slider),
+      el("label", { className: "stats-slider" }, el("span", {}, t("stats.slider", { outcome })), slider),
       simulated);
   }
 

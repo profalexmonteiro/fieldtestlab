@@ -25,15 +25,15 @@ describe("células no ar", () => {
     expect(cellOn(sites, {}, "NovaLink", "n78")).toBe(true);
     expect(cellOn(sites, {}, "Aurora", "n78")).toBe(false);
   });
-  it("D2 começa sem Nimbus n78 e fica completo ao trocar a RRU 2 do Foxtrot para n78", () => {
-    expect(missingCells(requiredCells["desafio-2"], sites, {}).map(cellName)).toEqual(["Nimbus n78"]);
-    const ov = { fox: [["Vantis", "n78"], ["Nimbus", "n78"], ["Zenith", "n41"]] };
+  it("D2 começa sem Nimbus n78 e Vantis B3 (origem do controle LTE) e fica completo ao reconfigurar Foxtrot e Echo", () => {
+    expect(missingCells(requiredCells["desafio-2"], sites, {}).map(cellName)).toEqual(["Nimbus n78", "Vantis B3"]);
+    const ov = { fox: [["Vantis", "n78"], ["Nimbus", "n78"], ["Zenith", "n41"]], echo: [["NovaLink", "B3"], ["Zenith", "B3"], ["Vantis", "B3"]] };
     expect(missingCells(requiredCells["desafio-2"], sites, ov)).toEqual([]);
   });
   it("aceita um rascunho ainda não aplicado (draft) sem alterar o save", () => {
     const draft = { site: site("fox"), cfg: [["Vantis", "n78"], ["Nimbus", "n78"], ["Zenith", "n41"]] };
-    expect(missingCells(requiredCells["desafio-2"], sites, {}, draft)).toEqual([]);
-    expect(missingCells(requiredCells["desafio-2"], sites, {})).toHaveLength(1);
+    expect(missingCells(requiredCells["desafio-2"], sites, {}, draft).map(cellName)).toEqual(["Vantis B3"]);
+    expect(missingCells(requiredCells["desafio-2"], sites, {})).toHaveLength(2);
   });
   it("D6 precisa de Aurora B3, que não existe na configuração padrão", () => {
     expect(missingCells(requiredCells["desafio-6"], sites, {}).map(cellName)).toContain("Aurora B3");

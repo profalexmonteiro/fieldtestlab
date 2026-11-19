@@ -2,7 +2,7 @@
   "desafio-2": {
     "short": "Registro / Attach",
     "icon": "🪪",
-    "brief": "Os usuários do Aurora relatam que, após trocar o perfil de operadora, o aparelho demora para registrar em 5G. Reproduza, compare e reporte.",
+    "brief": "O Aurora, unidade de pré-série em homologação, demora a registrar em 5G SA depois da troca de perfil de operadora. Reproduza, compare com o Boreal e reporte.",
     "equipment": {
       "required": [
         "modemlog",
@@ -17,62 +17,62 @@
       {
         "q": "Qual RAT você configura para reproduzir a falha principal?",
         "options": [
-          "5G SA · NR",
-          "5G NSA · EN-DC",
-          "3G · WCDMA",
-          "Wi-Fi Calling"
+          "5G SA · NR standalone",
+          "5G NSA · EN-DC com âncora LTE",
+          "LTE · Band 3",
+          "5G SA e NSA alternados"
         ],
-        "explain": "A reclamação é de registro em 5G SA (NR standalone); LTE entra depois como controle."
+        "explain": "A reclamação é de registro em 5G SA (NR standalone); o LTE entra depois como controle."
       },
       {
         "q": "Qual troca de perfil reproduz o problema relatado?",
         "options": [
           "Vantis 724/085 → Zenith 724/078",
-          "Zenith 724/078 → Zenith 724/078",
-          "Vantis 724/085 → Vantis 724/085",
-          "Sem troca de perfil, só reboot"
+          "Zenith 724/078 → Vantis 724/085",
+          "Vantis 724/085 → Solaris 724/023",
+          "Vantis 724/085 → Zenith 724/078 só em LTE"
         ],
-        "explain": "O caso descreve a troca de perfil entre operadoras Vantis → Zenith (e depois Zenith → Nimbus)."
+        "explain": "O caso descreve a troca Vantis → Zenith em 5G SA (e depois Zenith → Nimbus). A Solaris não tem 5G e está fora da campanha."
       },
       {
         "q": "Qual controle ajuda a isolar se o problema é do 5G no DUT?",
         "options": [
           "Repetir as trocas do Aurora em LTE Band 3",
-          "Trocar o SIM por um de outro país",
-          "Desativar a autenticação na rede",
-          "Testar apenas com Wi-Fi ligado"
+          "Repetir as trocas do Aurora em 5G SA em outro site",
+          "Repetir as trocas só no Boreal, em 5G SA",
+          "Medir RSRP e RSRQ das células durante as trocas"
         ],
-        "explain": "O controle LTE do próprio Aurora mostra se o defeito é específico do 5G SA."
+        "explain": "Só o mesmo aparelho em outra RAT isola o 5G SA. As outras opções isolam o site, o aparelho ou o RF."
       }
     ],
     "report": [
       {
         "q": "Qual é a causa raiz mais provável?",
         "options": [
-          "O Aurora envia SUCI com o Home-Network-Id do perfil antigo (724/085) após a troca e só o atualiza na 3ª tentativa",
-          "Cobertura n78 fraca na célula Zenith PCI 201",
-          "Falha geral do núcleo 5G da Zenith",
-          "Bateria fraca durante a troca de perfil"
+          "O Aurora mantém a identidade do perfil antigo (SUCI 724/085) após a troca",
+          "O perfil Zenith do Aurora ainda não estava provisionado no UDM",
+          "O IMEI do Aurora não está liberado na rede da Zenith",
+          "A célula Zenith PCI 201 restringe o acesso de novos assinantes"
         ],
-        "explain": "Na 2ª tentativa a célula anuncia 724/078, mas o SUCI ainda traz 724/085. Na 3ª o SUCI muda e o registro é aceito."
+        "explain": "Na 2ª tentativa a célula anuncia 724/078, mas o SUCI ainda traz 724/085; na 3ª o SUCI muda e o registro é aceito. A identidade nova foi aceita assim que apareceu (não é provisionamento); IMEI bloqueado daria outra causa e falharia também na 3ª; a célula não está barrada e aceita o Boreal."
       },
       {
         "q": "O que descarta um problema de rede ou de cobertura?",
         "options": [
-          "O Boreal registra de primeira no mesmo PLMN/PCI e o próprio Aurora registra de primeira em LTE",
-          "O Aurora registra na terceira tentativa",
-          "A rejeição usa a causa 5GMM #3",
-          "O teste foi feito em 5 trocas"
+          "O Boreal registra de primeira no mesmo PLMN/PCI e o Aurora registra de primeira em LTE",
+          "As duas rejeições vêm do AMF, e não do RRC",
+          "O RSRP da Zenith fica só 3 dB abaixo do da Vantis",
+          "A troca Zenith → Nimbus também exige três tentativas"
         ],
-        "explain": "O CDUT na mesma célula e o controle LTE afastam rede/site; RSRP de −83 dB afasta cobertura."
+        "explain": "O CDUT na mesma célula e o controle LTE afastam rede e site. Rejeições NAS mostram onde a falha aparece, não quem a causa; o RSRP sozinho não descarta a rede; o cenário Nimbus repete o sintoma, mas não tem CDUT."
       },
       {
         "q": "Qual é a sequência de rejeições NAS observada?",
         "options": [
           "#3 Illegal UE → #11 PLMN not allowed → Accept",
-          "#11 → #3 → Accept",
-          "#15 No suitable cells → Accept",
-          "Sem rejeições, apenas atraso de RRC"
+          "#11 PLMN not allowed → #3 Illegal UE → Accept",
+          "#3 Illegal UE → #3 Illegal UE → Accept",
+          "#7 5GS services not allowed → #11 → Accept"
         ],
         "explain": "Tentativa 1: 5GMM #3; tentativa 2: #11; tentativa 3: Registration Accept."
       },
@@ -80,15 +80,16 @@
         "q": "Severidade do issue",
         "options": [
           "Alta: 5/5 trocas precisam de 3 tentativas, contra 1 no CDUT",
-          "Baixa: o aparelho acaba registrando",
-          "Média: só afeta uma operadora",
-          "Sem issue: comportamento esperado"
+          "Baixa: o aparelho acaba registrando em menos de 5 s",
+          "Média: afeta só o 5G SA, o LTE funciona",
+          "Sem issue: rejeições após troca de perfil são esperadas"
         ],
         "explain": "É sistemático (100%), afeta duas operadoras e o tempo de registro sobe de ~1 s para ~4,6 s.",
         "field": "severity"
       }
     ],
-    "title": "Cascata de rejeições NAS e registro 5G SA só na 3ª tentativa: Aurora após troca de perfil Vantis → Zenith"
+    "title": "Cascata de rejeições NAS e registro 5G SA só na 3ª tentativa: Aurora após troca de perfil Vantis → Zenith",
+    "impact": "Bloqueia a homologação do Aurora: cada troca de operadora em 5G SA custa duas rejeições NAS e cerca de 3,5 s a mais."
   },
   "desafio-3": {
     "short": "Handover inter-frequência",

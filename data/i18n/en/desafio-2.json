@@ -41,8 +41,8 @@
           "note": "Illegal UE · Vantis PLMN"
         },
         {
-          "label": "2nd NAS rejection",
-          "note": "PLMN not allowed · old SUCI"
+          "label": "Attempt 2 · PLMN × SUCI",
+          "note": "old-profile SUCI → 5GMM #11"
         },
         {
           "label": "Registration complete",
@@ -99,7 +99,7 @@
         },
         {
           "title": "Rejection #3 · Illegal UE",
-          "text": "The Vantis AMF refuses the identity presented (5GMM cause #3). Note where the arrow comes from: the core, through the gNodeB. The rejection is NAS, not radio."
+          "text": "The Vantis AMF refuses the identity presented (5GMM cause #3). Note where the arrow comes from: the core, through the gNodeB. The rejection is NAS, not radio. Under TS 24.501, after #3 the UE shall consider the USIM invalid for 5GS until it is switched off or the card is removed."
         },
         {
           "title": "New search: now the Zenith cell",
@@ -115,7 +115,7 @@
         },
         {
           "title": "Rejection #11 · PLMN not allowed",
-          "text": "The Zenith AMF refuses a subscriber whose home network (724/085) is not its own. The network reacts correctly to the wrong identity."
+          "text": "The Zenith AMF refuses a subscriber whose home network (724/085) is not its own. The network reacts correctly to the wrong identity. Under the standard, the UE stores the rejected PLMN in the forbidden list and selects again. Going back to Zenith only makes sense because the identity changes; repeating SUCI 724/085 after #3 already shows the Aurora mixing data from the old and the new profile."
         },
         {
           "title": "Attempt 3, on the same cell",
@@ -361,5 +361,118 @@
         }
       ]
     }
+  },
+  "hypotheses": {
+    "rf": {
+      "title": "Coverage / RF",
+      "question": "Was the Aurora in worse radio conditions than the Boreal?",
+      "evidence": [
+        {
+          "text": "Good, unbarred cells: Vantis PCI 177 (−80 dBm / −7 dB) and Zenith PCI 201 (−83 dBm / −8 dB), the same ones used by the Boreal."
+        },
+        {
+          "text": "The rejected attempts complete PSS/SSS, MIB, SIB1 and RRC Setup: the radio link works."
+        },
+        {
+          "text": "Both rejections are NAS (Registration Reject from the AMF), not RRC or access failures."
+        }
+      ],
+      "verdict": "Ruled out: radio and the RRC connection work in every attempt; the refusal comes from the core."
+    },
+    "cell": {
+      "title": "Zenith cell or planning",
+      "question": "Does cell PCI 201 (or its TAC) refuse new subscribers?",
+      "evidence": [
+        {
+          "text": "The Boreal registers on the first attempt on the same PCI 201 and TAC 0x1042."
+        },
+        {
+          "text": "The Aurora's own attempt 3 is accepted on the same cell that rejected attempt 2."
+        },
+        {
+          "text": "On the Zenith → Nimbus switch (PCI 133) the Aurora also needs three attempts (aggregate result, no log)."
+        }
+      ],
+      "verdict": "Ruled out: the same cell accepts the Boreal and the Aurora itself, and the symptom repeats on another operator."
+    },
+    "core": {
+      "title": "Zenith core rejecting wrongly",
+      "question": "Does the Zenith AMF refuse a subscriber it should accept?",
+      "evidence": [
+        {
+          "text": "In attempt 2 the Aurora presents a SUCI with Home-Network-Id 724/085 (Vantis). #11 \"PLMN not allowed\" is the correct answer for a subscriber with no agreement with Zenith."
+        },
+        {
+          "text": "With SUCI 724/078, the same AMF authenticates, activates security and accepts the registration."
+        }
+      ],
+      "verdict": "Ruled out: the network reacts correctly to the identity it receives. The error is in the identity sent."
+    },
+    "band": {
+      "title": "Band or RAT",
+      "question": "Is the problem the n78 band or 5G radio access?",
+      "evidence": [
+        {
+          "text": "On LTE Band 3, the same Aurora attaches on the first attempt in 5/5 switches (aggregate result)."
+        },
+        {
+          "text": "On n78, the Boreal registers on the first attempt and the Aurora fails with two destination operators."
+        }
+      ],
+      "verdict": "Ruled out as a band issue: n78 works for the Boreal. The LTE control points to the Aurora's 5GS registration path (identity and SUCI), not the frequency."
+    },
+    "provisioning": {
+      "title": "Zenith profile not provisioned yet",
+      "question": "Did the Aurora's new profile not exist in the Zenith UDM yet?",
+      "evidence": [
+        {
+          "text": "In attempts 1 and 2 the Aurora does not even present the Zenith identity: it sends SUCI 724/085 and MSIN 4185551234."
+        },
+        {
+          "text": "The first time it presents SUCI 724/078 (MSIN 7729004321), it is authenticated with no rejection."
+        },
+        {
+          "text": "The Boreal uses another subscription (MSIN 7729009876): its success does not prove the Aurora's profile was provisioned."
+        }
+      ],
+      "verdict": "Unlikely, but not fully ruled out by the logs: the network never refused the new identity. To close it, check the UDM or repeat with the device powered on already with the Zenith profile."
+    },
+    "ue": {
+      "title": "Aurora using old-profile data",
+      "question": "After the switch, does the Aurora keep using the Vantis profile's PLMN and identity?",
+      "evidence": [
+        {
+          "text": "Attempt 1: goes back to the Vantis cell (PLMN 724/085) with the Vantis SUCI → #3."
+        },
+        {
+          "text": "Attempt 2: selects PLMN 724/078 but still sends SUCI 724/085 → #11."
+        },
+        {
+          "text": "Attempt 3: identity aligned (SUCI 724/078) and registration accepted. The Boreal starts this way."
+        }
+      ],
+      "verdict": "Supported: the only mechanism that explains both rejections, their order and the success on the third attempt. It should not be marked as ruled out."
+    }
+  },
+  "comparison": {
+    "outcome": "rejected registration"
+  },
+  "conclusion": {
+    "title": "Most likely mechanism",
+    "summary": "After the profile switch, the Aurora keeps using Vantis profile data in the 5G SA registration. Only on the third attempt does it use the Zenith profile identity. The network answers correctly at every step.",
+    "symptoms": [
+      "Attempt 1: the device goes back to the old operator (Vantis cell and PLMN) with the old SUCI and gets #3 Illegal UE.",
+      "Attempt 2: it already selects Zenith, but the SUCI still carries Home-Network-Id 724/085 and the Vantis MSIN, and it gets #11 PLMN not allowed. Under TS 24.501, after #3 the USIM should be treated as invalid for 5GS; repeating the same identity shows the device mixing data from the old and the new profile."
+    ],
+    "closing": "The Aurora's own LTE control registers on the first attempt, which points to the 5GS-specific data (SUCI and 5G location stored in the device) not being read again after the eSIM switch, which should make the device read the USIM again.",
+    "statsTitle": "What is missing to close it with statistical certainty",
+    "stats": [
+      "The current result is already significant: 5/5 Aurora switches with rejection × 0/5 for the Boreal gives p ≈ 0.008 (Fisher's exact). More repetitions narrow the confidence interval.",
+      "Control without a switch: power on the Aurora already with the Zenith profile. If it registers on the first attempt, the defect is in handling the switch, not in the profile.",
+      "Switch followed by airplane mode or a reboot: if registration then succeeds on the first attempt, it supports the cached-data hypothesis.",
+      "SIM/eUICC log (APDUs): REFRESH after the profile switch and reads of EF IMSI, EF SUCI_Calc_Info and EF 5GS3GPPLOCI.",
+      "Zenith core log (AMF/UDM), to fully rule out a provisioning delay.",
+      "NAS capture of the Zenith → Nimbus switch and the Boreal in the same scenario, which today only have aggregate results."
+    ]
   }
 }
