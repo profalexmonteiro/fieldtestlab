@@ -1,4 +1,5 @@
 import * as THREE from "three/webgpu";
+import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 import { $ } from "./base.js";
 import { emit } from "./events.js";
 
@@ -13,11 +14,29 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 const scene = new THREE.Scene();
 scene.background = new THREE.Color("#bcd7ee");
+// Mapa de ambiente: um panorama simples (céu, horizonte claro, chão) gerado em canvas. Dá reflexos
+// suaves e luz indireta aos materiais, o que tira o aspecto chapado das superfícies.
+function environmentTexture() {
+  const c = document.createElement("canvas"); c.width = 512; c.height = 256;
+  const x = c.getContext("2d");
+  const g = x.createLinearGradient(0, 0, 0, 256);
+  g.addColorStop(0, "#6f9fd8"); g.addColorStop(0.42, "#cfe3f5"); g.addColorStop(0.5, "#f4f1e8");
+  g.addColorStop(0.56, "#9aa88f"); g.addColorStop(1, "#4d5a45");
+  x.fillStyle = g; x.fillRect(0, 0, 512, 256);
+  const sunGlow = x.createRadialGradient(150, 70, 4, 150, 70, 70);
+  sunGlow.addColorStop(0, "rgba(255,250,230,0.95)"); sunGlow.addColorStop(1, "rgba(255,250,230,0)");
+  x.fillStyle = sunGlow; x.fillRect(0, 0, 512, 256);
+  const t = new THREE.CanvasTexture(c);
+  t.mapping = THREE.EquirectangularReflectionMapping; t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+scene.environment = environmentTexture();
+scene.environmentIntensity = 0.55;
 scene.fog = new THREE.Fog("#bcd7ee", 45, 95);
 const camera = new THREE.PerspectiveCamera(55, 1, 0.03, 200);
 scene.add(camera);
 
-const hemi = new THREE.HemisphereLight(0xffffff, 0x6f7f62, 1.7); scene.add(hemi);
+const hemi = new THREE.HemisphereLight(0xffffff, 0x6f7f62, 1.25); scene.add(hemi);
 const sun = new THREE.DirectionalLight(0xffffff, 2.4);
 sun.position.set(14, 26, 12);
 sun.castShadow = true;
@@ -43,20 +62,34 @@ const mat = (color, o) => {
   return mats[k] || (mats[k] = new THREE.MeshStandardMaterial({ color, roughness: 0.75, metalness: 0.05, ...(o || {}) }));
 };
 // box(largura, altura, profundidade, cor, x, yBase, z): y é a base do objeto
+// Quinas arredondadas: o raio acompanha a menor medida (até 5 cm); peças muito finas continuam retas.
+// Geometrias iguais são compartilhadas (nenhum código altera a geometria de uma caixa depois de criada).
+const boxGeometries = new Map();
+function boxGeometry(w, h, d, sharp) {
+  const key = [w, h, d, sharp ? 1 : 0].join("|");
+  let geo = boxGeometries.get(key);
+  if (!geo) {
+    const radius = Math.min(0.05, Math.min(w, h, d) * 0.22);
+    geo = sharp || radius < 0.004 ? new THREE.BoxGeometry(w, h, d) : new RoundedBoxGeometry(w, h, d, 2, radius);
+    boxGeometries.set(key, geo);
+  }
+  return geo;
+}
 function box(w, h, d, color, x, y, z, parent, o) {
-  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), o && o.material ? o.material : mat(color, o));
+  const { sharp, ...look } = o || {};                       // sharp: true mantém as quinas retas
+  const m = new THREE.Mesh(boxGeometry(w, h, d, sharp), look.material ? look.material : mat(color, o ? look : undefined));
   m.position.set(x, y + h / 2, z);
   m.castShadow = true; m.receiveShadow = true;
   (parent || scene).add(m);
   return m;
 }
 function cyl(rt, rb, h, color, x, y, z, parent, seg) {
-  const m = new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, seg || 16), mat(color));
+  const m = new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, Math.max(seg || 28, 14)), mat(color));
   m.position.set(x, y + h / 2, z); m.castShadow = true; m.receiveShadow = true;
   (parent || scene).add(m); return m;
 }
 function sphere(r, color, x, y, z, parent, o) {
-  const m = new THREE.Mesh(new THREE.SphereGeometry(r, 18, 14), mat(color, o));
+  const m = new THREE.Mesh(new THREE.SphereGeometry(r, 28, 20), mat(color, o));
   m.position.set(x, y, z); m.castShadow = true; (parent || scene).add(m); return m;
 }
 const colliders = [];

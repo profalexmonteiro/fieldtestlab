@@ -71,8 +71,10 @@ import { buildSite } from "./sites.js";
   const wheels = [], front = [];
   [[-1.6, 0.95], [1.55, 0.95], [-1.6, -0.95], [1.55, -0.95]].forEach(([x, z]) => {
     const pivot = new THREE.Group(); pivot.position.set(x, 0.42, z); car.add(pivot);
-    const w = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.32, 18), mat("#1b1f27")); w.rotation.x = Math.PI / 2; w.castShadow = true; pivot.add(w);
-    box(0.24, 0.06, 0.33, "#9AA6B8", 0, -0.03, 0, w);
+    const w = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.32, 36), mat("#1b1f27")); w.rotation.x = Math.PI / 2; w.castShadow = true; pivot.add(w);
+    const tread = new THREE.Mesh(new THREE.TorusGeometry(0.36, 0.07, 12, 36), mat("#22262e")); tread.rotation.x = Math.PI / 2; w.add(tread);   // banda do pneu
+    cyl(0.26, 0.26, 0.335, "#C9D1DD", 0, -0.1675, 0, w, 32);                                               // calota
+    for (let i = 0; i < 5; i++) { const spoke = box(0.46, 0.345, 0.05, "#9AA6B8", 0, -0.1725, 0, w); spoke.rotation.y = (i / 5) * Math.PI; }   // raios
     wheels.push(w); if (x > 0) front.push(pivot);
   });
   car.traverse((o) => { if (o.isMesh) o.castShadow = true; });
@@ -81,8 +83,12 @@ import { buildSite } from "./sites.js";
   world.car = { g: car, x: -10, z: 3, h: 0.3, speed: 0, steer: 0, wheels, front, col: colliders[colliders.length - 1] };
 
   [[-18, -6], [-16, 8], [-22, 2], [18, 8], [20, -14], [-20, -18], [16, -22], [-14, -28], [24, 2], [6, 24], [-6, 26]].forEach(([x, z]) => {
-    cyl(0.18, 0.25, 1.4, "#7a5235", x, 0, z, null, 8);
-    const c = new THREE.Mesh(new THREE.ConeGeometry(1.3, 2.8, 9), mat("#3f8a4f")); c.position.set(x, 2.6, z); c.castShadow = true; scene.add(c);
+    cyl(0.18, 0.25, 1.4, "#7a5235", x, 0, z, null, 16);
+    // copa em três camadas, com leve variação de tom e de giro entre as árvores
+    [[1.45, 1.5, 2.0, "#3f8a4f"], [1.15, 1.35, 2.75, "#468f55"], [0.8, 1.15, 3.4, "#4f9a5d"]].forEach(([r, h, y, color], i) => {
+      const c = new THREE.Mesh(new THREE.ConeGeometry(r, h, 24, 2), mat(color));
+      c.position.set(x, y, z); c.rotation.y = (x + z + i) * 0.7; c.castShadow = true; c.receiveShadow = true; scene.add(c);
+    });
     addCollider(x, z, 0.8, 0.8);
   });
   addCollider(0, -40, 90, 2); addCollider(0, 30, 90, 2); addCollider(-40, 0, 2, 90); addCollider(40, 0, 2, 90);

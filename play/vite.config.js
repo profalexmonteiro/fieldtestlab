@@ -32,6 +32,9 @@ function standaloneHtml() {
 
 export default defineConfig({
   base: "./",
+  // Os add-ons do three (examples/jsm) importam "three"; o jogo usa "three/webgpu", que já contém o núcleo.
+  // O alias evita duas cópias do three no build.
+  resolve: { alias: [{ find: /^three$/, replacement: "three/webgpu" }] },
   plugins: [standaloneHtml()],
   build: { target: "es2022", chunkSizeWarningLimit: 2000, assetsInlineLimit: 100000000 }
 });

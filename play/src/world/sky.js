@@ -97,7 +97,9 @@ function updateSky(dt) {
     sun.position.copy(sunDir).multiplyScalar(40); sun.intensity = 2.5 * sunUp;
     sun.color.set("#ffffff").lerp(_c2.set("#ffb070"), Math.max(wA * 0.6, 1 - sunUp));
   } else { sun.position.copy(moonDir).multiplyScalar(40); sun.intensity = 0.5 * moonUp; sun.color.set("#9fb6ff"); }
-  hemi.intensity = 0.42 + 1.3 * (wM + wA * 0.8);
+  hemi.intensity = 0.36 + 0.95 * (wM + wA * 0.8);
+  // reflexos do ambiente acompanham o dia; dentro do laboratório o panorama do céu quase não aparece
+  scene.environmentIntensity = (0.12 + 0.45 * (wM + wA * 0.8)) * (G.inside ? 0.3 : 1);
   hemi.color.copy(blendColor(["#ffffff", "#ffe1c4", "#7f93c8"], w));
   hemi.groundColor.copy(blendColor(["#6f7f62", "#7a6450", "#1f2a3a"], w));
   const horizon = blendColor(["#d8eefc", "#ffd7a1", "#1b2a52"], w);
