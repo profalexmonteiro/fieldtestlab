@@ -83,8 +83,10 @@ function update(dt) {
     f /= Math.max(1, len); sd /= Math.max(1, len);
     const sp = (keys.ShiftLeft || keys.ShiftRight ? 6.5 : 4) * dt;
     const mx = (-Math.sin(G.camYaw) * f + Math.cos(G.camYaw) * sd) * sp, mz = (-Math.cos(G.camYaw) * f - Math.sin(G.camYaw) * sd) * sp;
-    if (!collide(player.pos.x + mx, player.pos.z)) player.pos.x += mx;
-    if (!collide(player.pos.x, player.pos.z + mz)) player.pos.z += mz;
+    // dentro de um obstáculo (por exemplo, ao descer de um veículo), o movimento fica livre até sair dele
+    const stuck = collide(player.pos.x, player.pos.z);
+    if (stuck || !collide(player.pos.x + mx, player.pos.z)) player.pos.x += mx;
+    if (stuck || !collide(player.pos.x, player.pos.z + mz)) player.pos.z += mz;
     let d = Math.atan2(mx, mz) - player.rot; d = Math.atan2(Math.sin(d), Math.cos(d));
     player.rot += d * Math.min(1, dt * 12); player.walk += sp * 2.2;
   }

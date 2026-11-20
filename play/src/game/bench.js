@@ -288,7 +288,7 @@ async function capture() {
   }
   const field = fieldStatus(G.run);
   if (field?.next) {
-    toast("Registre " + field.next.label + " no carro antes de capturar.", "bad");
+    toast("Registre " + field.next.label + " na pickup antes de capturar.", "bad");
     return;
   }
   await plugCable(ph);

@@ -19,7 +19,7 @@ const OBJECTIVES = {
   board: () => ({ t: "Fale com a supervisora Lia para receber um chamado.", target: npc.pos }),
   cabinet: () => ({ t: "Vá ao armário e pegue os materiais do teste.", target: stations.cabinet.pos }),
   bench: () => {
-    if (G.run.bench.placed && fieldStatus(G.run)?.next) return { t: "Entre no carro e registre os pontos marcados com M antes de capturar na bancada.", target: stations.car.pos };
+    if (G.run.bench.placed && fieldStatus(G.run)?.next) return { t: "Entre na pickup e registre os pontos marcados com M antes de capturar na bancada.", target: stations.car.pos };
     return { t: player.carrying ? "Leve os materiais até a bancada de testes." : "Continue os testes na bancada.", target: stations.bench.pos };
   },
   return: () => (player.carrying ? { t: "Devolva os materiais ao armário.", target: stations.cabinet.pos } : { t: "Recolha os materiais da bancada na caixa.", target: stations.bench.pos }),
