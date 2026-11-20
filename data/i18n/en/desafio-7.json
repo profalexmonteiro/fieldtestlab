@@ -264,5 +264,128 @@
         }
       ]
     }
+  },
+  "hypotheses": {
+    "rf": {
+      "title": "Coverage / RF",
+      "question": "Was the Vertex in worse radio conditions than the Lumen in iteration 11?",
+      "evidence": [
+        {
+          "text": "Same PCI 214 the whole time; SS-RSRP −78.6 × −78.7 dBm and SS-SINR 24.5 × 25.6 dB in the first snapshot."
+        },
+        {
+          "text": "The Vertex's 4 Rx antennas measure SNR between 23.8 and 25.0 dB."
+        }
+      ],
+      "verdict": "Ruled out for the valid iterations. Iterations with different RF or cell (3, 7, 9 and 12) were already removed by the procedure."
+    },
+    "load": {
+      "title": "Cell load / scheduler",
+      "question": "Did the gNB give the Vertex fewer resources?",
+      "evidence": [
+        {
+          "text": "DL scheduling rate 98.6% × 98.7% and 272 PRBs per slot on both; on UL, grants in 98.2% × 96.6% of the slots and 250 PRBs per grant."
+        },
+        {
+          "text": "Each trace window has the same 12 UL grants on both devices."
+        }
+      ],
+      "verdict": "Ruled out: the scheduler treats both devices the same."
+    },
+    "linkad": {
+      "title": "Channel and link adaptation (CQI, MCS, BLER)",
+      "question": "Does the Vertex's channel lead to a lower MCS or more errors?",
+      "evidence": [
+        {
+          "text": "On DL, the Vertex has a higher CQI (13.9 × 12.1), higher MCS (21.2 × 20.1) and lower initial BLER (7.6% × 8.8%)."
+        },
+        {
+          "text": "On UL, the mean MCS is practically the same (19.0 × 19.7)."
+        }
+      ],
+      "verdict": "Ruled out: channel and link adaptation are equal or better on the Vertex."
+    },
+    "power": {
+      "title": "UL power / headroom",
+      "question": "Is the Vertex power-limited on UL?",
+      "evidence": [
+        {
+          "text": "BSR index 31 (full buffer) and PHR index 38 → 6 dB of headroom, the same on both."
+        },
+        {
+          "text": "PUSCH power 15.2 × 15.9 dBm, with the same pathloss (~98 dB)."
+        }
+      ],
+      "verdict": "Ruled out: there is data to send and power to spare."
+    },
+    "thermal": {
+      "title": "Heating (throttling)",
+      "question": "Does the Vertex lower its performance because of temperature?",
+      "evidence": [
+        {
+          "text": "The deficit exists from the first second (DL 575.9 Mbps at t = 1 s) and does not get worse over the 60 s."
+        },
+        {
+          "text": "The same deficit appears in the 11 valid iterations, with the DUT/CDUT order alternated."
+        }
+      ],
+      "verdict": "Unlikely, but not ruled out by the data: the log does not record temperature. Throttling is usually progressive, and the pattern here is constant."
+    },
+    "rank": {
+      "title": "DL: rank capped by the Vertex capability",
+      "question": "Does the Vertex limit itself to two PDSCH layers?",
+      "evidence": [
+        {
+          "text": "UE Capability twoLayers (Lumen: fourLayers) and ri_Restriction 00000011 (Lumen: 00001111)."
+        },
+        {
+          "text": "CSI with rank 2 and PDSCH with 2 layers in every TB; on the Lumen, rank 4 and 4 layers."
+        }
+      ],
+      "verdict": "Supported: it explains the ×0.51 in layers, and the KPI chain closes at ×0.59 against ×0.60 measured. It should not be marked as ruled out."
+    },
+    "harq": {
+      "title": "UL: requested retransmission treated as new",
+      "question": "Does the Vertex answer retransmission requests with new transmissions?",
+      "evidence": [
+        {
+          "text": "The gNB asks for retransmission (NDI kept, RV 1/2/3) in 7 of 12 grants; the Vertex sends all of them as NEW_TX with RV 0."
+        },
+        {
+          "text": "On the Lumen, each request becomes an RE_TX with the requested RV."
+        },
+        {
+          "text": "UL RLC ReTx 45.9% (Lumen 0.03%), with no RLF."
+        }
+      ],
+      "verdict": "Supported: without soft combining, TBs are lost in HARQ and RLC AM retransmits. It should not be marked as ruled out."
+    },
+    "gnb": {
+      "title": "UL: PUSCH arriving degraded at the gNB",
+      "question": "Does the Vertex's first transmission fail more because of TX quality (EVM, PA)?",
+      "evidence": [
+        {
+          "text": "The Vertex gets many more retransmission requests per window than the Lumen (2 to 9 × 0 to 3). Part of it is a cascade from the wrong NEW_TX, but the UE log does not show why the gNB failed the first transmission."
+        }
+      ],
+      "verdict": "Open: the UE log does not show the PUSCH CRC or SINR at the gNB. Closing it needs a gNB trace or a conducted transmitter test (TS 38.521)."
+    }
+  },
+  "conclusion": {
+    "title": "Two causes, one per direction",
+    "summary": "The Vertex fails in both directions with the same symptom (throughput below the Lumen), but through different mechanisms, both set by the device itself.",
+    "symptoms": [
+      "DL: the Vertex announces twoLayers in the UE Capability; the network respects it and restricts the rank to 2. With the same scheduling and an even higher MCS, the TBS ends at ×0.59 and the throughput at ×0.60 of the Lumen.",
+      "UL: when the gNB asks for a retransmission (NDI kept, RV ≠ 0), the Vertex sends a new TB. Without soft combining, 51% of the grants become retransmissions and there are 5393 HARQ failures in 60 s. The variation between iterations follows how many retransmission requests appear."
+    ],
+    "closing": "There is no RLF because RLC AM recovers the lost TBs without reaching maxRetxThreshold, and UDP does not react to loss. The symptom only shows as low and unstable throughput.",
+    "statsTitle": "What is missing to close each cause",
+    "stats": [
+      "DL: repeat with a build or configuration that announces fourLayers. If rank and throughput rise to the Lumen's level, the cause is closed.",
+      "UL: a gNB trace (PUSCH CRC, SINR and NDI) to confirm the expected RE_TX arrive as new TBs, and a conducted transmitter test (TS 38.521) to rule out TX quality.",
+      "UL: compare the first-transmission failure rate once HARQ is fixed; if it stays high, there is a second cause in the transmitter.",
+      "Record the device temperature in every iteration, to rule out throttling.",
+      "Logs of more iterations (the file holds only iteration 11), especially 15, the worst on DL among the valid ones."
+    ]
   }
 }

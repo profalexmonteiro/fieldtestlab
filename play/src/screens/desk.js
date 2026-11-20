@@ -9,6 +9,7 @@ import { clearBench } from "../world/benchProps.js";
 import { maxScore, mouseClick, restHands, setMode } from "../game/modes.js";
 import { idleTV } from "../game/npc.js";
 import { quizScreen } from "./quiz.js";
+import { campaignScreen } from "./campaign.js";
 import { EQUIPMENT } from "../data/index.js";
 import { attachPoints, evaluateTest, runReward } from "../rules/score.js";
 import { reportSections } from "../rules/report.js";
@@ -38,6 +39,8 @@ async function openDesk() {
   G.deskState = { canLeave: false };
   setMode("desk"); restHands(450);
   const g = G.run.ch.game, n = g.report.length + 1;
+  // Teste de KPI: antes das perguntas, a planilha da campanha (descartes e deltas).
+  if (G.run.ch.campaign) G.run.campaign = await campaignScreen(world.desk, G.run.ch.campaign, "Relatório · Desafio " + pad2(G.run.ch.num));
   for (let i = 0; i < g.report.length; i++) {
     const q = g.report[i];
     await quizScreen(world.desk, q, {
@@ -45,7 +48,7 @@ async function openDesk() {
     }, (_frac, right, answer) => { G.run.reportAnswers[i] = { answer, right }; }, mouseClick);
   }
   const attachmentScore = await attachScreen(n);
-  G.run.score.report = G.run.reportAnswers.filter(({ right }) => right).length * PTS.report + attachmentScore;
+  G.run.score.report = G.run.reportAnswers.filter(({ right }) => right).length * PTS.report + attachmentScore + (G.run.campaign?.points || 0);
   finalize();
 }
 function attachScreen(n) {
@@ -137,13 +140,14 @@ function reportLines(c, date, lvTitle) {
   c.scenarios.forEach((scenario) => {
     const review = G.run.tests[scenario.id];
     P(scenario.label + " · Referência: " + scenario.status + " · Seu veredito: " +
-      (review.verdict === "pass" ? "Aprovado" : "Falha") + (review.correct ? " ✔" : " ✗"),
+      (review.verdict === "pass" ? "Sem desvio" : "Desvio reproduzido") + (review.correct ? " ✔" : " ✗"),
     { color: review.correct ? "#15724a" : "#c63b3b" });
     const metric = scenario.metrics[review.evidence];
     P("Observação escolhida (" + EVIDENCE[metric.evidence].label + "): " + metric.observation);
     review.fieldSamples.forEach((sample) => P("Campo 3D · " + fieldLine(sample), { color: "#46566E" }));
     if (scenario.notice) P(scenario.notice, { color: "#46566E" });
   });
+  if (G.run.campaign) campaignLines(G.run.campaign, H2, P);
   H2("5. Análise");
   findings.forEach((answer) => {
     P(answer.question, { weight: "bold" });
@@ -161,6 +165,19 @@ function reportLines(c, date, lvTitle) {
     }
   }
   return L;
+}
+// Seção da planilha da campanha no relatório: descartes marcados x esperados, deltas e veredito.
+function campaignLines(cp, H2, P) {
+  const num = (v) => (Number.isFinite(v) ? (v > 0 ? "+" : "") + v.toFixed(1).replace(".", ",").replace("-", "−") : "—");
+  H2("4b. Validação da campanha e veredito do teste de KPI");
+  const expected = cp.discards.rows.filter((r) => r.expected);
+  P("Iterações descartadas por você: " + (cp.marked.length ? cp.marked.join(", ") : "nenhuma") + " · pelo procedimento: " + expected.map((r) => r.it).join(", ")
+    + " (" + cp.discards.correct + "/15 linhas corretas)", { color: cp.discards.correct === 15 ? "#15724a" : "#c63b3b" });
+  expected.forEach((r) => P("It. " + r.it + ": " + r.reasons.join("; "), { color: "#46566E" }));
+  cp.grade.deltas.forEach((d) => P(d.label + ": você " + num(d.value) + "% · correto " + num(d.expected) + "%" + (d.correct ? " ✔" : " ✗"),
+    { color: d.correct ? "#15724a" : "#c63b3b" }));
+  cp.grade.verdicts.forEach((v) => P("Veredito " + v.dir.toUpperCase() + ": você " + (v.value || "—").toUpperCase() + " · correto " + v.expected.toUpperCase() + (v.correct ? " ✔" : " ✗"),
+    { color: v.correct ? "#15724a" : "#c63b3b" }));
 }
 function reportHtml(lines) {
   return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>${esc(lines[0].t)}</title><style>body{font:15px/1.5 Georgia,serif;color:#0A192F;background:#F4F6F9;padding:24px}main{max-width:860px;margin:auto;background:#fff;padding:32px;border-top:4px solid #FF6B00;border-radius:8px}h1{font-family:Arial,sans-serif}h2{font:bold 17px Arial,sans-serif;color:#B54800;margin:20px 0 6px}</style></head><body><main>`

@@ -52,3 +52,4 @@ README.md
 # Arte original do logotipo; o site usa os recortes em assets/
 logo.jpeg
 .vercelignore
+.gitignore

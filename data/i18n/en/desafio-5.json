@@ -427,7 +427,7 @@
       "evidence": [
         {
           "title": "Bearer on the 1st attempt",
-          "html": "Accept with <code>EBI 6</code> 100 ms after the request; the 200 OK arrives at 3.40 s."
+          "html": "Accept with <code>EBI 6</code> 100 ms after the request; the 200 OK arrives 3.55 s after the Paging."
         },
         {
           "title": "TAU with the SRVCC IEs",
@@ -478,5 +478,135 @@
         }
       ]
     }
+  },
+  "hypotheses": {
+    "rf": {
+      "title": "Coverage / RF at call setup",
+      "question": "Was the Polaris in worse radio conditions when the call was set up?",
+      "evidence": [
+        {
+          "text": "Same LTE cell (PCI 220) with RSRP ≈ −90 dBm and SNR ≈ 12.5 dB on both devices."
+        },
+        {
+          "text": "RACH on the 1st attempt on both."
+        }
+      ],
+      "verdict": "Ruled out: radio is the same on both devices during setup."
+    },
+    "epsfb": {
+      "title": "Slow EPS Fallback or TAU",
+      "question": "Are the ~8 s in the redirection to LTE or in the TAU?",
+      "evidence": [
+        {
+          "text": "From RRCRelease to TAU Accept: 0.44 s on the Polaris and on the Equinox, with the same steps."
+        }
+      ],
+      "verdict": "Ruled out: the fallback ends in under 0.5 s on both. The time is lost later, on the voice bearer."
+    },
+    "sip": {
+      "title": "IMS / SIP or remote terminal",
+      "question": "Does the delay come from SIP signalling or from the other end?",
+      "evidence": [
+        {
+          "text": "183, PRACK and the PRACK 200 OK arrive at the same times on both devices, with no SIP retransmission."
+        },
+        {
+          "text": "On MT the pattern is the same, with the Polaris as the called party."
+        }
+      ],
+      "verdict": "Ruled out: the delay appears on MO and MT, always at the same point of the NAS flow."
+    },
+    "ebi": {
+      "title": "Symptom 1: bearer accept with the wrong EBI",
+      "question": "Does the Polaris confirm the QCI 1 bearer with the wrong identity?",
+      "evidence": [
+        {
+          "text": "Request with EBI 6 (Linked EBI 5); the Polaris accept carries EBI 5. The Equinox answers EBI 6."
+        },
+        {
+          "text": "8.0 s later (T3485) the network repeats the request and the Polaris answers EBI 6: the bearer is confirmed and the call goes on."
+        }
+      ],
+      "verdict": "Supported: it explains the ~8 s and why the call does not fail (the retransmission fixes it). It should not be marked as ruled out."
+    },
+    "single": {
+      "title": "One symptom causes the other",
+      "question": "Is the delayed bearer what drops the call in the far-cell?",
+      "evidence": [
+        {
+          "text": "The bearer is confirmed at T +8.85 s and the call runs normally for more than 40 s before the far-cell."
+        },
+        {
+          "text": "The drop comes from a missing SRVCC command, not from any voice bearer problem."
+        }
+      ],
+      "verdict": "Ruled out: two independent failures that only happen in the same call."
+    },
+    "farcell": {
+      "title": "Far-cell coverage / GERAN off the air",
+      "question": "Does the Polaris find different radio conditions in the far-cell?",
+      "evidence": [
+        {
+          "text": "The 1st B2 report carries the same values on both: PCell −108 dBm and GERAN ARFCN 62 at −75 dBm."
+        },
+        {
+          "text": "On the same route and spot, the Equinox gets the SRVCC command and completes the handover to 2G."
+        }
+      ],
+      "verdict": "Ruled out: the GERAN cell exists, is measured and serves the Equinox on the same stretch."
+    },
+    "b2": {
+      "title": "The Polaris does not report B2",
+      "question": "Does the network fail to act because it gets no report from the UE?",
+      "evidence": [
+        {
+          "text": "Three measurementReports (measId 1) every 5.12 s, with GERAN above the −80 dBm threshold."
+        }
+      ],
+      "verdict": "Ruled out: the UE measures and reports correctly; from the report on, the decision is the network's."
+    },
+    "tau": {
+      "title": "Symptom 2: TAU without the SRVCC IEs",
+      "question": "Does the Polaris omit what the network needs to prepare SRVCC?",
+      "evidence": [
+        {
+          "text": "Both declare SRVCC_to_GERAN_UTRAN_capability = 1, but only the Equinox sends MS Classmark 2, MS Classmark 3 and Supported Codecs in the TAU."
+        },
+        {
+          "text": "Without these IEs (TS 24.301 §5.5.3.2.2), the MME cannot build the CS preparation over Sv: no mobilityFromEUTRACommand reaches the Polaris."
+        }
+      ],
+      "verdict": "Supported: it is the only difference in what the two devices send and explains the missing SRVCC command. It should not be marked as ruled out."
+    },
+    "subscription": {
+      "title": "SRVCC subscription of the Polaris SIM",
+      "question": "Does the Polaris SIM lack STN-SR / C-MSISDN in the HSS?",
+      "evidence": [
+        {
+          "text": "The UE log does not show the HSS, the MME or the Sv interface, and the two devices use different SIMs. A subscription without SRVCC would also block the handover, even with a complete TAU."
+        }
+      ],
+      "verdict": "Open: the data cannot rule it out. Closing it needs swapping the SIMs between the devices or an MME trace (S1AP and Sv)."
+    }
+  },
+  "comparison": {
+    "outcome": "failure"
+  },
+  "conclusion": {
+    "title": "Two independent causes in the same call",
+    "summary": "The Polaris reproduces both symptoms in 3/3 repetitions, on MO and MT. Each symptom has its own field in the log and its own mechanism; the order in which they appear in the call is not causality.",
+    "symptoms": [
+      "Call Setup Time: the QCI 1 bearer accept carries the Linked EBI (5) instead of the requested EBI (6), against TS 24.301 §6.4.2. The network ignores the accept, waits for T3485 (8 s) and repeats the request; on the retransmission the Polaris answers correctly. Hence the extra ~8 s and the call that still completes.",
+      "Far-cell drop: the Polaris declares SRVCC capability but omits MS Classmark 2, MS Classmark 3 and Supported Codecs in the TAU after the EPS Fallback. Without them the network does not prepare SRVCC: the B2 reports get no answer, T310 expires and the call drops."
+    ],
+    "closing": "Both defects are in what the Polaris sends; everywhere else (radio, fallback, SIP, reports) it behaves like the Equinox.",
+    "statsTitle": "What is missing to close each cause",
+    "stats": [
+      "With 3 repetitions per device, 3/3 × 0/3 gives p = 0.1 (Fisher's exact): not significant yet. The same result over 4 repetitions would give p ≈ 0.03; ideally ≥ 20 per scenario.",
+      "SRVCC control without EPS Fallback: the Polaris registered directly on LTE (Attach) driving the same route. If SRVCC works, the omission is only in the TAU after the fallback.",
+      "Swap the SIMs between the Polaris and the Equinox, to separate the device defect from the SRVCC subscription (STN-SR / C-MSISDN).",
+      "MME trace (S1AP and Sv): discarding of the EBI 5 accept and the failed PS→CS preparation.",
+      "A fixed Polaris build repeating the four scenarios."
+    ]
   }
 }

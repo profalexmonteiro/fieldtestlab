@@ -63,5 +63,10 @@
     "icon": "📷",
     "name": "Lab de câmera",
     "desc": "Avalia qualidade de foto e vídeo."
+  },
+  "iperf": {
+    "icon": "🖧",
+    "name": "Servidor iperf3 / gerador de tráfego",
+    "desc": "Servidor na rede da operadora e cliente nos aparelhos para os fluxos UDP de DL e UL."
   }
 }

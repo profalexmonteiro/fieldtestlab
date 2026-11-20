@@ -408,5 +408,102 @@
         }
       ]
     }
+  },
+  "hypotheses": {
+    "rf": {
+      "title": "Coverage / RF",
+      "question": "Was the Polaris in worse radio conditions than the Equinox?",
+      "evidence": [
+        {
+          "text": "Both dial 112 on the same 5G SA cell (n78, PCI 88), with RSRP around −90 dBm."
+        }
+      ],
+      "verdict": "Ruled out: same cell, same spot, same radio conditions."
+    },
+    "network": {
+      "title": "Zenith network failure (cause 90, no EPS Fallback)",
+      "question": "Does the network failure on 5G explain the difference between the devices?",
+      "evidence": [
+        {
+          "text": "Both receive 5GMM cause 90 at T +0.55 s, and neither gets an RRCRelease with redirection."
+        },
+        {
+          "text": "With the same failure, the Equinox completes the 112 in 1.95 s."
+        }
+      ],
+      "verdict": "Ruled out as the cause of the difference. It is a real network deviation, common to both, and its cause stays open: N11 and N2 are not in the UE log."
+    },
+    "volte": {
+      "title": "Polaris VoLTE / IMS / SIM",
+      "question": "Does the Polaris have a voice-over-IMS or subscription defect?",
+      "evidence": [
+        {
+          "text": "In the 4G control, the Polaris registers on the Zenith P-CSCF and completes the 112 over VoLTE in 1.62–1.70 s, like the Equinox (1.55–1.60 s)."
+        }
+      ],
+      "verdict": "Ruled out: starting from LTE, the Polaris makes the emergency VoLTE call normally."
+    },
+    "schedule": {
+      "title": "Collection time (DUT morning, CDUT afternoon)",
+      "question": "Was the network different at the two times?",
+      "evidence": [
+        {
+          "text": "The 4G controls were also collected in the morning (DUT) and afternoon (CDUT) and give equivalent times; on 5G, the network answers with the same cause at the same instant at both times."
+        }
+      ],
+      "verdict": "Ruled out: the time of day changes neither the network answer nor the control results."
+    },
+    "selection": {
+      "title": "Polaris cell selection after the failure",
+      "question": "Does the Polaris leave its own operator after cause 90?",
+      "evidence": [
+        {
+          "text": "The Polaris runs an NR + LTE scan, finds Zenith PCI 220 (−85 dBm) and Aurora PCI 145 (−80 dBm) and picks Aurora."
+        },
+        {
+          "text": "The Equinox goes straight to Zenith LTE (PCI 220) and stays a subscriber."
+        }
+      ],
+      "verdict": "Supported: picking another operator by signal while the HPLMN LTE is available leads to limited service and explains the whole delay. It should not be marked as ruled out."
+    },
+    "aurora": {
+      "title": "Aurora network (IMS 403)",
+      "question": "Is Aurora to blame for the CS path?",
+      "evidence": [
+        {
+          "text": "On Aurora the Polaris is a visitor with no agreement: it does an emergency attach and the IMS answers 403 Emergency registration not permitted; the call goes out via CSFB."
+        }
+      ],
+      "verdict": "Ruled out as a cause: the 403 and the CSFB are consequences of the Polaris going to Aurora."
+    },
+    "policy": {
+      "title": "Why the Polaris picks by signal",
+      "question": "Which internal rule makes the Polaris rank PLMNs by level only?",
+      "evidence": [
+        {
+          "text": "The log shows the decision (Cell Selection Decision with PLMN 724/023), but not the rule: operator configuration, emergency policy or firmware."
+        }
+      ],
+      "verdict": "Open: closing it needs the Polaris emergency manager configuration or a test with Aurora attenuated."
+    }
+  },
+  "comparison": {
+    "outcome": "other operator"
+  },
+  "conclusion": {
+    "title": "Two deviations: one from the network, one from the device",
+    "summary": "The initial failure is the network's and affects both devices; the Polaris delay comes from how it reacts to that failure.",
+    "symptoms": [
+      "Network (common to both): the emergency PDU Session on 5G gets 5GMM cause 90 at T +0.55 s and Zenith does not perform the expected EPS Fallback. Both devices have to leave 5G on their own.",
+      "Polaris: instead of trying its own operator's LTE, it scans and picks Aurora for the extra 5 dB. There it enters limited service, the IMS refuses the emergency registration (403) and the 112 only goes out over CS, in ~3.8 s against ~2.0 s for the Equinox."
+    ],
+    "closing": "The expectation is to exhaust the HPLMN RATs before another operator (TS 22.101 / TS 23.167). The 4G control shows that the Polaris emergency VoLTE works: the defect is in network selection after the failure.",
+    "statsTitle": "What is missing to close it with statistical certainty",
+    "stats": [
+      "With 3 repetitions per device, 3/3 × 0/3 gives p = 0.1 (Fisher's exact): not significant yet. The same result over 4 repetitions would give p ≈ 0.03; ideally ≥ 20 per scenario.",
+      "Repeat with Aurora LTE attenuated or weaker than Zenith's: if the Polaris goes back to Zenith, it confirms the choice by level only.",
+      "The Polaris emergency manager configuration (operator list, selection policy) and a fixed build.",
+      "Zenith core traces (N11, N2) to explain cause 90 and the missing EPS Fallback, a separate network deviation."
+    ]
   }
 }

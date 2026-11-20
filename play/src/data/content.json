@@ -202,31 +202,31 @@
         "q": "Como você monta o TC#1 (falha de chamada MT)?",
         "options": [
           "5G SA n78 PCI 88 · toggle de modo avião + chamada MT em VoNR",
-          "LTE Band 3 · power cycle + chamada MO",
-          "2G · chamada CS",
-          "5G NSA · teste de dados"
+          "5G SA n78 PCI 88 · power cycle + chamada MT em VoNR",
+          "LTE Band 3 PCI 41 · toggle de modo avião + chamada MO",
+          "5G SA n78 PCI 88 · chamada MO em VoNR sem reiniciar o IMS"
         ],
-        "explain": "O TC#1 usa toggle de modo avião e chamada MT em VoNR na n78 PCI 88."
+        "explain": "O TC#1 reinicia o cliente IMS por modo avião e recebe uma chamada MT em VoNR. Trocar o toggle por power cycle muda o gatilho do defeito."
       },
       {
         "q": "Como você monta o TC#2 (voz ininteligível)?",
         "options": [
           "LTE Band 3 EARFCN 1575 PCI 41 · power cycle + chamada MO em VoLTE",
-          "5G SA · modo avião + chamada MT",
-          "Wi-Fi Calling · chamada MO",
-          "LTE · apenas SMS"
+          "LTE Band 3 PCI 41 · toggle de modo avião + chamada MT em VoLTE",
+          "5G SA n78 PCI 88 · power cycle + chamada MO em VoNR",
+          "LTE Band 3 PCI 41 · power cycle + chamada MO só com AMR-WB"
         ],
-        "explain": "O TC#2 usa power cycle e chamada MO em VoLTE na Band 3 PCI 41."
+        "explain": "O TC#2 é uma chamada MO em VoLTE, com o DUT como ofertante do SDP, após power cycle."
       },
       {
         "q": "Qual autenticação o núcleo IMS da bancada usa?",
         "options": [
           "SIP Digest MD5 · ims.novalink.com.br",
-          "IMS-AKA com IPsec",
-          "Sem autenticação",
-          "OAuth 2.0"
+          "IMS-AKA com IPsec · ims.novalink.com.br",
+          "SIP Digest MD5 sem qop · outro realm",
+          "Autenticação só pelo NAS 5G, sem desafio SIP"
         ],
-        "explain": "A bancada usa SIP Digest MD5 em vez de IMS-AKA, por isso o nonce do 401 é decisivo."
+        "explain": "A bancada usa SIP Digest MD5 com qop=auth no realm ims.novalink.com.br; na rede comercial seria IMS-AKA."
       }
     ],
     "report": [
@@ -234,50 +234,51 @@
         "q": "Quantas causas explicam os sintomas?",
         "options": [
           "Duas causas independentes no mesmo cliente IMS",
-          "Uma única causa: cobertura",
-          "Uma única causa: SIM com defeito",
-          "Nenhuma, é falha da rede"
+          "Uma única causa no cliente IMS, que afeta registro e mídia",
+          "Uma única causa no núcleo IMS da NovaLink",
+          "Uma causa no DUT (registro) e outra no terminal remoto (voz)"
         ],
-        "explain": "O registro falha só com o cache de nonce (modo avião); a voz falha mesmo após power cycle, com registro OK."
+        "explain": "O registro só falha com o cache de nonce (modo avião); a voz falha mesmo após power cycle, com registro OK. São mecanismos diferentes que só dividem o cliente IMS."
       },
       {
         "q": "Por que o registro IMS do TC#1 é rejeitado?",
         "options": [
-          "O DUT responde ao 401 com um nonce em cache, e recebe 403 'nonce does not match latest challenge'",
-          "A senha SIP está errada",
-          "O P-CSCF está fora do ar",
-          "O RSRP está abaixo de −110 dBm"
+          "O DUT responde ao 401 com um nonce em cache e recebe 403 por nonce divergente",
+          "O nonce expira porque o REGISTER autenticado demora demais",
+          "A identidade privada IMS no SIM do DUT está errada",
+          "O realm da Authorization não bate com o do 401"
         ],
-        "explain": "Warning 399: o nonce não bate com o desafio mais recente. Após 2 tentativas o cliente abandona o registro."
+        "explain": "Warning 399: o nonce não bate com o desafio mais recente. O mesmo SIM registra de primeira após power cycle, o que afasta identidade e senha; o REGISTER sai em ~35 ms."
       },
       {
         "q": "Por que a voz do TC#2 é ininteligível?",
         "options": [
-          "A rede responde PT 97 = AMR/8000, mas o DUT mantém PT 97 = EVS e codifica em EVS 24,4 kbps",
-          "Perda de pacotes RTP acima de 50%",
-          "Bearer QCI 1 não foi criado",
-          "O terminal remoto estava sem microfone"
+          "A resposta escolhe só AMR (PT 97), mas o DUT continua codificando EVS no PT 97",
+          "A rede escolhe AMR-NB e a banda estreita deixa a voz ininteligível",
+          "O bearer QCI 1 tem GBR baixo demais para EVS 24,4 kbps",
+          "Há perda de RTP no enlace de rádio por causa do RSRP de −84 dBm"
         ],
-        "explain": "O RTP flui (RX 497–499), mas com payload type incompatível: mismatch EVS × AMR."
+        "explain": "O RTP flui (RX 497–499) e o CDUT tem voz nítida em AMR-NB. O problema é o codec: o DUT usa EVS enquanto o negociado é AMR."
       },
       {
         "q": "Severidade do issue",
         "options": [
           "Alta: dois defeitos em 3/3, sem voz em 5G SA e áudio inutilizável em VoLTE",
-          "Baixa: a chamada MO completa",
-          "Média: afeta só VoLTE",
-          "Sem issue"
+          "Média: só ocorre depois de usar o modo avião",
+          "Média: a chamada MO completa sem erro SIP",
+          "Baixa: o registro volta após reiniciar o aparelho"
         ],
         "explain": "Perda total do serviço de voz MT em 5G SA e chamadas VoLTE sem áudio utilizável.",
         "field": "severity"
       }
     ],
-    "title": "Vanguard: registro IMS rejeitado após modo avião (nonce em cache) e voz VoLTE ininteligível por mismatch de PT 97 (EVS × AMR)"
+    "title": "Vanguard: registro IMS rejeitado após modo avião (nonce em cache) e voz VoLTE ininteligível por mismatch de PT 97 (EVS × AMR)",
+    "impact": "Bloqueia a homologação de voz do Vanguard: sem chamadas recebidas em VoNR após reinício do IMS e voz inutilizável em VoLTE."
   },
   "desafio-5": {
     "short": "CST e SRVCC",
     "icon": "🗼",
-    "brief": "No Polaris, as chamadas via EPS Fallback demoram ~8 s a mais e caem ao chegar no far-cell, onde só há 2G. Duas falhas, uma chamada.",
+    "brief": "O Polaris, unidade de pré-série, completa as chamadas via EPS Fallback com ~8 s de atraso e as perde ao atravessar o far-cell, onde só há 2G. Duas falhas na mesma chamada.",
     "equipment": {
       "required": [
         "modemlog",
@@ -295,77 +296,88 @@
         "q": "Qual é o fluxo de voz esperado neste teste?",
         "options": [
           "5G SA n78 → EPS Fallback → VoLTE B3 → SRVCC para GERAN 900",
-          "VoNR direto até o fim",
-          "CSFB para 3G",
-          "Wi-Fi Calling → VoLTE"
+          "5G SA n78 → VoNR → handover para LTE B3 no far-cell",
+          "5G SA n78 → CSFB para GERAN 900 já no início da chamada",
+          "LTE B3 → VoLTE → SRVCC para UMTS no far-cell"
         ],
-        "explain": "A chamada nasce em 5G SA, cai para LTE (EPSFB) e, no far-cell, deve migrar para 2G via SRVCC."
+        "explain": "A célula NR não anuncia VoNR (exige EPS Fallback) e o far-cell só tem vizinha GERAN, sem UTRAN utilizável."
       },
       {
-        "q": "Em qual rede você roda o teste?",
+        "q": "Como medir o Call Setup Time em cada sentido?",
         "options": [
-          "Zenith Telecom · 724/078",
-          "Vantis · 724/085",
-          "Aurora · 724/023",
-          "Nimbus · 724/091"
+          "MO: INVITE → 200 OK; MT: Paging → 200 OK",
+          "MO e MT: INVITE → 180 Ringing",
+          "MO: discagem → ACK; MT: INVITE → ACK",
+          "MO e MT: RRCRelease do 5G → 200 OK"
         ],
-        "explain": "Rede Zenith Telecom, PLMN 724/078."
+        "explain": "Critério (a) do caso: do SIP INVITE ao 200 OK nas chamadas MO e do Paging ao 200 OK nas MT."
       },
       {
-        "q": "Que rota você usa?",
+        "q": "Como você conduz a rota?",
         "options": [
-          "Rota que sai da cobertura LTE e atravessa o far-cell (só 2G)",
-          "Ficar parado ao lado da antena",
-          "Rota dentro de um túnel sem sinal",
-          "Rota em outra cidade"
+          "Uma única chamada, da LTE até atravessar o far-cell com vizinha GERAN",
+          "Encerrar e refazer a chamada em cada trecho da rota",
+          "Parar no far-cell e originar a chamada lá",
+          "Partir do far-cell em direção à LTE do site"
         ],
-        "explain": "É preciso atravessar o far-cell para disparar o report B2 e o SRVCC."
+        "explain": "O SRVCC só acontece com uma chamada ativa atravessando o far-cell. Originar no far-cell ou refazer a chamada testa outra coisa."
       }
     ],
     "report": [
       {
         "q": "Por que o Call Setup Time do Polaris é ~8 s maior?",
         "options": [
-          "O accept do bearer QCI 1 traz EBI 5 (Linked EBI) em vez de 6; a rede só confirma após a retransmissão do T3485 (8 s)",
-          "O EPS Fallback demora 8 s por falta de cobertura LTE",
-          "O terminal remoto demora para atender",
-          "O IMS rejeita o primeiro INVITE"
+          "O accept do bearer QCI 1 traz EBI 5 em vez de 6, e a rede repete o pedido após o T3485",
+          "O EPS Fallback leva 8 s porque o Polaris demora a achar a LTE",
+          "O TAU após o EPS Fallback é rejeitado e precisa ser repetido",
+          "O P-CSCF retransmite o 183 até receber o PRACK"
         ],
-        "explain": "O atraso coincide exatamente com o T3485; a única diferença é o EPSBearerIdentity do accept."
+        "explain": "Fallback, RACH e TAU levam menos de 0,5 s, como no Equinox, e não há retransmissão SIP. Os 8 s ficam entre o accept errado e a retransmissão do pedido (T3485)."
       },
       {
         "q": "Por que a chamada cai no far-cell?",
         "options": [
-          "O TAU do Polaris não traz MS Classmark 2/3 nem Supported Codecs; a rede não prepara o SRVCC",
-          "O Polaris não envia o Measurement Report B2",
-          "A célula 2G está fora do ar",
-          "O Polaris não suporta GERAN 900"
+          "O TAU do Polaris omite MS Classmark 2/3 e Supported Codecs; a rede não prepara o SRVCC",
+          "O Polaris não envia o Measurement Report B2 no far-cell",
+          "O Polaris não declara capacidade de SRVCC no TAU",
+          "A GERAN ARFCN 62 chega fraca demais para o handover"
         ],
-        "explain": "Os dois aparelhos mandam o mesmo report B2; só o Equinox recebe o comando de SRVCC."
+        "explain": "O Polaris envia três reports B2 iguais aos do Equinox, a GERAN está em −75 dBm e os dois declaram SRVCC capability = 1. Só o Polaris omite os IEs de que a rede precisa."
       },
       {
         "q": "Quantas causas explicam os sintomas?",
         "options": [
           "Duas causas independentes na mesma chamada",
-          "Uma causa única: cobertura",
-          "Uma causa única: a rede Zenith",
-          "Nenhuma: comportamento esperado"
+          "Uma causa: o atraso do bearer acaba derrubando a chamada",
+          "Uma causa: a cobertura marginal da rota",
+          "Uma causa: o MME da Zenith trata mal o Polaris"
         ],
-        "explain": "Bearer (EBI errado) e mobilidade (TAU incompleto) são defeitos separados."
+        "explain": "O bearer é confirmado em +8,85 s e a chamada segue normal por mais de 40 s; a queda vem da falta do comando de SRVCC. São mecanismos diferentes."
       },
       {
+        "q": "Que hipótese o log do UE não permite descartar na queda do far-cell?",
+        "options": [
+          "O SIM do Polaris sem assinatura de SRVCC (STN-SR / C-MSISDN) no HSS",
+          "A GERAN ARFCN 62 fora do ar no momento do teste",
+          "O Polaris sem medir a GERAN no far-cell",
+          "Cobertura LTE diferente para os dois aparelhos"
+        ],
+        "explain": "GERAN, medições e cobertura aparecem no log. A assinatura do SIM fica no HSS, fora do log do UE: fechar exige trocar os SIMs ou o trace do MME."
+      },
+      {
+        "field": "severity",
         "q": "Severidade do issue",
         "options": [
           "Alta: 3/3 em MO e MT, CST ~3,3× maior e queda em toda travessia do far-cell",
-          "Baixa: a chamada completa",
-          "Média: só em MT",
-          "Sem issue"
+          "Média: a chamada completa, só demora mais",
+          "Média: só afeta áreas com cobertura 2G",
+          "Baixa: o CDUT também passa para 2G no far-cell"
         ],
-        "explain": "Toda chamada via EPSFB é lenta e toda chamada que atravessa o far-cell cai.",
-        "field": "severity"
+        "explain": "Toda chamada via EPSFB é lenta e toda chamada que atravessa o far-cell cai."
       }
     ],
-    "title": "Polaris: CST ~8 s maior após EPS Fallback (EBI errado no accept) e queda no far-cell sem SRVCC (TAU sem Classmark 2/3)"
+    "title": "Polaris: CST ~8 s maior após EPS Fallback (EBI errado no accept) e queda no far-cell sem SRVCC (TAU sem Classmark 2/3)",
+    "impact": "Bloqueia a homologação de voz do Polaris: Call Setup Time ~3,3× o do CDUT e queda de toda chamada que atravessa áreas cobertas só por 2G."
   },
   "desafio-6": {
     "short": "Emergência 112",
@@ -388,8 +400,8 @@
         "options": [
           "Zenith · 724/078",
           "Aurora · 724/023",
-          "Vantis · 724/085",
-          "Nimbus · 724/091"
+          "Zenith · 724/078 em roaming na Aurora",
+          "A rede com o sinal mais forte no ponto do teste"
         ],
         "explain": "HPLMN Zenith, com n78 PCI 88 e LTE B3 PCI 220 no mesmo site."
       },
@@ -397,9 +409,9 @@
         "q": "Quais cenários você roda?",
         "options": [
           "112 discado em 5G SA (n78 PCI 88) e controle com 112 discado já em LTE (B3 PCI 220)",
-          "Só 112 em 2G",
-          "Só chamadas comuns",
-          "112 com o aparelho sem SIM"
+          "112 discado em 5G SA e controle com uma chamada comum em 5G SA",
+          "112 discado em LTE da Zenith e controle no 2G da Aurora",
+          "Só o 112 discado em 5G SA, sem controle"
         ],
         "explain": "O controle em 4G mostra se o problema é do VoLTE/IMS ou só do caminho a partir do 5G."
       },
@@ -408,8 +420,8 @@
         "options": [
           "Tentar outra RAT da própria HPLMN antes de outra operadora",
           "Escolher a célula mais forte de qualquer operadora",
-          "Desistir da chamada",
-          "Reiniciar o modem"
+          "Insistir no 5G SA até a rede responder",
+          "Ir direto ao 2G, que completa emergência sem IMS"
         ],
         "explain": "TS 22.101 / 23.167: outra RAT da HPLMN antes de qualquer outra operadora."
       }
@@ -418,12 +430,12 @@
       {
         "q": "Qual é a causa raiz no DUT?",
         "options": [
-          "Após a causa 90, o Polaris escolhe a LTE da Aurora pelo sinal, ignorando a LTE da HPLMN disponível",
-          "A rede Zenith não suporta chamadas de emergência",
-          "O VoLTE do Polaris não funciona",
-          "Falta cobertura LTE da Zenith"
+          "Após a causa 90, o Polaris escolhe a LTE da Aurora pelo sinal, com a LTE da HPLMN disponível",
+          "A Zenith não tem cobertura LTE no ponto do teste",
+          "O VoLTE do Polaris falha e ele recorre ao CS",
+          "O Polaris demora a processar a causa 90 e perde tempo no 5G"
         ],
-        "explain": "A Zenith LTE PCI 220 (−85 dBm) estava disponível; o Polaris preferiu a Aurora PCI 145 (−80 dBm)."
+        "explain": "A Zenith LTE PCI 220 (−85 dBm) estava disponível e o Equinox a usou; o Polaris preferiu a Aurora PCI 145 (−80 dBm). O controle em 4G mostra o VoLTE funcionando, e a causa 90 chega no mesmo instante aos dois."
       },
       {
         "q": "Qual parte da falha é da rede e afeta os dois aparelhos?",
@@ -440,24 +452,35 @@
         "options": [
           "O controle em 4G: 112 em 1,62–1,70 s, equivalente ao CDUT",
           "O Polaris completa a chamada por CS",
-          "A Aurora tem sinal mais forte",
-          "O teste teve três repetições"
+          "O Polaris recebe a mesma causa 90 que o Equinox",
+          "O teste foi repetido três vezes"
         ],
         "explain": "Partindo de LTE, o Polaris faz VoLTE de emergência normalmente."
+      },
+      {
+        "q": "Que hipótese os logs não permitem fechar?",
+        "options": [
+          "Por que o Polaris ranqueia as operadoras só pelo nível do sinal",
+          "Se a Zenith tem LTE disponível no ponto do teste",
+          "Se o VoLTE de emergência do Polaris funciona",
+          "Se o Equinox também recebeu a causa 90"
+        ],
+        "explain": "LTE da Zenith, VoLTE do Polaris e a causa 90 nos dois aparecem nos logs. A regra interna da escolha não: fechar exige a configuração do aparelho ou um teste com a Aurora atenuada."
       },
       {
         "q": "Severidade do issue",
         "options": [
           "Alta: emergência fora da HPLMN em 3/3, tempo ~2× maior, viola a hierarquia",
-          "Baixa: a chamada completa",
-          "Média: só em 5G",
-          "Sem issue"
+          "Média: a chamada completa, só demora mais",
+          "Média: só ocorre quando a rede falha primeiro",
+          "Baixa: o 112 sempre é completado"
         ],
         "explain": "Afeta chamada de emergência de forma sistemática e fora da norma.",
         "field": "severity"
       }
     ],
-    "title": "Polaris: após falha de emergência em 5G SA (cause 90), escolhe outra operadora pelo sinal e completa o 112 por CS em ~3,8 s"
+    "title": "Polaris: após falha de emergência em 5G SA (cause 90), escolhe outra operadora pelo sinal e completa o 112 por CS em ~3,8 s",
+    "impact": "Bloqueia a homologação de emergência do Polaris: em 5G SA o 112 sai fora da HPLMN, por CS, com o dobro do tempo do CDUT."
   },
   "desafio-7": {
     "short": "Throughput 5G SA",
@@ -466,11 +489,13 @@
     "equipment": {
       "required": [
         "modemlog",
-        "cdut"
+        "cdut",
+        "iperf"
       ],
       "neutral": [
         "gps",
-        "spectrum"
+        "spectrum",
+        "thermal"
       ]
     },
     "setup": [
@@ -478,73 +503,63 @@
         "q": "Qual é a configuração do teste?",
         "options": [
           "NovaLink n78 · PCI 214 · 100 MHz · portadora única",
-          "NovaLink n41 com agregação",
-          "Zenith LTE B3 · PCI 220",
-          "NovaLink n78 com NR-DC"
+          "NovaLink n78 · PCI 217 · 100 MHz · portadora única",
+          "NovaLink n78 · PCI 214 · 100 MHz + n41 com agregação",
+          "NovaLink n78 · PCI 214 · 100 MHz com NR-DC"
         ],
-        "explain": "A campanha usa n78 em 5G SA, NR-ARFCN 633312, sem CA nem NR-DC."
+        "explain": "PCI 214 é a célula de teste; a PCI 217 é a vizinha que invalida iterações. Teste de portadora única: sem CA nem NR-DC."
       },
       {
         "q": "Como executar as 15 iterações por aparelho?",
         "options": [
           "60 s de UDP em DL e UL simultâneos, alternando a ordem",
-          "60 s de TCP só em DL, sempre com o DUT primeiro",
-          "Uma sessão de 15 min em cada aparelho",
-          "15 s de UDP só em UL, sempre com o CDUT primeiro"
+          "60 s de UDP em DL e UL simultâneos, sempre com o DUT primeiro",
+          "60 s de TCP em DL e UL simultâneos, alternando a ordem",
+          "60 s de UDP com carga abaixo da capacidade, alternando a ordem"
         ],
-        "explain": "Cada par usa o mesmo servidor e ponto de teste, com 1.500 Mbps de carga em DL e 300 Mbps em UL."
+        "explain": "UDP com carga acima da capacidade mede o máximo do enlace; alternar a ordem evita favorecer um aparelho por condições que mudam com o tempo."
       },
       {
         "q": "Quando um par entra no cálculo?",
         "options": [
-          "Mesma célula de teste, RF Near-Cell similar e sessão contínua",
-          "Quando o DUT tem maior RSRP",
-          "Quando os aparelhos estão em células vizinhas",
-          "Quando o par fica acima da média de throughput"
+          "Mesma célula, RF Near-Cell similar e sessão contínua",
+          "Mesma célula e RSRP acima de −85 dBm só no DUT",
+          "Mesma célula e diferença de RF de até 6 dB",
+          "Quando o throughput do par fica perto da média da campanha"
         ],
-        "explain": "Exija SS-RSRP > −85 dBm, SS-SINR > 10 dB e diferenças de até 3 dB. São necessários 10 pares válidos."
+        "explain": "Validade: mesma PCI/NR-ARFCN, Near-Cell nos dois, Δ RSRP e Δ SINR ≤ 3 dB, sem handover, RLF ou queda. Descartar pelo resultado é proibido."
       }
     ],
     "report": [
       {
-        "q": "Quais iterações devem sair do cálculo?",
-        "options": [
-          "3, 7, 9 e 12",
-          "Apenas 7 e 11",
-          "1, 6, 10 e 15",
-          "Nenhuma"
-        ],
-        "explain": "As iterações 3 e 7 têm divergência de célula. Nas iterações 9 e 12 um aparelho fica abaixo do limite de RSRP."
-      },
-      {
-        "q": "Qual é o veredito sobre os 11 pares válidos?",
-        "options": [
-          "DL e UL falham na média. O UL também falha na estabilidade.",
-          "Apenas o DL falha na média.",
-          "Apenas o UL falha na estabilidade.",
-          "Os dois sentidos passam."
-        ],
-        "explain": "As médias caem 38,98% em DL e 49,90% em UL. O desvio padrão do UL cresce 262,79%."
-      },
-      {
         "q": "Que evidência explica o DL baixo do Vertex?",
         "options": [
           "O UE anuncia twoLayers e a rede limita o rank a 2.",
-          "A rede oferece menos largura de banda ao Vertex.",
-          "O UE mede um SINR muito menor.",
-          "O Vertex recebe menos PRBs por slot."
+          "O CQI do Vertex é menor e o gNB escolhe MCS mais baixo.",
+          "O escalonador dá menos PRBs por slot ao Vertex.",
+          "O BLER inicial alto do Vertex consome slots com retransmissões."
         ],
-        "explain": "UE Capability, a restrição de rank do gNB, os relatórios CSI e as camadas do PDSCH sustentam a limitação."
+        "explain": "CQI e MCS do Vertex são maiores, os PRBs são iguais (272) e o BLER é menor (7,6%). O que falta são camadas: 2 contra 3,9."
       },
       {
         "q": "Qual desvio aparece na transmissão de UL?",
         "options": [
           "O UE envia NEW_TX após grants que pedem retransmissão.",
-          "O gNB deixa de emitir grants de UL.",
-          "O buffer do Vertex fica vazio durante toda a iteração.",
-          "O Vertex troca para NR-DC."
+          "Falta potência: o PHR do Vertex está perto de zero.",
+          "O gNB dá menos grants de UL ao Vertex.",
+          "O MCS de UL do Vertex é muito mais baixo que o do Lumen."
         ],
-        "explain": "Compare o mesmo HARQ ID entre DCI e PUSCH. A confirmação do mecanismo precisa de traces sincronizados do UE e do gNB."
+        "explain": "PHR (6 dB), grants (98%) e MCS (~19) são iguais nos dois. A diferença é o NDI: a gNB pede RV 1/2/3 e o Vertex manda TB novo com RV 0."
+      },
+      {
+        "q": "Por que, mesmo com 51% de retransmissão no UL, não há RLF?",
+        "options": [
+          "O RLC AM recupera os TBs perdidos sem chegar ao maxRetxThreshold.",
+          "O gNB desativa o HARQ do Vertex e passa a usar só o RLC.",
+          "O UDP reenvia os datagramas perdidos antes do RLF.",
+          "O Vertex reduz sozinho a carga de UL para 28 Mbps."
+        ],
+        "explain": "O RLC AM retransmite o que o HARQ perde (ReTx RLC 45,9%) e só declara falha após 32 retransmissões da mesma PDU. UDP não retransmite; a carga oferecida continua 300 Mbps."
       }
     ],
     "title": "Vertex reprova em throughput DL e UL · limite de duas camadas em DL e retransmissões HARQ inconsistentes em UL",

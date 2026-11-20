@@ -118,6 +118,6 @@ function conclusionBlock(challenge) {
     el("p", { className: "conclusion-closing" }, conclusion.closing),
     conclusion.apparentThreshold ? el("p", { className: "insight-note" }, conclusion.apparentThreshold) : null,
     el("h4", {}, conclusion.statsTitle),
-    stats,
+    counts ? stats : null,
     el("ul", { className: "conclusion-stats" }, conclusion.stats.map((item) => el("li", {}, item))));
 }

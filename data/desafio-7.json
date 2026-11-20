@@ -46,21 +46,412 @@
       "arfcn": 633312
     },
     "iterations": [
-      { "it": 1, "dl": [608.0, 986.1], "ul": [30.8, 75.1], "cells": [{ "214": 100 }, { "214": 100 }], "rsrp": [-78.9, -78.1], "sinr": [24.9, 26.1] },
-      { "it": 2, "dl": [556.9, 905.2], "ul": [45.0, 71.4], "cells": [{ "214": 100 }, { "214": 100 }], "rsrp": [-79.7, -79.7], "sinr": [23.5, 23.7] },
-      { "it": 3, "dl": [672.6, 959.5], "ul": [48.0, 72.6], "cells": [{ "217": 100 }, { "214": 100 }], "rsrp": [-70.7, -77.9], "sinr": [30.9, 24.9] },
-      { "it": 4, "dl": [580.7, 962.4], "ul": [33.4, 75.1], "cells": [{ "214": 100 }, { "214": 100 }], "rsrp": [-80.9, -79.7], "sinr": [24.4, 25.5] },
-      { "it": 5, "dl": [565.0, 938.9], "ul": [35.6, 72.0], "cells": [{ "214": 100 }, { "214": 100 }], "rsrp": [-77.4, -77.5], "sinr": [23.5, 25.0] },
-      { "it": 6, "dl": [585.1, 957.6], "ul": [38.2, 75.2], "cells": [{ "214": 100 }, { "214": 100 }], "rsrp": [-79.7, -79.1], "sinr": [26.0, 24.9] },
-      { "it": 7, "dl": [571.8, 732.7], "ul": [42.2, 53.6], "cells": [{ "214": 100 }, { "214": 45, "217": 55 }], "rsrp": [-78.9, -80.4], "sinr": [24.1, 24.2] },
-      { "it": 8, "dl": [577.7, 945.0], "ul": [47.7, 74.0], "cells": [{ "214": 100 }, { "214": 100 }], "rsrp": [-79.6, -80.0], "sinr": [24.9, 24.8] },
-      { "it": 9, "dl": [314.5, 1009.1], "ul": [30.1, 74.4], "cells": [{ "214": 100 }, { "214": 100 }], "rsrp": [-97.3, -80.0], "sinr": [11.2, 25.2] },
-      { "it": 10, "dl": [595.8, 960.9], "ul": [33.6, 75.7], "cells": [{ "214": 100 }, { "214": 100 }], "rsrp": [-79.2, -79.0], "sinr": [25.1, 25.7] },
-      { "it": 11, "dl": [571.4, 952.4], "ul": [28.0, 74.0], "cells": [{ "214": 100 }, { "214": 100 }], "rsrp": [-78.6, -79.0], "sinr": [24.4, 24.8] },
-      { "it": 12, "dl": [568.5, 428.1], "ul": [32.7, 49.0], "cells": [{ "214": 100 }, { "214": 100 }], "rsrp": [-79.0, -96.2], "sinr": [24.1, 10.7] },
-      { "it": 13, "dl": [563.4, 932.8], "ul": [37.6, 74.3], "cells": [{ "214": 100 }, { "214": 100 }], "rsrp": [-80.4, -79.8], "sinr": [24.7, 24.4] },
-      { "it": 14, "dl": [602.5, 938.6], "ul": [32.9, 73.5], "cells": [{ "214": 100 }, { "214": 100 }], "rsrp": [-81.0, -80.8], "sinr": [24.9, 25.6] },
-      { "it": 15, "dl": [563.0, 958.4], "ul": [43.4, 70.5], "cells": [{ "214": 100 }, { "214": 100 }], "rsrp": [-80.0, -79.9], "sinr": [23.9, 24.4] }
+      {
+        "it": 1,
+        "dl": [
+          608.0,
+          986.1
+        ],
+        "ul": [
+          30.8,
+          75.1
+        ],
+        "cells": [
+          {
+            "214": 100
+          },
+          {
+            "214": 100
+          }
+        ],
+        "rsrp": [
+          -78.9,
+          -78.1
+        ],
+        "sinr": [
+          24.9,
+          26.1
+        ]
+      },
+      {
+        "it": 2,
+        "dl": [
+          556.9,
+          905.2
+        ],
+        "ul": [
+          45.0,
+          71.4
+        ],
+        "cells": [
+          {
+            "214": 100
+          },
+          {
+            "214": 100
+          }
+        ],
+        "rsrp": [
+          -79.7,
+          -79.7
+        ],
+        "sinr": [
+          23.5,
+          23.7
+        ]
+      },
+      {
+        "it": 3,
+        "dl": [
+          672.6,
+          959.5
+        ],
+        "ul": [
+          48.0,
+          72.6
+        ],
+        "cells": [
+          {
+            "217": 100
+          },
+          {
+            "214": 100
+          }
+        ],
+        "rsrp": [
+          -70.7,
+          -77.9
+        ],
+        "sinr": [
+          30.9,
+          24.9
+        ]
+      },
+      {
+        "it": 4,
+        "dl": [
+          580.7,
+          962.4
+        ],
+        "ul": [
+          33.4,
+          75.1
+        ],
+        "cells": [
+          {
+            "214": 100
+          },
+          {
+            "214": 100
+          }
+        ],
+        "rsrp": [
+          -80.9,
+          -79.7
+        ],
+        "sinr": [
+          24.4,
+          25.5
+        ]
+      },
+      {
+        "it": 5,
+        "dl": [
+          565.0,
+          938.9
+        ],
+        "ul": [
+          35.6,
+          72.0
+        ],
+        "cells": [
+          {
+            "214": 100
+          },
+          {
+            "214": 100
+          }
+        ],
+        "rsrp": [
+          -77.4,
+          -77.5
+        ],
+        "sinr": [
+          23.5,
+          25.0
+        ]
+      },
+      {
+        "it": 6,
+        "dl": [
+          585.1,
+          957.6
+        ],
+        "ul": [
+          38.2,
+          75.2
+        ],
+        "cells": [
+          {
+            "214": 100
+          },
+          {
+            "214": 100
+          }
+        ],
+        "rsrp": [
+          -79.7,
+          -79.1
+        ],
+        "sinr": [
+          26.0,
+          24.9
+        ]
+      },
+      {
+        "it": 7,
+        "dl": [
+          571.8,
+          732.7
+        ],
+        "ul": [
+          42.2,
+          53.6
+        ],
+        "cells": [
+          {
+            "214": 100
+          },
+          {
+            "214": 45,
+            "217": 55
+          }
+        ],
+        "rsrp": [
+          -78.9,
+          -80.4
+        ],
+        "sinr": [
+          24.1,
+          24.2
+        ]
+      },
+      {
+        "it": 8,
+        "dl": [
+          577.7,
+          945.0
+        ],
+        "ul": [
+          47.7,
+          74.0
+        ],
+        "cells": [
+          {
+            "214": 100
+          },
+          {
+            "214": 100
+          }
+        ],
+        "rsrp": [
+          -79.6,
+          -80.0
+        ],
+        "sinr": [
+          24.9,
+          24.8
+        ]
+      },
+      {
+        "it": 9,
+        "dl": [
+          314.5,
+          1009.1
+        ],
+        "ul": [
+          30.1,
+          74.4
+        ],
+        "cells": [
+          {
+            "214": 100
+          },
+          {
+            "214": 100
+          }
+        ],
+        "rsrp": [
+          -97.3,
+          -80.0
+        ],
+        "sinr": [
+          11.2,
+          25.2
+        ]
+      },
+      {
+        "it": 10,
+        "dl": [
+          595.8,
+          960.9
+        ],
+        "ul": [
+          33.6,
+          75.7
+        ],
+        "cells": [
+          {
+            "214": 100
+          },
+          {
+            "214": 100
+          }
+        ],
+        "rsrp": [
+          -79.2,
+          -79.0
+        ],
+        "sinr": [
+          25.1,
+          25.7
+        ]
+      },
+      {
+        "it": 11,
+        "dl": [
+          571.4,
+          952.4
+        ],
+        "ul": [
+          28.0,
+          74.0
+        ],
+        "cells": [
+          {
+            "214": 100
+          },
+          {
+            "214": 100
+          }
+        ],
+        "rsrp": [
+          -78.6,
+          -79.0
+        ],
+        "sinr": [
+          24.4,
+          24.8
+        ]
+      },
+      {
+        "it": 12,
+        "dl": [
+          568.5,
+          428.1
+        ],
+        "ul": [
+          32.7,
+          49.0
+        ],
+        "cells": [
+          {
+            "214": 100
+          },
+          {
+            "214": 100
+          }
+        ],
+        "rsrp": [
+          -79.0,
+          -96.2
+        ],
+        "sinr": [
+          24.1,
+          10.7
+        ]
+      },
+      {
+        "it": 13,
+        "dl": [
+          563.4,
+          932.8
+        ],
+        "ul": [
+          37.6,
+          74.3
+        ],
+        "cells": [
+          {
+            "214": 100
+          },
+          {
+            "214": 100
+          }
+        ],
+        "rsrp": [
+          -80.4,
+          -79.8
+        ],
+        "sinr": [
+          24.7,
+          24.4
+        ]
+      },
+      {
+        "it": 14,
+        "dl": [
+          602.5,
+          938.6
+        ],
+        "ul": [
+          32.9,
+          73.5
+        ],
+        "cells": [
+          {
+            "214": 100
+          },
+          {
+            "214": 100
+          }
+        ],
+        "rsrp": [
+          -81.0,
+          -80.8
+        ],
+        "sinr": [
+          24.9,
+          25.6
+        ]
+      },
+      {
+        "it": 15,
+        "dl": [
+          563.0,
+          958.4
+        ],
+        "ul": [
+          43.4,
+          70.5
+        ],
+        "cells": [
+          {
+            "214": 100
+          },
+          {
+            "214": 100
+          }
+        ],
+        "rsrp": [
+          -80.0,
+          -79.9
+        ],
+        "sinr": [
+          23.9,
+          24.4
+        ]
+      }
     ]
   },
   "scenarios": [
@@ -143,10 +534,22 @@
           "final": "4 janelas",
           "color": "success",
           "points": [
-            { "at": 7.95, "kind": "reference" },
-            { "at": 21.95, "kind": "reference" },
-            { "at": 37.95, "kind": "reference" },
-            { "at": 51.95, "kind": "reference" }
+            {
+              "at": 7.95,
+              "kind": "reference"
+            },
+            {
+              "at": 21.95,
+              "kind": "reference"
+            },
+            {
+              "at": 37.95,
+              "kind": "reference"
+            },
+            {
+              "at": 51.95,
+              "kind": "reference"
+            }
           ]
         }
       ],
@@ -307,10 +710,22 @@
           "final": "4 janelas",
           "color": "failure",
           "points": [
-            { "at": 7.95, "kind": "failure" },
-            { "at": 21.95, "kind": "failure" },
-            { "at": 37.95, "kind": "failure" },
-            { "at": 51.95, "kind": "failure" }
+            {
+              "at": 7.95,
+              "kind": "failure"
+            },
+            {
+              "at": 21.95,
+              "kind": "failure"
+            },
+            {
+              "at": 37.95,
+              "kind": "failure"
+            },
+            {
+              "at": 51.95,
+              "kind": "failure"
+            }
           ]
         }
       ],
@@ -402,5 +817,317 @@
         }
       ]
     }
-  ]
+  ],
+  "hypotheses": [
+    {
+      "id": "rf",
+      "title": "Cobertura / RF",
+      "question": "O Vertex estava em condição de rádio pior que o Lumen na iteração 11?",
+      "evidence": [
+        {
+          "text": "Mesma PCI 214 o tempo todo; SS-RSRP −78,6 × −78,7 dBm e SS-SINR 24,5 × 25,6 dB no primeiro snapshot.",
+          "links": [
+            {
+              "scenario": "dut-vertex",
+              "idx": 24470,
+              "label": "DUT #24470"
+            },
+            {
+              "scenario": "cdut-lumen",
+              "idx": 24956,
+              "label": "CDUT #24956"
+            }
+          ]
+        },
+        {
+          "text": "As 4 antenas de Rx do Vertex medem SNR entre 23,8 e 25,0 dB.",
+          "links": [
+            {
+              "scenario": "dut-vertex",
+              "idx": 24478,
+              "label": "DUT #24478"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada para as iterações válidas. As iterações com RF ou célula diferentes (3, 7, 9 e 12) já saíram do cálculo pelo procedimento."
+    },
+    {
+      "id": "load",
+      "title": "Carga da célula / escalonador",
+      "question": "O gNB deu menos recursos ao Vertex?",
+      "evidence": [
+        {
+          "text": "Scheduling rate de DL 98,6% × 98,7% e 272 PRBs por slot nos dois; no UL, grants em 98,2% × 96,6% dos slots e 250 PRBs por grant.",
+          "links": [
+            {
+              "scenario": "dut-vertex",
+              "idx": 24484,
+              "label": "DUT #24484"
+            },
+            {
+              "scenario": "cdut-lumen",
+              "idx": 24972,
+              "label": "CDUT #24972"
+            }
+          ]
+        },
+        {
+          "text": "Cada janela de trace tem os mesmos 12 grants de UL nos dois aparelhos.",
+          "links": [
+            {
+              "scenario": "dut-vertex",
+              "idx": 24492,
+              "label": "DUT #24492"
+            },
+            {
+              "scenario": "cdut-lumen",
+              "idx": 24979,
+              "label": "CDUT #24979"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada: o escalonador trata os dois aparelhos igual."
+    },
+    {
+      "id": "linkad",
+      "title": "Canal e link adaptation (CQI, MCS, BLER)",
+      "question": "O canal do Vertex leva a MCS menor ou a mais erros?",
+      "evidence": [
+        {
+          "text": "No DL, o Vertex tem CQI maior (13,9 × 12,1), MCS maior (21,2 × 20,1) e BLER inicial menor (7,6% × 8,8%).",
+          "links": [
+            {
+              "scenario": "dut-vertex",
+              "idx": 24488,
+              "label": "DUT #24488"
+            },
+            {
+              "scenario": "cdut-lumen",
+              "idx": 24976,
+              "label": "CDUT #24976"
+            }
+          ]
+        },
+        {
+          "text": "No UL, a MCS média é praticamente a mesma (19,0 × 19,7).",
+          "links": [
+            {
+              "scenario": "dut-vertex",
+              "idx": 24494,
+              "label": "DUT #24494"
+            },
+            {
+              "scenario": "cdut-lumen",
+              "idx": 24982,
+              "label": "CDUT #24982"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada: o canal e a adaptação de enlace são iguais ou melhores no Vertex."
+    },
+    {
+      "id": "power",
+      "title": "Potência de UL / headroom",
+      "question": "O Vertex está limitado em potência no UL?",
+      "evidence": [
+        {
+          "text": "BSR índice 31 (buffer cheio) e PHR índice 38 → 6 dB de headroom, iguais nos dois.",
+          "links": [
+            {
+              "scenario": "dut-vertex",
+              "idx": 24526,
+              "label": "DUT #24526"
+            },
+            {
+              "scenario": "cdut-lumen",
+              "idx": 25018,
+              "label": "CDUT #25018"
+            }
+          ]
+        },
+        {
+          "text": "Potência do PUSCH 15,2 × 15,9 dBm, com o mesmo pathloss (~98 dB).",
+          "links": [
+            {
+              "scenario": "dut-vertex",
+              "idx": 24570,
+              "label": "DUT #24570"
+            },
+            {
+              "scenario": "cdut-lumen",
+              "idx": 25055,
+              "label": "CDUT #25055"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada: há dado para enviar e potência de sobra."
+    },
+    {
+      "id": "thermal",
+      "title": "Aquecimento (throttling)",
+      "question": "O Vertex reduz o desempenho por temperatura?",
+      "evidence": [
+        {
+          "text": "O déficit existe desde o primeiro segundo (DL 575,9 Mbps em t = 1 s) e não piora ao longo dos 60 s.",
+          "links": [
+            {
+              "scenario": "dut-vertex",
+              "idx": 23795,
+              "label": "DUT #23795"
+            }
+          ]
+        },
+        {
+          "text": "O mesmo déficit aparece nas 11 iterações válidas, com a ordem DUT/CDUT alternada.",
+          "links": []
+        }
+      ],
+      "verdict": "Improvável, mas não descartada pelos dados: o log não registra temperatura. Throttling costuma ser progressivo, e o padrão aqui é constante."
+    },
+    {
+      "id": "rank",
+      "title": "DL: rank limitado pela capability do Vertex",
+      "question": "O Vertex se limita a duas camadas no PDSCH?",
+      "evidence": [
+        {
+          "text": "UE Capability twoLayers (Lumen: fourLayers) e ri_Restriction 00000011 (Lumen: 00001111).",
+          "links": [
+            {
+              "scenario": "dut-vertex",
+              "idx": 21168,
+              "label": "DUT #21168"
+            },
+            {
+              "scenario": "dut-vertex",
+              "idx": 21181,
+              "label": "DUT #21181"
+            },
+            {
+              "scenario": "cdut-lumen",
+              "idx": 21226,
+              "label": "CDUT #21226"
+            }
+          ]
+        },
+        {
+          "text": "CSI com rank 2 e PDSCH com 2 camadas em todo TB; no Lumen, rank 4 e 4 camadas.",
+          "links": [
+            {
+              "scenario": "dut-vertex",
+              "idx": 24488,
+              "label": "DUT #24488"
+            },
+            {
+              "scenario": "dut-vertex",
+              "idx": 24484,
+              "label": "DUT #24484"
+            },
+            {
+              "scenario": "cdut-lumen",
+              "idx": 24972,
+              "label": "CDUT #24972"
+            }
+          ]
+        }
+      ],
+      "verdict": "Sustentada: explica o ×0,51 de camadas, e a cadeia de KPIs fecha em ×0,59 contra ×0,60 medido. Não deve ser marcada como descartada."
+    },
+    {
+      "id": "harq",
+      "title": "UL: retransmissão pedida tratada como nova",
+      "question": "O Vertex responde aos pedidos de retransmissão com transmissões novas?",
+      "evidence": [
+        {
+          "text": "A gNB pede retransmissão (NDI mantido, RV 1/2/3) em 7 de 12 grants; o Vertex envia todos como NEW_TX com RV 0.",
+          "links": [
+            {
+              "scenario": "dut-vertex",
+              "idx": 24492,
+              "label": "DUT #24492"
+            },
+            {
+              "scenario": "dut-vertex",
+              "idx": 24494,
+              "label": "DUT #24494"
+            }
+          ]
+        },
+        {
+          "text": "No Lumen, cada pedido vira um RE_TX com o RV pedido.",
+          "links": [
+            {
+              "scenario": "cdut-lumen",
+              "idx": 25044,
+              "label": "CDUT #25044"
+            },
+            {
+              "scenario": "cdut-lumen",
+              "idx": 25048,
+              "label": "CDUT #25048"
+            }
+          ]
+        },
+        {
+          "text": "ReTx RLC de UL 45,9% (Lumen 0,03%), sem RLF.",
+          "links": [
+            {
+              "scenario": "dut-vertex",
+              "idx": 29934,
+              "label": "DUT #29934"
+            },
+            {
+              "scenario": "cdut-lumen",
+              "idx": 30479,
+              "label": "CDUT #30479"
+            }
+          ]
+        }
+      ],
+      "verdict": "Sustentada: sem soft combining, os TBs se perdem no HARQ e o RLC AM retransmite. Não deve ser marcada como descartada."
+    },
+    {
+      "id": "gnb",
+      "title": "UL: PUSCH chegando degradado à gNB",
+      "question": "A primeira transmissão do Vertex falha mais por qualidade de TX (EVM, PA)?",
+      "evidence": [
+        {
+          "text": "O Vertex recebe muito mais pedidos de retransmissão por janela que o Lumen (2 a 9 × 0 a 3). Parte disso é cascata do NEW_TX indevido, mas o log do UE não mostra por que a gNB falhou a primeira transmissão.",
+          "links": [
+            {
+              "scenario": "dut-vertex",
+              "idx": 24492,
+              "label": "DUT #24492"
+            },
+            {
+              "scenario": "cdut-lumen",
+              "idx": 25044,
+              "label": "CDUT #25044"
+            }
+          ]
+        }
+      ],
+      "verdict": "Em aberto: o log do UE não mostra o CRC nem o SINR do PUSCH na gNB. Fechar exige trace da gNB ou teste conduzido de transmissor (TS 38.521)."
+    }
+  ],
+  "conclusion": {
+    "title": "Duas causas, uma em cada sentido",
+    "summary": "O Vertex reprova nos dois sentidos com o mesmo sintoma (throughput abaixo do Lumen), mas por mecanismos diferentes, ambos definidos pelo próprio aparelho.",
+    "symptoms": [
+      "DL: o Vertex anuncia twoLayers na UE Capability; a rede respeita e restringe o rank a 2. Com o mesmo escalonamento e MCS até maior, o TBS fica em ×0,59 e o throughput em ×0,60 do Lumen.",
+      "UL: quando a gNB pede retransmissão (NDI mantido, RV ≠ 0), o Vertex envia um TB novo. Sem soft combining, 51% dos grants viram retransmissões e há 5393 falhas de HARQ em 60 s. A oscilação entre iterações acompanha quantos pedidos de retransmissão aparecem."
+    ],
+    "closing": "Não há RLF porque o RLC AM recupera os TBs perdidos sem chegar ao maxRetxThreshold, e o UDP não reage à perda. O sintoma aparece só como throughput baixo e instável.",
+    "statsTitle": "O que falta para fechar cada causa",
+    "stats": [
+      "DL: repetir com um build ou configuração que anuncie fourLayers. Se o rank e o throughput subirem ao nível do Lumen, a causa está fechada.",
+      "UL: trace da gNB (CRC, SINR e NDI do PUSCH) para confirmar que os RE_TX esperados chegam como TBs novos, e teste conduzido do transmissor (TS 38.521) para descartar qualidade de TX.",
+      "UL: comparar a taxa de falha da primeira transmissão com o HARQ corrigido; se continuar alta, há uma segunda causa no transmissor.",
+      "Registrar temperatura do aparelho em todas as iterações, para descartar throttling.",
+      "Logs de mais iterações (o arquivo traz só a 11), em especial a 15, que é a pior em DL entre as válidas."
+    ]
+  }
 }

@@ -1,7 +1,6 @@
 import { save } from "../core/base.js";
 import { NETWORK } from "../data/index.js";
 import * as R from "../rules/network.js";
-import throughput from "../../../data/desafio-7.json";
 
 // ======================================================================
 // Rede de acesso: operadoras, bandas e sites (dados em data/network.json; regras em rules/network.js).
@@ -15,7 +14,8 @@ const pciOf = (site, i) => R.pciOf(SITES, save.sites, site, i);
 const cellOn = (op, band, draft) => R.cellOn(SITES, save.sites, op, band, draft);
 const missingCells = (ch, draft) => R.missingCells(REQUIRED_CELLS[ch.id], SITES, save.sites, draft);
 const bestCell = (x, z) => R.bestCell(SITES, save.sites, BANDS, x, z);
-const fieldNetwork = () => ({ sites: SITES, overrides: save.sites, bands: BANDS, criteria: throughput.kpiTest.criteria });
+// `criteria`: limites do par Near-Cell do desafio (campaign.criteria em data/challenges.json).
+const fieldNetwork = (criteria) => ({ sites: SITES, overrides: save.sites, bands: BANDS, criteria });
 const cellName = R.cellName;
 const LAB = { minX: -9, maxX: 9, minZ: -24, maxZ: -8, h: 3.4 };
 

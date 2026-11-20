@@ -15,10 +15,11 @@ describe("níveis", () => {
 });
 
 describe("pontuação máxima", () => {
-  it("soma armário, preparação, vereditos, evidências das falhas, relatório e anexos", () => {
+  it("soma armário, preparação, vereditos, evidências das falhas, relatório, anexos e a planilha (testes de KPI)", () => {
     for (const ch of CHALLENGES) {
       const fails = ch.scenarios.filter((s) => s.statusClass === "bad").length;
-      expect(maxScore(ch)).toBe(PTS.equipment + ch.game.setup.length * PTS.choice + ch.scenarios.length * PTS.verdict + fails * PTS.evidence + ch.game.report.length * PTS.report + PTS.attach);
+      expect(maxScore(ch)).toBe(PTS.equipment + ch.game.setup.length * PTS.choice + ch.scenarios.length * PTS.verdict + fails * PTS.evidence + ch.game.report.length * PTS.report + PTS.attach
+        + (ch.campaign ? 60 : 0));
     }
   });
 });

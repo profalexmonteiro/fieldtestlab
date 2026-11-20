@@ -548,7 +548,7 @@
         {
           "kind": "ok",
           "title": "Bearer na 1ª tentativa",
-          "html": "Accept com <code>EBI 6</code> 100 ms após o pedido; o 200 OK chega em 3,40 s."
+          "html": "Accept com <code>EBI 6</code> 100 ms após o pedido; o 200 OK chega em 3,55 s desde o Paging."
         },
         {
           "kind": "ok",
@@ -823,5 +823,334 @@
         }
       ]
     }
-  ]
+  ],
+  "hypotheses": [
+    {
+      "id": "rf",
+      "title": "Cobertura / RF no início da chamada",
+      "question": "O Polaris estava em condição de rádio pior quando a chamada foi estabelecida?",
+      "evidence": [
+        {
+          "text": "Mesma célula LTE (PCI 220) com RSRP ≈ −90 dBm e SNR ≈ 12,5 dB nos dois aparelhos.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 21690,
+              "label": "DUT #21690"
+            },
+            {
+              "scenario": "cen2-cdut",
+              "idx": 21418,
+              "label": "CDUT #21418"
+            }
+          ]
+        },
+        {
+          "text": "RACH na 1ª tentativa nos dois.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 21659,
+              "label": "DUT #21659"
+            },
+            {
+              "scenario": "cen2-cdut",
+              "idx": 21393,
+              "label": "CDUT #21393"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada: o rádio é igual nos dois aparelhos durante o estabelecimento."
+    },
+    {
+      "id": "epsfb",
+      "title": "EPS Fallback ou TAU lentos",
+      "question": "Os ~8 s estão no redirecionamento para LTE ou no TAU?",
+      "evidence": [
+        {
+          "text": "Do RRCRelease ao TAU Accept: 0,44 s no Polaris e no Equinox, com os mesmos passos.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 21622,
+              "label": "DUT #21622"
+            },
+            {
+              "scenario": "cen1-dut",
+              "idx": 21681,
+              "label": "DUT #21681"
+            },
+            {
+              "scenario": "cen2-cdut",
+              "idx": 21411,
+              "label": "CDUT #21411"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada: o fallback termina em menos de 0,5 s nos dois. O tempo se perde depois, no bearer de voz."
+    },
+    {
+      "id": "sip",
+      "title": "IMS / SIP ou terminal remoto",
+      "question": "O atraso vem da sinalização SIP ou de quem está do outro lado?",
+      "evidence": [
+        {
+          "text": "183, PRACK e 200 OK do PRACK chegam nos mesmos tempos nos dois aparelhos, sem retransmissão SIP.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 21699,
+              "label": "DUT #21699"
+            },
+            {
+              "scenario": "cen2-cdut",
+              "idx": 21426,
+              "label": "CDUT #21426"
+            }
+          ]
+        },
+        {
+          "text": "Em MT o padrão é o mesmo, com o Polaris como destino da chamada.",
+          "links": [
+            {
+              "scenario": "cen3-dut",
+              "idx": 48207,
+              "label": "MT DUT #48207"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada: o atraso aparece em MO e em MT, sempre no mesmo ponto do fluxo NAS."
+    },
+    {
+      "id": "ebi",
+      "title": "Sintoma 1: accept do bearer com a EBI errada",
+      "question": "O Polaris confirma o bearer QCI 1 com a identidade errada?",
+      "evidence": [
+        {
+          "text": "Pedido com EBI 6 (Linked EBI 5); o accept do Polaris traz EBI 5. O Equinox responde EBI 6.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 21707,
+              "label": "DUT #21707"
+            },
+            {
+              "scenario": "cen1-dut",
+              "idx": 21715,
+              "label": "DUT #21715"
+            },
+            {
+              "scenario": "cen2-cdut",
+              "idx": 21445,
+              "label": "CDUT #21445"
+            }
+          ]
+        },
+        {
+          "text": "8,0 s depois (T3485) a rede repete o pedido e o Polaris responde EBI 6: o bearer é confirmado e a chamada segue.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 22751,
+              "label": "DUT #22751"
+            },
+            {
+              "scenario": "cen1-dut",
+              "idx": 22758,
+              "label": "DUT #22758"
+            }
+          ]
+        }
+      ],
+      "verdict": "Sustentada: explica os ~8 s e por que a chamada não falha (a retransmissão corrige). Não deve ser marcada como descartada."
+    },
+    {
+      "id": "single",
+      "title": "Um sintoma causa o outro",
+      "question": "O bearer atrasado é o que derruba a chamada no far-cell?",
+      "evidence": [
+        {
+          "text": "O bearer é confirmado em T +8,85 s e a chamada segue normal por mais de 40 s antes do far-cell.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 22758,
+              "label": "DUT #22758"
+            },
+            {
+              "scenario": "cen1-dut",
+              "idx": 25794,
+              "label": "DUT #25794"
+            }
+          ]
+        },
+        {
+          "text": "A queda vem da falta de um comando de SRVCC, não de qualquer problema no bearer de voz.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 27040,
+              "label": "DUT #27040"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada: são duas falhas independentes que só acontecem na mesma chamada."
+    },
+    {
+      "id": "farcell",
+      "title": "Cobertura no far-cell / GERAN fora do ar",
+      "question": "O Polaris encontra uma situação de rádio diferente no far-cell?",
+      "evidence": [
+        {
+          "text": "O 1º report B2 traz os mesmos valores nos dois: PCell −108 dBm e GERAN ARFCN 62 em −75 dBm.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 25838,
+              "label": "DUT #25838"
+            },
+            {
+              "scenario": "cen2-cdut",
+              "idx": 23131,
+              "label": "CDUT #23131"
+            }
+          ]
+        },
+        {
+          "text": "Na mesma rota e no mesmo ponto, o Equinox recebe o comando de SRVCC e completa o handover para 2G.",
+          "links": [
+            {
+              "scenario": "cen2-cdut",
+              "idx": 23355,
+              "label": "CDUT #23355"
+            },
+            {
+              "scenario": "cen2-cdut",
+              "idx": 23397,
+              "label": "CDUT #23397"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada: a GERAN existe, é medida e serve o Equinox no mesmo trecho."
+    },
+    {
+      "id": "b2",
+      "title": "O Polaris não reporta o B2",
+      "question": "A rede deixa de agir porque não recebe o report do UE?",
+      "evidence": [
+        {
+          "text": "Três measurementReport (measId 1) a cada 5,12 s, com a GERAN acima do limiar de −80 dBm.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 25838,
+              "label": "DUT #25838"
+            },
+            {
+              "scenario": "cen1-dut",
+              "idx": 26445,
+              "label": "DUT #26445"
+            },
+            {
+              "scenario": "cen1-dut",
+              "idx": 27040,
+              "label": "DUT #27040"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada: o UE mede e reporta corretamente; a partir do report a decisão é da rede."
+    },
+    {
+      "id": "tau",
+      "title": "Sintoma 2: TAU sem os IEs do SRVCC",
+      "question": "O Polaris deixa de enviar o que a rede precisa para preparar o SRVCC?",
+      "evidence": [
+        {
+          "text": "Os dois declaram SRVCC_to_GERAN_UTRAN_capability = 1, mas só o Equinox envia MS Classmark 2, MS Classmark 3 e Supported Codecs no TAU.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 21664,
+              "label": "DUT #21664"
+            },
+            {
+              "scenario": "cen2-cdut",
+              "idx": 21396,
+              "label": "CDUT #21396"
+            }
+          ]
+        },
+        {
+          "text": "Sem esses IEs (TS 24.301 §5.5.3.2.2), o MME não monta a preparação CS pela Sv: nenhum mobilityFromEUTRACommand chega ao Polaris.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 27040,
+              "label": "DUT #27040"
+            },
+            {
+              "scenario": "cen2-cdut",
+              "idx": 23355,
+              "label": "CDUT #23355"
+            }
+          ]
+        }
+      ],
+      "verdict": "Sustentada: é a única diferença no que os dois aparelhos enviam e explica a ausência do comando de SRVCC. Não deve ser marcada como descartada."
+    },
+    {
+      "id": "subscription",
+      "title": "Assinatura de SRVCC do SIM do Polaris",
+      "question": "O SIM do Polaris não tem STN-SR / C-MSISDN no HSS?",
+      "evidence": [
+        {
+          "text": "O log do UE não mostra o HSS, o MME nem a interface Sv, e os dois aparelhos usam SIMs diferentes. Uma assinatura sem SRVCC também impediria o handover, mesmo com o TAU completo.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 21664,
+              "label": "DUT #21664"
+            }
+          ]
+        }
+      ],
+      "verdict": "Em aberto: os dados não permitem descartá-la. Fechar exige trocar os SIMs entre os aparelhos ou o trace do MME (S1AP e Sv)."
+    }
+  ],
+  "comparison": {
+    "outcome": "falha",
+    "counts": {
+      "dut": [
+        3,
+        3
+      ],
+      "cdut": [
+        0,
+        3
+      ]
+    }
+  },
+  "conclusion": {
+    "title": "Duas causas independentes na mesma chamada",
+    "summary": "O Polaris reproduz os dois sintomas em 3/3 repetições, em MO e em MT. Cada sintoma tem o seu campo no log e o seu mecanismo; a ordem em que aparecem na chamada não é causalidade.",
+    "symptoms": [
+      "Call Setup Time: o accept do bearer QCI 1 traz o Linked EBI (5) no lugar da EBI pedida (6), contra a TS 24.301 §6.4.2. A rede ignora o accept, espera o T3485 (8 s) e repete o pedido; na retransmissão o Polaris responde certo. Daí os ~8 s a mais e a chamada que completa mesmo assim.",
+      "Queda no far-cell: o Polaris declara capacidade de SRVCC, mas omite MS Classmark 2, MS Classmark 3 e Supported Codecs no TAU após o EPS Fallback. Sem eles a rede não prepara o SRVCC: os reports B2 ficam sem resposta, o T310 expira e a chamada cai."
+    ],
+    "closing": "Os dois defeitos estão no que o Polaris envia; em todos os outros pontos (rádio, fallback, SIP, reports) ele se comporta como o Equinox.",
+    "statsTitle": "O que falta para fechar cada causa",
+    "stats": [
+      "Com 3 repetições por aparelho, 3/3 × 0/3 dá p = 0,1 (Fisher exato): ainda não é significativo. Com o mesmo resultado em 4 repetições já daria p ≈ 0,03; o ideal é ≥ 20 por cenário.",
+      "Controle de SRVCC sem EPS Fallback: o Polaris registrado direto em LTE (Attach) fazendo a mesma rota. Se o SRVCC funcionar, a omissão está só no TAU após o fallback.",
+      "Trocar os SIMs entre Polaris e Equinox, para separar o defeito do aparelho da assinatura de SRVCC (STN-SR / C-MSISDN).",
+      "Trace do MME (S1AP e Sv): descarte do accept com EBI 5 e falha da preparação PS→CS.",
+      "Build corrigido do Polaris repetindo os quatro cenários."
+    ]
+  }
 }

@@ -90,7 +90,7 @@ function makeSim() {
   box(0.05, 0.003, 0.034, "#F4F6F9", 0, 0, 0, g); box(0.016, 0.004, 0.014, "#C9A15A", -0.01, 0, 0, g);
   return g;
 }
-const EXTRA_COLORS = { ims: "#2f63c9", remote: "#15724a", audio: "#0A192F", route: "#FF6B00", emerg: "#c63b3b", gps: "#46566E", spectrum: "#172A45", thermal: "#9a6100", battery: "#15724a", camera: "#0A192F", sims: "#C9A15A" };
+const EXTRA_COLORS = { iperf: "#13294d", ims: "#2f63c9", remote: "#15724a", audio: "#0A192F", route: "#FF6B00", emerg: "#c63b3b", gps: "#46566E", spectrum: "#172A45", thermal: "#9a6100", battery: "#15724a", camera: "#0A192F", sims: "#C9A15A" };
 function makeExtra(k) {
   if (k === "remote") {                     // o terminal remoto é outro smartphone, com tela própria
     const ph = makePhone("Remoto", false, "📞 Terminal remoto · smartphone");

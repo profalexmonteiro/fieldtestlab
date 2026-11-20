@@ -1,4 +1,5 @@
 // Pontuação, níveis e recompensas (funções puras).
+import { campaignMax } from "./campaign.js";
 
 export const LEVELS = [
   { xp: 0, title: "Estagiário de Campo" }, { xp: 300, title: "Técnico de Testes" },
@@ -12,7 +13,8 @@ export function levelOf(xp) { let i = 0; LEVELS.forEach((l, k) => { if (xp >= l.
 /** Pontuação máxima de um chamado (ch.game = conteúdo do desafio). */
 export function maxScore(ch) {
   const g = ch.game, fails = ch.scenarios.filter((s) => s.statusClass === "bad").length;
-  return PTS.equipment + g.setup.length * PTS.choice + ch.scenarios.length * PTS.verdict + fails * PTS.evidence + g.report.length * PTS.report + PTS.attach;
+  return PTS.equipment + g.setup.length * PTS.choice + ch.scenarios.length * PTS.verdict + fails * PTS.evidence + g.report.length * PTS.report + PTS.attach
+    + (ch.campaign ? campaignMax() : 0);
 }
 
 /** Conferência do armário: −10 por item obrigatório faltando, −8 por item desnecessário (neutros não contam). */

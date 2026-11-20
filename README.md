@@ -123,7 +123,7 @@ O **Vertex** (DUT) é comparado ao **Lumen** (CDUT) em Near-Cell, na n78 (PCI 21
 
 O painel **Teste de KPI** valida os pares, calcula a média e o desvio padrão amostral e mostra a cadeia de KPIs para cada sentido. As iterações 3, 7, 9 e 12 são descartadas. Nas 11 válidas, o Vertex fica abaixo da referência em DL (−38,98%) e UL (−49,90%). O critério de estabilidade passa em DL e falha em UL.
 
-O FieldTest Quest em `play/` inclui o chamado do Desafio 7, com preparação da rede, etapas de bancada, avaliação dos dois aparelhos e exercício de diagnóstico.
+O FieldTest Quest em `play/` inclui o chamado do Desafio 7, com preparação da rede, etapas de bancada, avaliação dos dois aparelhos e exercício de diagnóstico. No desktop do relatório, antes das perguntas, o jogador preenche a planilha da campanha: marca as iterações que saem do cálculo (correção linha a linha, com o motivo de cada descarte), digita Δ média e Δσ de DL e UL a partir das médias e dos σ amostrais das iterações válidas (tolerância de ±1 p.p.) e escolhe PASS/FAIL por sentido. A planilha vale 60 pontos (30 pelos descartes, 20 pelos deltas e 10 pelos vereditos); as regras estão em `play/src/rules/campaign.js`, e os dados da campanha, em `play/src/data/challenges.json` (`campaign`), sincronizados com `data/desafio-7.json` por teste.
 
 ## Como executar
 

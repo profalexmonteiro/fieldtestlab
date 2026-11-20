@@ -35,11 +35,14 @@
           "note": "3 of 3 repetitions · 100%"
         },
         {
-          "label": "Rejection reason"
+          "label": "Nonce in the Authorization",
+          "value": "cached (N0)",
+          "note": "the 401 carried N1 · Warning 399"
         },
         {
           "label": "IMS registration",
-          "value": "abandoned"
+          "value": "abandoned",
+          "note": "after 2 × 403 · max_auth_attempts = 2"
         },
         {
           "note": "n78 · stationary UE"
@@ -107,7 +110,7 @@
         },
         {
           "title": "1st 403 Forbidden at T +0.110 s",
-          "text": "Warning: 399 \"nonce does not match latest challenge\". The network says exactly what is wrong: the nonce, not the password or the identity."
+          "text": "Warning: 399 \"nonce does not match latest challenge\". The network says exactly what is wrong: the nonce, not the password or the identity. A network following RFC 7616 would answer 401 with stale=true; this one uses 403 with a Warning. Faced with a 403, giving up is not the defect: the nonce is."
         },
         {
           "title": "Cache updated too late",
@@ -276,12 +279,12 @@
       ],
       "evidence": [
         {
-          "title": "Same number, different codecs",
-          "html": "The DUT's INVITE declares <code>a=rtpmap:97 EVS/16000</code> (AMR/8000 is PT 98). The network's answer in the 183 picks AMR and labels it <code>a=rtpmap:97 AMR/8000</code>."
+          "title": "Negotiated codec: AMR only",
+          "html": "The INVITE declares <code>97 = EVS/16000</code> (AMR is 98). The answer in the 183 picks AMR only and announces it as <code>a=rtpmap:97 AMR/8000</code>. Each side declares the map of the packets it receives, so reusing 97 is allowed, although RFC 3264 (§6.1) recommends keeping the offerer's number."
         },
         {
-          "title": "The DUT ignores the answer's rtpmap",
-          "html": "In the UPDATE the DUT re-offers <code>PT 97 = EVS/16000</code>, and the network again answers <code>PT 97 = AMR/8000</code>. The vocoder starts as <code>EVS 24.4 kbps (SWB), PT 97</code>."
+          "title": "The DUT does not adopt the negotiated codec",
+          "html": "The answer accepts AMR only, but the vocoder starts as <code>EVS 24.4 kbps (SWB), PT 97</code>. In the UPDATE the DUT offers <code>97 = EVS/16000</code> again and the network answers AMR only again. The DUT should send AMR on PT 97 (the network's number) and receive AMR on PT 98 (its own)."
         },
         {
           "title": "Transport and QoS are normal",
@@ -315,16 +318,16 @@
           "text": "m=audio 42010 RTP/AVP 97 96 99 98 101 102 103. The DUT numbers: 97 = EVS/16000, 96/99 = AMR-WB, 98/101 = AMR/8000. This is T 0."
         },
         {
-          "title": "183: the network picks AMR and calls it 97",
-          "text": "SDP answer m=audio 36020 RTP/AVP 97 103 with a=rtpmap:97 AMR/8000. The network selected AMR (narrowband) but reused number 97, which for the DUT is EVS. This is the exact point of divergence."
+          "title": "183: the network picks AMR only",
+          "text": "SDP answer m=audio 36020 RTP/AVP 97 103 with a=rtpmap:97 AMR/8000. The network selected AMR (narrowband) and declared it as number 97, which in the DUT's map is EVS. This is allowed (each side declares the map of what it receives), but RFC 3264 recommends keeping the offerer's number (98). The negotiated codec is now AMR: this is the exact point of divergence."
         },
         {
           "title": "DUT UPDATE: 97 is still EVS",
-          "text": "The DUT re-offers m=audio 42010 RTP/AVP 97 103 with a=rtpmap:97 EVS/16000. It did not adopt the answer's codec. Compare with the CDUT, whose UPDATE already re-offers 97 = AMR/8000."
+          "text": "The DUT offers m=audio 42010 RTP/AVP 97 103 with a=rtpmap:97 EVS/16000 again: it did not adopt the answer's codec. Compare with the CDUT, whose UPDATE already offers AMR only."
         },
         {
           "title": "UPDATE 200 OK: the network insists",
-          "text": "Again a=rtpmap:97 AMR/8000. Within one session, PT 97 now has two meanings: EVS for the DUT, AMR for the network."
+          "text": "AMR only again, on PT 97. The negotiated codec is still AMR, and the DUT keeps using EVS."
         },
         {
           "title": "Call answered, no SIP error",
@@ -437,5 +440,118 @@
         }
       ]
     }
+  },
+  "hypotheses": {
+    "rf": {
+      "title": "Coverage / RF",
+      "question": "Do the symptoms come from bad radio?",
+      "evidence": [
+        {
+          "text": "Stationary UE, n78 PCI 88 at −82 dBm / −8 dB and Band 3 PCI 41 at −84 dBm / −9 dB, the same cells as the CDUT."
+        },
+        {
+          "text": "5G SA registration, PDU sessions and LTE Attach follow the same timing as the CDUT."
+        }
+      ],
+      "verdict": "Ruled out: both failures are IMS (SIP and SDP), with normal radio and NAS."
+    },
+    "cred": {
+      "title": "Credentials / SIM",
+      "question": "Are the Vanguard's SIP password or IMS identity wrong?",
+      "evidence": [
+        {
+          "text": "In TC#2, the same SIM registers on the 1st attempt after the power cycle."
+        },
+        {
+          "text": "The 403 carries Warning 399 \"nonce does not match latest challenge\": the network points at the nonce, not the password."
+        }
+      ],
+      "verdict": "Ruled out: correct credentials authenticate as soon as the right nonce is used."
+    },
+    "network": {
+      "title": "Network / IMS core",
+      "question": "Do the P-CSCF/S-CSCF or the network's SDP answer cause the failures?",
+      "evidence": [
+        {
+          "text": "The CDUT registers on the first attempt in the same realm and receives the MT call."
+        },
+        {
+          "text": "In TC#2 the network answers AMR only on PT 97. It is allowed but not recommended (RFC 3264 §6.1), and the CDUT does not test this: in its offer, 97 was already AMR."
+        }
+      ],
+      "verdict": "Ruled out as a cause. The answer's numbering is an exposure factor the CDUT does not exercise: it deserves a control test."
+    },
+    "transport": {
+      "title": "Transport / QoS",
+      "question": "Do packet loss or the voice bearer explain the unintelligible voice?",
+      "evidence": [
+        {
+          "text": "QCI 1 dedicated bearer (GBR 53 kbps) and preconditions met, as on the CDUT."
+        },
+        {
+          "text": "RTP TX 500 / RX 498 at T+10 s, practically the same as the CDUT (RX 497)."
+        }
+      ],
+      "verdict": "Ruled out: the packets arrive; the problem is the codec used to encode and decode them."
+    },
+    "single": {
+      "title": "A single cause for both symptoms",
+      "question": "Does one defect explain the 403 in TC#1 and the voice in TC#2?",
+      "evidence": [
+        {
+          "text": "In TC#2 registration succeeds on the first attempt (empty cache), and the voice still fails."
+        },
+        {
+          "text": "In TC#1 the UE never negotiates media: the log ends with no INVITE."
+        }
+      ],
+      "verdict": "Ruled out: two independent mechanisms (SIP authentication and SDP negotiation) that only share the IMS client."
+    },
+    "nonce": {
+      "title": "TC#1: cached nonce after airplane mode",
+      "question": "Does the Vanguard answer the challenge with an old nonce?",
+      "evidence": [
+        {
+          "text": "\"using CACHED nonce N0-000000-init\" right after the 401 with N1; then N1 against challenge N2."
+        },
+        {
+          "text": "The CDUT uses the challenge nonce, and the DUT itself gets it right after a power cycle (empty cache)."
+        }
+      ],
+      "verdict": "Supported: it explains both 403s, Warning 399 and why the power cycle removes the symptom. It should not be marked as ruled out."
+    },
+    "sdp": {
+      "title": "TC#2: SDP answer codec not applied",
+      "question": "Does the Vanguard use a codec other than the negotiated one?",
+      "evidence": [
+        {
+          "text": "The answer picks AMR only (PT 97); the DUT's UPDATE offers 97 = EVS again."
+        },
+        {
+          "text": "The DUT vocoder starts in EVS; the CDUT's in AMR-NB, the negotiated codec."
+        }
+      ],
+      "verdict": "Supported: the DUT encodes and decodes EVS while the other end uses AMR. It should not be marked as ruled out."
+    }
+  },
+  "comparison": {
+    "outcome": "failure"
+  },
+  "conclusion": {
+    "title": "Two independent causes in the IMS client",
+    "summary": "The two symptoms only coexist in the same IMS client (Vanguard-IMS/1.0). Each has its own mechanism, trigger and evidence in the log.",
+    "symptoms": [
+      "TC#1 (MT on VoNR): the Authorization is built with the cached nonce, which survives the airplane-mode toggle, instead of the nonce in the latest 401. The network answers 403 (Warning 399) twice, the client gives up registering and, without IMS, the MT call is not delivered.",
+      "TC#2 (MO on VoLTE): the SDP answer picks AMR only, declared on PT 97, but the Vanguard keeps EVS on PT 97. Signalling and RTP are normal; the voice is encoded and decoded with different codecs at the two ends."
+    ],
+    "closing": "The network has two questionable but non-causal behaviours: it answers 403 instead of 401 with stale=true to the old nonce, and it reuses number 97 for another codec. Both devices get the same answers; only the Vanguard fails.",
+    "statsTitle": "What is missing to close it with statistical certainty",
+    "stats": [
+      "With 3 repetitions per device, 3/3 × 0/3 gives p = 0.1 (Fisher's exact): not significant yet. The same result over 4 repetitions would give p ≈ 0.03; ideally ≥ 20 per scenario.",
+      "TC#1 alternating airplane mode and power cycle on the same device, to confirm that only the toggle leaves the old nonce cached.",
+      "TC#2 with the network keeping the offerer's number (AMR on 98) and with the CDUT offering 97 = EVS, to separate the DUT defect from the network exposure factor.",
+      "An objective voice-quality measure (POLQA/MOS) and an RTP capture at the SBC, to confirm the payload actually sent.",
+      "Repeat TC#1 with IMS-AKA, the authentication used on the commercial network."
+    ]
   }
 }

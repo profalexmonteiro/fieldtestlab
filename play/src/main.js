@@ -31,7 +31,7 @@ import "./game/analysis.js";
 import "./screens/desk.js";
 import "./core/loop.js";
 import { G } from "./core/store.js";
-import { $, hud, persist, save, toast } from "./core/base.js";
+import { $, CHALLENGES, hud, persist, save, toast } from "./core/base.js";
 import { renderer, resize } from "./core/renderer.js";
 import { world } from "./world/world.js";
 import { SITES, missingCells, siteById, siteCfg } from "./net/network.js";
@@ -46,6 +46,8 @@ import { cabToggle } from "./screens/cabinet.js";
 import { climbAction } from "./game/climb.js";
 import { exitCar } from "./game/car.js";
 import { doBenchAction } from "./game/bench.js";
+import { setMode } from "./game/modes.js";
+import { campaignScreen } from "./screens/campaign.js";
 import { camPos, loop } from "./core/loop.js";
 import { mode, phase } from "./game/state.js";
 
@@ -67,5 +69,8 @@ window.__ftq = {
   player, stations, npc, interact, doBenchAction, climbAction, cabToggle, startDialog, SITES, missingCells, car: world.car, exitCar,
   setRru(id, i, op, band) { const s = siteById(id), c = siteCfg(s); c[i] = [op, band]; save.sites = save.sites || {}; save.sites[id] = c; persist(); refreshRruLabels(s); },
   press(re) { for (const s of activeScreens()) { const b = s.buttons.find((bt) => !bt.disabled && re.test(bt.text)); if (b) { b.onClick(); return true; } } return false; },
-  buttons() { return activeScreens().flatMap((s) => s.buttons.map((b) => b.text)); }
+  buttons() { return activeScreens().flatMap((s) => s.buttons.map((b) => b.text)); },
+  screen: (name) => world[name],
+  // abre a planilha da campanha no monitor do desktop (testes do teste de KPI)
+  openCampaign(id = "desafio-7") { setMode("desk"); return campaignScreen(world.desk, CHALLENGES.find((c) => c.id === id).campaign, "teste"); }
 };

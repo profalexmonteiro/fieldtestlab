@@ -50,8 +50,12 @@
         "SIP"
       ],
       "rightKind": "core",
-      "coreNodes": { "left": "5GC · NovaLink" },
-      "coreProtocols": ["NAS"],
+      "coreNodes": {
+        "left": "5GC · NovaLink"
+      },
+      "coreProtocols": [
+        "NAS"
+      ],
       "axisMax": 0.3,
       "metrics": [
         {
@@ -207,8 +211,12 @@
         "SIP"
       ],
       "rightKind": "core",
-      "coreNodes": { "left": "5GC · NovaLink" },
-      "coreProtocols": ["NAS"],
+      "coreNodes": {
+        "left": "5GC · NovaLink"
+      },
+      "coreProtocols": [
+        "NAS"
+      ],
       "axisMax": 0.3,
       "metrics": [
         {
@@ -218,15 +226,15 @@
           "tone": "bad-text"
         },
         {
-          "label": "Motivo da rejeição",
-          "value": "Warning 399",
-          "note": "nonce does not match latest challenge",
+          "label": "Nonce na Authorization",
+          "value": "em cache (N0)",
+          "note": "o 401 trazia N1 · Warning 399",
           "tone": "bad-text"
         },
         {
           "label": "Registro IMS",
           "value": "abandonado",
-          "note": "max_auth_attempts = 2",
+          "note": "após 2 × 403 · max_auth_attempts = 2",
           "tone": "bad-text"
         },
         {
@@ -345,7 +353,7 @@
         {
           "idx": 21623,
           "title": "1º 403 Forbidden em T +0,110 s",
-          "text": "Warning: 399 \"nonce does not match latest challenge\". A rede diz exatamente o que está errado: o nonce, não a senha nem a identidade."
+          "text": "Warning: 399 \"nonce does not match latest challenge\". A rede diz exatamente o que está errado: o nonce, não a senha nem a identidade. Uma rede que segue a RFC 7616 responderia 401 com stale=true; esta usa 403 com Warning. Diante de 403, parar de tentar não é o defeito: o defeito é o nonce."
         },
         {
           "idx": 21624,
@@ -396,8 +404,12 @@
         "SIP"
       ],
       "rightKind": "core",
-      "coreNodes": { "left": "EPC · NovaLink" },
-      "coreProtocols": ["NAS"],
+      "coreNodes": {
+        "left": "EPC · NovaLink"
+      },
+      "coreProtocols": [
+        "NAS"
+      ],
       "axisMax": 15,
       "timelineLabels": {
         "eyebrow": "Repetição 01 · log",
@@ -559,8 +571,12 @@
         "SIP"
       ],
       "rightKind": "core",
-      "coreNodes": { "left": "EPC · NovaLink" },
-      "coreProtocols": ["NAS"],
+      "coreNodes": {
+        "left": "EPC · NovaLink"
+      },
+      "coreProtocols": [
+        "NAS"
+      ],
       "axisMax": 15,
       "timelineLabels": {
         "eyebrow": "Repetição 01 · log",
@@ -641,13 +657,13 @@
       "evidence": [
         {
           "kind": "issue",
-          "title": "Mesmo número, codecs diferentes",
-          "html": "O INVITE do DUT declara <code>a=rtpmap:97 EVS/16000</code> (AMR/8000 é o PT 98). A resposta da rede no 183 escolhe AMR e o anuncia como <code>a=rtpmap:97 AMR/8000</code>."
+          "title": "Codec negociado: só AMR",
+          "html": "O INVITE declara <code>97 = EVS/16000</code> (AMR é o 98). A resposta no 183 escolhe apenas AMR e o anuncia como <code>a=rtpmap:97 AMR/8000</code>. Cada lado declara o mapa dos pacotes que recebe, então reaproveitar o 97 é permitido, embora a RFC 3264 (§6.1) recomende manter o número do ofertante."
         },
         {
           "kind": "issue",
-          "title": "O DUT ignora o rtpmap da resposta",
-          "html": "No UPDATE, o DUT reoferece <code>PT 97 = EVS/16000</code>, e a rede responde de novo <code>PT 97 = AMR/8000</code>. O vocoder sobe como <code>EVS 24,4 kbps (SWB), PT 97</code>."
+          "title": "O DUT não adota o codec negociado",
+          "html": "A resposta só aceita AMR, mas o vocoder sobe como <code>EVS 24,4 kbps (SWB), PT 97</code>. No UPDATE, o DUT reoferece <code>97 = EVS/16000</code> e a rede responde de novo só AMR. O DUT deveria enviar AMR no PT 97 (o número da rede) e receber AMR no PT 98 (o seu)."
         },
         {
           "kind": "ok",
@@ -690,18 +706,18 @@
         },
         {
           "idx": 22255,
-          "title": "183: a rede escolhe AMR e o chama de 97",
-          "text": "Resposta SDP m=audio 36020 RTP/AVP 97 103 com a=rtpmap:97 AMR/8000. A rede selecionou AMR (narrowband), mas reaproveitou o número 97, que para o DUT é EVS. Este é o ponto exato da divergência."
+          "title": "183: a rede escolhe só AMR",
+          "text": "Resposta SDP m=audio 36020 RTP/AVP 97 103 com a=rtpmap:97 AMR/8000. A rede selecionou AMR (narrowband) e o declarou no número 97, que no mapa do DUT é EVS. Isso é permitido (cada lado declara o mapa do que recebe), mas a RFC 3264 recomenda manter o número do ofertante (98). O codec negociado passa a ser AMR: este é o ponto exato da divergência."
         },
         {
           "idx": 22290,
           "title": "UPDATE do DUT: 97 continua EVS",
-          "text": "O DUT reoferece m=audio 42010 RTP/AVP 97 103 com a=rtpmap:97 EVS/16000. Ele não adotou o codec da resposta. Compare com o CDUT, que no UPDATE já reoferece 97 = AMR/8000."
+          "text": "O DUT reoferece m=audio 42010 RTP/AVP 97 103 com a=rtpmap:97 EVS/16000: ele não adotou o codec da resposta. Compare com o CDUT, que no UPDATE já reoferece só AMR."
         },
         {
           "idx": 22295,
           "title": "200 OK do UPDATE: a rede insiste",
-          "text": "De novo a=rtpmap:97 AMR/8000. Dentro da mesma sessão, o PT 97 tem dois significados: EVS para o DUT, AMR para a rede."
+          "text": "De novo só AMR, no PT 97. O codec negociado continua AMR, e o DUT segue com EVS."
         },
         {
           "idx": 22442,
@@ -725,5 +741,283 @@
         }
       ]
     }
-  ]
+  ],
+  "hypotheses": [
+    {
+      "id": "rf",
+      "title": "Cobertura / RF",
+      "question": "Os sintomas vêm de rádio ruim?",
+      "evidence": [
+        {
+          "text": "UE parado, n78 PCI 88 em −82 dBm / −8 dB e Band 3 PCI 41 em −84 dBm / −9 dB, as mesmas células do CDUT.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 21267,
+              "label": "TC#1 DUT #21267"
+            },
+            {
+              "scenario": "cen2-dut",
+              "idx": 21465,
+              "label": "TC#2 DUT #21465"
+            }
+          ]
+        },
+        {
+          "text": "Registro 5G SA, sessões PDU e Attach LTE seguem os mesmos tempos do CDUT.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 21457,
+              "label": "TC#1 DUT #21457"
+            },
+            {
+              "scenario": "cen2-dut",
+              "idx": 21615,
+              "label": "TC#2 DUT #21615"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada: as duas falhas são de IMS (SIP e SDP), com rádio e NAS normais."
+    },
+    {
+      "id": "cred",
+      "title": "Credenciais / SIM",
+      "question": "A senha SIP ou a identidade IMS do Vanguard estão erradas?",
+      "evidence": [
+        {
+          "text": "No TC#2, o mesmo SIM registra na 1ª tentativa depois do power cycle.",
+          "links": [
+            {
+              "scenario": "cen2-dut",
+              "idx": 21810,
+              "label": "TC#2 DUT #21810"
+            },
+            {
+              "scenario": "cen2-dut",
+              "idx": 21818,
+              "label": "TC#2 DUT #21818"
+            }
+          ]
+        },
+        {
+          "text": "O 403 traz Warning 399 \"nonce does not match latest challenge\": a rede aponta o nonce, não a senha.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 21623,
+              "label": "TC#1 DUT #21623"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada: credenciais corretas autenticam assim que o nonce certo é usado."
+    },
+    {
+      "id": "network",
+      "title": "Rede / núcleo IMS",
+      "question": "O P-CSCF/S-CSCF ou a resposta SDP da rede causam as falhas?",
+      "evidence": [
+        {
+          "text": "O CDUT registra de primeira no mesmo realm e recebe a chamada MT.",
+          "links": [
+            {
+              "scenario": "cen1-cdut",
+              "idx": 21566,
+              "label": "TC#1 CDUT #21566"
+            }
+          ]
+        },
+        {
+          "text": "No TC#2, a rede responde só AMR no PT 97. É permitido, mas não recomendado (RFC 3264 §6.1), e o CDUT não testa essa situação: na oferta dele, o 97 já era AMR.",
+          "links": [
+            {
+              "scenario": "cen2-dut",
+              "idx": 22255,
+              "label": "TC#2 DUT #22255"
+            },
+            {
+              "scenario": "cen2-cdut",
+              "idx": 22004,
+              "label": "TC#2 CDUT #22004"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada como causa. A numeração da resposta é um fator de exposição que o CDUT não exercita: vale um teste de controle."
+    },
+    {
+      "id": "transport",
+      "title": "Transporte / QoS",
+      "question": "Perda de pacotes ou bearer de voz explicam a voz ininteligível?",
+      "evidence": [
+        {
+          "text": "Bearer dedicado QCI 1 (GBR 53 kbps) e precondições atendidas, como no CDUT.",
+          "links": [
+            {
+              "scenario": "cen2-dut",
+              "idx": 22274,
+              "label": "TC#2 DUT #22274"
+            }
+          ]
+        },
+        {
+          "text": "RTP TX 500 / RX 498 em T+10 s, praticamente igual ao CDUT (RX 497).",
+          "links": [
+            {
+              "scenario": "cen2-dut",
+              "idx": 23369,
+              "label": "TC#2 DUT #23369"
+            },
+            {
+              "scenario": "cen2-cdut",
+              "idx": 23071,
+              "label": "TC#2 CDUT #23071"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada: os pacotes chegam; o problema é o codec usado para codificá-los e decodificá-los."
+    },
+    {
+      "id": "single",
+      "title": "Uma causa única para os dois sintomas",
+      "question": "Um só defeito explica o 403 no TC#1 e a voz no TC#2?",
+      "evidence": [
+        {
+          "text": "No TC#2 o registro passa de primeira (cache vazio), e a voz falha mesmo assim.",
+          "links": [
+            {
+              "scenario": "cen2-dut",
+              "idx": 21810,
+              "label": "TC#2 DUT #21810"
+            },
+            {
+              "scenario": "cen2-dut",
+              "idx": 22448,
+              "label": "TC#2 DUT #22448"
+            }
+          ]
+        },
+        {
+          "text": "No TC#1 o UE nem chega a negociar mídia: o log termina sem INVITE.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 21638,
+              "label": "TC#1 DUT #21638"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada: são dois mecanismos independentes (autenticação SIP e negociação SDP) que só compartilham o cliente IMS."
+    },
+    {
+      "id": "nonce",
+      "title": "TC#1: nonce em cache após o modo avião",
+      "question": "O Vanguard responde ao desafio com um nonce antigo?",
+      "evidence": [
+        {
+          "text": "\"using CACHED nonce N0-000000-init\" logo depois do 401 com N1; depois, N1 contra o desafio N2.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 21615,
+              "label": "TC#1 DUT #21615"
+            },
+            {
+              "scenario": "cen1-dut",
+              "idx": 21629,
+              "label": "TC#1 DUT #21629"
+            }
+          ]
+        },
+        {
+          "text": "O CDUT usa o nonce do desafio, e o próprio DUT acerta depois de um power cycle (cache vazio).",
+          "links": [
+            {
+              "scenario": "cen1-cdut",
+              "idx": 21557,
+              "label": "TC#1 CDUT #21557"
+            },
+            {
+              "scenario": "cen2-dut",
+              "idx": 21810,
+              "label": "TC#2 DUT #21810"
+            }
+          ]
+        }
+      ],
+      "verdict": "Sustentada: explica os dois 403, o Warning 399 e por que o power cycle elimina o sintoma. Não deve ser marcada como descartada."
+    },
+    {
+      "id": "sdp",
+      "title": "TC#2: codec da resposta SDP não aplicado",
+      "question": "O Vanguard usa um codec diferente do negociado?",
+      "evidence": [
+        {
+          "text": "A resposta escolhe só AMR (PT 97); o UPDATE do DUT volta a oferecer 97 = EVS.",
+          "links": [
+            {
+              "scenario": "cen2-dut",
+              "idx": 22255,
+              "label": "TC#2 DUT #22255"
+            },
+            {
+              "scenario": "cen2-dut",
+              "idx": 22290,
+              "label": "TC#2 DUT #22290"
+            }
+          ]
+        },
+        {
+          "text": "O vocoder do DUT sobe em EVS; o do CDUT, em AMR-NB, o codec negociado.",
+          "links": [
+            {
+              "scenario": "cen2-dut",
+              "idx": 22448,
+              "label": "TC#2 DUT #22448"
+            },
+            {
+              "scenario": "cen2-cdut",
+              "idx": 22260,
+              "label": "TC#2 CDUT #22260"
+            }
+          ]
+        }
+      ],
+      "verdict": "Sustentada: o DUT codifica e decodifica EVS enquanto a outra ponta usa AMR. Não deve ser marcada como descartada."
+    }
+  ],
+  "comparison": {
+    "outcome": "falha",
+    "counts": {
+      "dut": [
+        3,
+        3
+      ],
+      "cdut": [
+        0,
+        3
+      ]
+    }
+  },
+  "conclusion": {
+    "title": "Duas causas independentes no cliente IMS",
+    "summary": "Os dois sintomas apenas coexistem no mesmo cliente IMS (Vanguard-IMS/1.0). Cada um tem o seu mecanismo, o seu gatilho e a sua evidência no log.",
+    "symptoms": [
+      "TC#1 (MT em VoNR): a Authorization é montada com o nonce em cache, que sobrevive ao toggle de modo avião, e não com o nonce do 401 mais recente. A rede responde 403 (Warning 399) duas vezes, o cliente desiste do registro e, sem IMS, a chamada MT não é entregue.",
+      "TC#2 (MO em VoLTE): a resposta SDP escolhe só AMR, declarado no PT 97, mas o Vanguard mantém EVS no PT 97. A sinalização e o RTP estão normais; a voz é codificada e decodificada com codecs diferentes nas duas pontas."
+    ],
+    "closing": "A rede tem dois comportamentos discutíveis, mas não causadores: responde 403 em vez de 401 com stale=true ao nonce antigo e reaproveita o número 97 para outro codec. Os dois aparelhos recebem as mesmas respostas; só o Vanguard falha.",
+    "statsTitle": "O que falta para fechar com certeza estatística",
+    "stats": [
+      "Com 3 repetições por aparelho, 3/3 × 0/3 dá p = 0,1 (Fisher exato): ainda não é significativo. Com o mesmo resultado em 4 repetições já daria p ≈ 0,03; o ideal é ≥ 20 por cenário.",
+      "TC#1 alternando modo avião e power cycle no mesmo aparelho, para confirmar que só o toggle deixa o nonce antigo em cache.",
+      "TC#2 com a rede mantendo o número do ofertante (AMR no 98) e com o CDUT oferecendo 97 = EVS, para separar o defeito do DUT do fator de exposição da rede.",
+      "Medida objetiva de qualidade de voz (POLQA/MOS) e captura RTP no SBC, para confirmar o payload efetivamente enviado.",
+      "Repetir o TC#1 com IMS-AKA, a autenticação usada na rede comercial."
+    ]
+  }
 }

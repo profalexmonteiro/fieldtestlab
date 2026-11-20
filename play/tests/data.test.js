@@ -11,6 +11,10 @@ import throughput from "../../data/desafio-7.json";
 const FX = ["settings", "profile", "data", "atten", "airplane", "remote", "reboot", "dial", "headset", "sos"];
 
 describe("desafios e conteúdo", () => {
+  it("a campanha do D7 no jogo é a mesma do FieldTestLab (critérios e 15 iterações)", () => {
+    const { campaign } = CHALLENGE_DATA.find(({ id }) => id === "desafio-7");
+    expect(campaign).toEqual({ criteria: throughput.kpiTest.criteria, iterations: throughput.kpiTest.iterations });
+  });
   it.each(CHALLENGE_DATA.map((c) => [c.id, c]))("%s tem conteúdo, cenários e perguntas bem formadas", (id, c) => {
     const g = CONTENT[id];
     expect(g).toBeTruthy();

@@ -442,20 +442,20 @@
             "evidence": "symptom"
           },
           {
-            "label": "Motivo da rejeição",
-            "value": "Warning 399",
-            "note": "nonce does not match latest challenge",
+            "label": "Nonce na Authorization",
+            "value": "em cache (N0)",
+            "note": "o 401 trazia N1 · Warning 399",
             "tone": "bad-text",
-            "observation": "Resposta SIP: Warning 399 · nonce does not match latest challenge",
-            "evidence": "mechanism"
+            "evidence": "mechanism",
+            "observation": "Authorization Build: using CACHED nonce N0-000000-init (o 401 trazia N1-7f3a9c1e4b)"
           },
           {
             "label": "Registro IMS",
             "value": "abandonado",
-            "note": "max_auth_attempts = 2",
+            "note": "após 2 × 403 · max_auth_attempts = 2",
             "tone": "bad-text",
-            "observation": "max_auth_attempts = 2 · sem novo REGISTER após o segundo 403",
-            "evidence": "symptom"
+            "evidence": "symptom",
+            "observation": "Dois 403 com Warning 399 (nonce does not match latest challenge) · registro IMS abandonado"
           },
           {
             "label": "RSRP / RSRQ · PCI 88",
@@ -1074,6 +1074,426 @@
         "desc": "Vertex · iperf3 UDP bidirecional de 60 s na célula Near-Cell PCI 214 · iteração 11 de 15, a de pior desempenho frente ao Lumen",
         "notice": "Leitura da iteração 11. Use o simulador web para conferir os valores da campanha e os traces dos dois aparelhos."
       }
-    ]
+    ],
+    "campaign": {
+      "criteria": {
+        "meanPct": 10,
+        "sigmaPct": 20,
+        "rsrpMin": -85,
+        "sinrMin": 10,
+        "rfDelta": 3,
+        "minValid": 10,
+        "pci": 214,
+        "arfcn": 633312
+      },
+      "iterations": [
+        {
+          "it": 1,
+          "dl": [
+            608.0,
+            986.1
+          ],
+          "ul": [
+            30.8,
+            75.1
+          ],
+          "cells": [
+            {
+              "214": 100
+            },
+            {
+              "214": 100
+            }
+          ],
+          "rsrp": [
+            -78.9,
+            -78.1
+          ],
+          "sinr": [
+            24.9,
+            26.1
+          ]
+        },
+        {
+          "it": 2,
+          "dl": [
+            556.9,
+            905.2
+          ],
+          "ul": [
+            45.0,
+            71.4
+          ],
+          "cells": [
+            {
+              "214": 100
+            },
+            {
+              "214": 100
+            }
+          ],
+          "rsrp": [
+            -79.7,
+            -79.7
+          ],
+          "sinr": [
+            23.5,
+            23.7
+          ]
+        },
+        {
+          "it": 3,
+          "dl": [
+            672.6,
+            959.5
+          ],
+          "ul": [
+            48.0,
+            72.6
+          ],
+          "cells": [
+            {
+              "217": 100
+            },
+            {
+              "214": 100
+            }
+          ],
+          "rsrp": [
+            -70.7,
+            -77.9
+          ],
+          "sinr": [
+            30.9,
+            24.9
+          ]
+        },
+        {
+          "it": 4,
+          "dl": [
+            580.7,
+            962.4
+          ],
+          "ul": [
+            33.4,
+            75.1
+          ],
+          "cells": [
+            {
+              "214": 100
+            },
+            {
+              "214": 100
+            }
+          ],
+          "rsrp": [
+            -80.9,
+            -79.7
+          ],
+          "sinr": [
+            24.4,
+            25.5
+          ]
+        },
+        {
+          "it": 5,
+          "dl": [
+            565.0,
+            938.9
+          ],
+          "ul": [
+            35.6,
+            72.0
+          ],
+          "cells": [
+            {
+              "214": 100
+            },
+            {
+              "214": 100
+            }
+          ],
+          "rsrp": [
+            -77.4,
+            -77.5
+          ],
+          "sinr": [
+            23.5,
+            25.0
+          ]
+        },
+        {
+          "it": 6,
+          "dl": [
+            585.1,
+            957.6
+          ],
+          "ul": [
+            38.2,
+            75.2
+          ],
+          "cells": [
+            {
+              "214": 100
+            },
+            {
+              "214": 100
+            }
+          ],
+          "rsrp": [
+            -79.7,
+            -79.1
+          ],
+          "sinr": [
+            26.0,
+            24.9
+          ]
+        },
+        {
+          "it": 7,
+          "dl": [
+            571.8,
+            732.7
+          ],
+          "ul": [
+            42.2,
+            53.6
+          ],
+          "cells": [
+            {
+              "214": 100
+            },
+            {
+              "214": 45,
+              "217": 55
+            }
+          ],
+          "rsrp": [
+            -78.9,
+            -80.4
+          ],
+          "sinr": [
+            24.1,
+            24.2
+          ]
+        },
+        {
+          "it": 8,
+          "dl": [
+            577.7,
+            945.0
+          ],
+          "ul": [
+            47.7,
+            74.0
+          ],
+          "cells": [
+            {
+              "214": 100
+            },
+            {
+              "214": 100
+            }
+          ],
+          "rsrp": [
+            -79.6,
+            -80.0
+          ],
+          "sinr": [
+            24.9,
+            24.8
+          ]
+        },
+        {
+          "it": 9,
+          "dl": [
+            314.5,
+            1009.1
+          ],
+          "ul": [
+            30.1,
+            74.4
+          ],
+          "cells": [
+            {
+              "214": 100
+            },
+            {
+              "214": 100
+            }
+          ],
+          "rsrp": [
+            -97.3,
+            -80.0
+          ],
+          "sinr": [
+            11.2,
+            25.2
+          ]
+        },
+        {
+          "it": 10,
+          "dl": [
+            595.8,
+            960.9
+          ],
+          "ul": [
+            33.6,
+            75.7
+          ],
+          "cells": [
+            {
+              "214": 100
+            },
+            {
+              "214": 100
+            }
+          ],
+          "rsrp": [
+            -79.2,
+            -79.0
+          ],
+          "sinr": [
+            25.1,
+            25.7
+          ]
+        },
+        {
+          "it": 11,
+          "dl": [
+            571.4,
+            952.4
+          ],
+          "ul": [
+            28.0,
+            74.0
+          ],
+          "cells": [
+            {
+              "214": 100
+            },
+            {
+              "214": 100
+            }
+          ],
+          "rsrp": [
+            -78.6,
+            -79.0
+          ],
+          "sinr": [
+            24.4,
+            24.8
+          ]
+        },
+        {
+          "it": 12,
+          "dl": [
+            568.5,
+            428.1
+          ],
+          "ul": [
+            32.7,
+            49.0
+          ],
+          "cells": [
+            {
+              "214": 100
+            },
+            {
+              "214": 100
+            }
+          ],
+          "rsrp": [
+            -79.0,
+            -96.2
+          ],
+          "sinr": [
+            24.1,
+            10.7
+          ]
+        },
+        {
+          "it": 13,
+          "dl": [
+            563.4,
+            932.8
+          ],
+          "ul": [
+            37.6,
+            74.3
+          ],
+          "cells": [
+            {
+              "214": 100
+            },
+            {
+              "214": 100
+            }
+          ],
+          "rsrp": [
+            -80.4,
+            -79.8
+          ],
+          "sinr": [
+            24.7,
+            24.4
+          ]
+        },
+        {
+          "it": 14,
+          "dl": [
+            602.5,
+            938.6
+          ],
+          "ul": [
+            32.9,
+            73.5
+          ],
+          "cells": [
+            {
+              "214": 100
+            },
+            {
+              "214": 100
+            }
+          ],
+          "rsrp": [
+            -81.0,
+            -80.8
+          ],
+          "sinr": [
+            24.9,
+            25.6
+          ]
+        },
+        {
+          "it": 15,
+          "dl": [
+            563.0,
+            958.4
+          ],
+          "ul": [
+            43.4,
+            70.5
+          ],
+          "cells": [
+            {
+              "214": 100
+            },
+            {
+              "214": 100
+            }
+          ],
+          "rsrp": [
+            -80.0,
+            -79.9
+          ],
+          "sinr": [
+            23.9,
+            24.4
+          ]
+        }
+      ]
+    }
   }
 ]

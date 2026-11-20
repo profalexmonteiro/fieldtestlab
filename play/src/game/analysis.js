@@ -3,7 +3,6 @@ import { isRef } from "../core/base.js";
 import { UI, paint, setScreen } from "../ui/screens.js";
 import { typeAnim } from "./modes.js";
 import { captureLines, campaignPages } from "../rules/capture.js";
-import throughput from "../../../data/desafio-7.json";
 import { fieldLine } from "../rules/field.js";
 
 function analysis(scenario, notebook, fieldSamples) {
@@ -12,7 +11,7 @@ function analysis(scenario, notebook, fieldSamples) {
     const last = G.run.bench.idx + 1 >= G.run.ch.scenarios.length;
     const records = captureLines(scenario);
     const capture = [...records, ...fieldSamples.map((sample) => ({ t: "Campo 3D · " + fieldLine(sample) }))];
-    const pages = G.run.ch.id === throughput.id ? [capture, ...campaignPages(throughput.kpiTest)] : [capture];
+    const pages = G.run.ch.campaign ? [capture, ...campaignPages(G.run.ch.campaign)] : [capture];
     let page = 0;
     let step = "verdict";
     let verdict;
@@ -55,13 +54,13 @@ function analysis(scenario, notebook, fieldSamples) {
           if (page < pages.length - 1) UI.btn(sc, W - 260 * k, 410 * k, 236 * k, 46 * k,
             page ? "Próxima página →" : "Ver planilha →", () => turnPage(page + 1), { key: "ArrowRight", size: 19 });
         }
-        UI.text(sc, "Qual é o veredito deste teste?", 24 * k, 478 * k, { size: 28, weight: "bold" });
-        UI.btn(sc, 24 * k, 530 * k, (W - 62 * k) / 2, 96 * k, "Aprovado", () => choose("pass"), { letter: "A", key: "KeyA", size: 26 });
-        UI.btn(sc, 38 * k + (W - 62 * k) / 2, 530 * k, (W - 62 * k) / 2, 96 * k, "Falha reproduzida", () => choose("fail"), { letter: "B", key: "KeyB", size: 26 });
+        UI.text(sc, "Este aparelho mostra o desvio?", 24 * k, 478 * k, { size: 28, weight: "bold" });
+        UI.btn(sc, 24 * k, 530 * k, (W - 62 * k) / 2, 96 * k, "Sem desvio", () => choose("pass"), { letter: "A", key: "KeyA", size: 26 });
+        UI.btn(sc, 38 * k + (W - 62 * k) / 2, 530 * k, (W - 62 * k) / 2, 96 * k, "Desvio reproduzido", () => choose("fail"), { letter: "B", key: "KeyB", size: 26 });
         return;
       }
 
-      UI.text(sc, "Seu veredito: " + (verdict === "pass" ? "Aprovado" : "Falha"), 24 * k, 83 * k,
+      UI.text(sc, "Seu veredito: " + (verdict === "pass" ? "Sem desvio" : "Desvio reproduzido"), 24 * k, 83 * k,
         { size: 26, weight: "bold" });
       if (step === "evidence") {
         UI.text(sc, "Marque a observação que melhor sustenta seu veredito.", 24 * k, 133 * k, { size: 23 });

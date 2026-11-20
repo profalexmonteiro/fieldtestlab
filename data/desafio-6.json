@@ -743,5 +743,242 @@
         }
       ]
     }
-  ]
+  ],
+  "hypotheses": [
+    {
+      "id": "rf",
+      "title": "Cobertura / RF",
+      "question": "O Polaris estava em condição de rádio pior que o Equinox?",
+      "evidence": [
+        {
+          "text": "Os dois discam o 112 na mesma célula 5G SA (n78, PCI 88), com RSRP em torno de −90 dBm.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 21416,
+              "label": "DUT #21416"
+            },
+            {
+              "scenario": "cen2-cdut",
+              "idx": 21341,
+              "label": "CDUT #21341"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada: mesma célula, mesmo ponto, mesma condição de rádio."
+    },
+    {
+      "id": "network",
+      "title": "Falha da rede Zenith (causa 90, sem EPS Fallback)",
+      "question": "A falha da rede em 5G explica a diferença entre os aparelhos?",
+      "evidence": [
+        {
+          "text": "Os dois recebem 5GMM cause 90 em T +0,55 s, e nenhum recebe RRCRelease com redirecionamento.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 21473,
+              "label": "DUT #21473"
+            },
+            {
+              "scenario": "cen1-dut",
+              "idx": 21475,
+              "label": "DUT #21475"
+            },
+            {
+              "scenario": "cen2-cdut",
+              "idx": 21403,
+              "label": "CDUT #21403"
+            }
+          ]
+        },
+        {
+          "text": "Com a mesma falha, o Equinox completa o 112 em 1,95 s.",
+          "links": [
+            {
+              "scenario": "cen2-cdut",
+              "idx": 21560,
+              "label": "CDUT #21560"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada como causa da diferença. É um desvio real da rede, comum aos dois, e a causa dele fica em aberto: N11 e N2 não aparecem no log do UE."
+    },
+    {
+      "id": "volte",
+      "title": "VoLTE / IMS / SIM do Polaris",
+      "question": "O Polaris tem defeito de voz sobre IMS ou de assinatura?",
+      "evidence": [
+        {
+          "text": "No controle em 4G, o Polaris registra no P-CSCF da Zenith e completa o 112 por VoLTE em 1,62–1,70 s, como o Equinox (1,55–1,60 s).",
+          "links": [
+            {
+              "scenario": "cen3-dut",
+              "idx": 28801,
+              "label": "4G DUT #28801"
+            },
+            {
+              "scenario": "cen3-dut",
+              "idx": 28885,
+              "label": "4G DUT #28885"
+            },
+            {
+              "scenario": "cen4-cdut",
+              "idx": 28066,
+              "label": "4G CDUT #28066"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada: partindo de LTE, o Polaris faz VoLTE de emergência normalmente."
+    },
+    {
+      "id": "schedule",
+      "title": "Horário da coleta (DUT de manhã, CDUT à tarde)",
+      "question": "A rede estava diferente nos dois horários?",
+      "evidence": [
+        {
+          "text": "Os controles em 4G também foram coletados de manhã (DUT) e à tarde (CDUT) e dão tempos equivalentes; em 5G, a rede responde com a mesma causa no mesmo instante nos dois horários.",
+          "links": [
+            {
+              "scenario": "cen3-dut",
+              "idx": 28885,
+              "label": "4G DUT #28885"
+            },
+            {
+              "scenario": "cen4-cdut",
+              "idx": 28066,
+              "label": "4G CDUT #28066"
+            },
+            {
+              "scenario": "cen1-dut",
+              "idx": 21473,
+              "label": "DUT #21473"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada: o horário não muda a resposta da rede nem o resultado dos controles."
+    },
+    {
+      "id": "selection",
+      "title": "Seleção de célula do Polaris após a falha",
+      "question": "O Polaris sai da própria operadora depois da causa 90?",
+      "evidence": [
+        {
+          "text": "O Polaris faz uma varredura NR + LTE, encontra Zenith PCI 220 (−85 dBm) e Aurora PCI 145 (−80 dBm) e escolhe a Aurora.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 21481,
+              "label": "DUT #21481"
+            },
+            {
+              "scenario": "cen1-dut",
+              "idx": 21531,
+              "label": "DUT #21531"
+            },
+            {
+              "scenario": "cen1-dut",
+              "idx": 21537,
+              "label": "DUT #21537"
+            }
+          ]
+        },
+        {
+          "text": "O Equinox vai direto à LTE da Zenith (PCI 220) e continua assinante.",
+          "links": [
+            {
+              "scenario": "cen2-cdut",
+              "idx": 21409,
+              "label": "CDUT #21409"
+            },
+            {
+              "scenario": "cen2-cdut",
+              "idx": 21416,
+              "label": "CDUT #21416"
+            }
+          ]
+        }
+      ],
+      "verdict": "Sustentada: escolher outra operadora pelo sinal, com a LTE da HPLMN disponível, leva ao serviço limitado e explica todo o atraso. Não deve ser marcada como descartada."
+    },
+    {
+      "id": "aurora",
+      "title": "Rede da Aurora (403 do IMS)",
+      "question": "A Aurora é a culpada pelo caminho em CS?",
+      "evidence": [
+        {
+          "text": "Na Aurora o Polaris é visitante sem acordo: faz emergency attach e o IMS responde 403 Emergency registration not permitted; a chamada sai por CSFB.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 21557,
+              "label": "DUT #21557"
+            },
+            {
+              "scenario": "cen1-dut",
+              "idx": 21649,
+              "label": "DUT #21649"
+            },
+            {
+              "scenario": "cen1-dut",
+              "idx": 21663,
+              "label": "DUT #21663"
+            }
+          ]
+        }
+      ],
+      "verdict": "Descartada como causa: o 403 e o CSFB são consequências de o Polaris ter ido para a Aurora."
+    },
+    {
+      "id": "policy",
+      "title": "Por que o Polaris escolhe pelo sinal",
+      "question": "Qual regra interna leva o Polaris a ranquear as PLMNs só pelo nível?",
+      "evidence": [
+        {
+          "text": "O log mostra a decisão (Cell Selection Decision com PLMN 724/023), mas não a regra: configuração de operadora, política de emergência ou firmware.",
+          "links": [
+            {
+              "scenario": "cen1-dut",
+              "idx": 21537,
+              "label": "DUT #21537"
+            }
+          ]
+        }
+      ],
+      "verdict": "Em aberto: fechar exige a configuração do gerenciador de emergência do Polaris ou um teste com a Aurora atenuada."
+    }
+  ],
+  "comparison": {
+    "outcome": "outra operadora",
+    "counts": {
+      "dut": [
+        3,
+        3
+      ],
+      "cdut": [
+        0,
+        3
+      ]
+    }
+  },
+  "conclusion": {
+    "title": "Dois desvios: um da rede, um do aparelho",
+    "summary": "A falha inicial é da rede e afeta os dois aparelhos; o atraso do Polaris vem da reação dele a essa falha.",
+    "symptoms": [
+      "Rede (comum aos dois): a PDU Session de emergência em 5G recebe 5GMM cause 90 em T +0,55 s e a Zenith não executa o EPS Fallback previsto. Os dois aparelhos precisam sair do 5G por conta própria.",
+      "Polaris: em vez de tentar a LTE da própria operadora, faz uma varredura e escolhe a Aurora pelos 5 dB a mais. Lá entra em serviço limitado, o IMS recusa o registro de emergência (403) e o 112 só sai por CS, em ~3,8 s contra ~2,0 s do Equinox."
+    ],
+    "closing": "A expectativa é esgotar as RATs da HPLMN antes de outra operadora (TS 22.101 / TS 23.167). O controle em 4G mostra que o VoLTE de emergência do Polaris funciona: o defeito está na seleção de rede depois da falha.",
+    "statsTitle": "O que falta para fechar com certeza estatística",
+    "stats": [
+      "Com 3 repetições por aparelho, 3/3 × 0/3 dá p = 0,1 (Fisher exato): ainda não é significativo. Com o mesmo resultado em 4 repetições já daria p ≈ 0,03; o ideal é ≥ 20 por cenário.",
+      "Repetir com a LTE da Aurora atenuada ou mais fraca que a da Zenith: se o Polaris voltar para a Zenith, confirma a escolha só pelo nível.",
+      "Configuração do gerenciador de emergência do Polaris (lista de operadoras, política de seleção) e um build corrigido.",
+      "Traces do núcleo da Zenith (N11, N2) para explicar a causa 90 e a falta de EPS Fallback, que é um desvio de rede à parte."
+    ]
+  }
 }

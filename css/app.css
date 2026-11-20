@@ -137,7 +137,7 @@ h1 { margin: 8px 0 8px; font-size: clamp(26px, 3.4vw, 39px); letter-spacing: -.0
 .side-divider { border-top: 1px solid var(--line); margin: 13px 3px; }
 .side-info { padding: 5px 10px 0; color: var(--muted); font-size: 11px; line-height: 1.65; }
 .side-info strong { color: var(--text); font-weight: 600; }
-.main { min-width: 0; display: grid; gap: 16px; }
+.main { min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
 .panel { padding: 20px; }
 .scenario-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
 .scenario-heading h2 { margin: 6px 0 6px; font-size: 20px; font-weight: 650; letter-spacing: -.025em; }
