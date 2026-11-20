@@ -32,7 +32,7 @@ import "./screens/desk.js";
 import "./core/loop.js";
 import { G } from "./core/store.js";
 import { $, CHALLENGES, hud, persist, save, toast } from "./core/base.js";
-import { renderer, resize } from "./core/renderer.js";
+import { camera, renderer, resize } from "./core/renderer.js";
 import { world } from "./world/world.js";
 import { SITES, missingCells, siteById, siteCfg } from "./net/network.js";
 import { refreshRruLabels } from "./world/coreRacks.js";
@@ -71,6 +71,7 @@ window.__ftq = {
   press(re) { for (const s of activeScreens()) { const b = s.buttons.find((bt) => !bt.disabled && re.test(bt.text)); if (b) { b.onClick(); return true; } } return false; },
   buttons() { return activeScreens().flatMap((s) => s.buttons.map((b) => b.text)); },
   screen: (name) => world[name],
+  world, camera,
   // abre a planilha da campanha no monitor do desktop (testes do teste de KPI)
   openCampaign(id = "desafio-7") { setMode("desk"); return campaignScreen(world.desk, CHALLENGES.find((c) => c.id === id).campaign, "teste"); }
 };

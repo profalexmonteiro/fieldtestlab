@@ -29,9 +29,13 @@ function screenHit(e) {
   const s = h.object.userData.screen, px = h.uv.x * s.W, py = (1 - h.uv.y) * s.H;
   return { s, i: s.buttons.findIndex((b) => !b.disabled && px >= b.x && px <= b.x + b.w && py >= b.y && py <= b.y + b.h) };
 }
+// Só malhas e a etiqueta (Sprite) visíveis contam. O raycaster também testa objetos invisíveis, e o contorno
+// de destaque (LineSegments, tolerância de 1 m) "roubava" o clique dos itens vizinhos.
+const shownInScene = (o) => { for (; o; o = o.parent) if (!o.visible) return false; return true; };
 function pickCabinetItem(e) {
   rayFrom(e);
-  const hit = raycaster.intersectObjects(world.cab.items, true)[0];
+  const hit = raycaster.intersectObjects(world.cab.items.filter((g) => g.visible), true)
+    .find((h) => (h.object.isMesh || h.object.isSprite) && shownInScene(h.object));
   let o = hit && hit.object; while (o && !o.userData.key) o = o.parent;
   return o ? o.userData.key : null;
 }

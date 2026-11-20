@@ -19,6 +19,8 @@ const EPI_ITEM = { icon: "🦺", name: "EPI para trabalho em altura", desc: "Cap
 const ITEM_SHORT = { modemlog: "Notebook · log", cdut: "CDUT", sims: "SIMs", ims: "Conta IMS", remote: "Terminal remoto", audio: "Áudio", route: "Drive test", emerg: "Autorização 112", gps: "GPS", spectrum: "Espectro", thermal: "Térmica", battery: "Bateria", camera: "Lab câmera", epi: "EPI" };
 const itemInfo = (k) => (k === "epi" ? EPI_ITEM : EQUIPMENT[k]);
 let cabState = null;
+const HIT_BOX = new THREE.BoxGeometry(0.42, 0.34, 0.3);
+const HIT_MAT = new THREE.MeshBasicMaterial({ visible: false });
 function makeItem(k) {
   const g = new THREE.Group();
   const B = (w, h, d, c, x, y, z) => box(w, h, d, c, x, y, z, g);
@@ -47,8 +49,10 @@ function makeItem(k) {
   const lb = label(e.icon + " " + ITEM_SHORT[k], { scale: 0.2 }); lb.position.set(0, 0.36, 0); g.add(lb);
   const halo = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(0.42, 0.34, 0.3)), new THREE.LineBasicMaterial({ color: "#FF6B00" }));
   halo.position.y = 0.15; halo.visible = false; g.add(halo);
+  // área de clique invisível, do mesmo tamanho do contorno: itens finos (SIM, celular) ficam fáceis de acertar
+  const hit = new THREE.Mesh(HIT_BOX, HIT_MAT); hit.position.y = 0.15; g.add(hit);
   g.userData = { key: k, halo };
-  g.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+  g.traverse((o) => { if (o.isMesh && o !== hit) o.castShadow = true; });
   return g;
 }
 function openCabinet() {
